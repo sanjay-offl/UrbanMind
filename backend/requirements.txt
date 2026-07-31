@@ -8,7 +8,7 @@ pandas
 python-multipart
 httpx
 openai
-pinecone-client
+pinecone
 anthropic
 redis
 apscheduler

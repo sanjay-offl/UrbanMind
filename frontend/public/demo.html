@@ -1,0 +1,3159 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UrbanMind — AI Civic Intelligence Platform</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Tabler Icons CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+
+  <style>
+    /* ==========================================
+       1. CSS VARIABLES & SYSTEM THEMES (SWISS)
+       ========================================== */
+    :root {
+      /* Colors */
+      --bg-color: #0A0F1E;
+      --bg-gradient: radial-gradient(circle at 50% 50%, #111827 0%, #070a13 100%);
+      --glass-bg: rgba(255, 255, 255, 0.06);
+      --glass-bg-hover: rgba(255, 255, 255, 0.10);
+      --glass-border: rgba(255, 255, 255, 0.10);
+      --glass-border-focus: rgba(255, 255, 255, 0.25);
+      --glass-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+      
+      --accent-color: #3B82F6;
+      --accent-hover: #2563EB;
+      --accent-alpha: rgba(59, 130, 246, 0.15);
+      
+      --success-color: #10B981;
+      --success-bg: rgba(16, 185, 129, 0.15);
+      --success-border: rgba(16, 185, 129, 0.3);
+      
+      --warning-color: #F59E0B;
+      --warning-bg: rgba(245, 158, 11, 0.15);
+      --warning-border: rgba(245, 158, 11, 0.3);
+      
+      --danger-color: #EF4444;
+      --danger-bg: rgba(239, 68, 68, 0.15);
+      --danger-border: rgba(239, 68, 68, 0.3);
+      
+      --text-primary: #F1F5F9;
+      --text-secondary: #94A3B8;
+      --text-muted: #475569;
+      
+      /* Layout & Spacing */
+      --sidebar-width: 250px;
+      --header-height: 70px;
+      
+      /* Typography */
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      
+      /* Dynamic Spacing (Density) */
+      --space-xs: 6px;
+      --space-sm: 12px;
+      --space-md: 20px;
+      --space-lg: 32px;
+      --space-xl: 48px;
+    }
+
+    [data-theme="light"] {
+      --bg-color: #F8FAFC;
+      --bg-gradient: radial-gradient(circle at 50% 50%, #FFFFFF 0%, #F1F5F9 100%);
+      --glass-bg: rgba(15, 23, 42, 0.03);
+      --glass-bg-hover: rgba(15, 23, 42, 0.06);
+      --glass-border: rgba(15, 23, 42, 0.08);
+      --glass-border-focus: rgba(15, 23, 42, 0.2);
+      --glass-shadow: 0 4px 24px rgba(15, 23, 42, 0.05);
+      
+      --accent-color: #2563EB;
+      --accent-hover: #1D4ED8;
+      --accent-alpha: rgba(37, 99, 235, 0.1);
+      
+      --text-primary: #0F172A;
+      --text-secondary: #475569;
+      --text-muted: #94A3B8;
+    }
+
+    /* Spacing Densities */
+    [data-density="compact"] {
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 14px;
+      --space-lg: 20px;
+      --space-xl: 32px;
+    }
+
+    /* Reset & Base Rules */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-color);
+      background-image: var(--bg-gradient);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.7;
+    }
+
+    /* Ambient Background Blobs (Premium Visual Accent) */
+    .ambient-glow {
+      position: fixed;
+      width: 50vw;
+      height: 50vw;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.05) 0%, transparent 70%);
+      filter: blur(80px);
+      z-index: -1;
+      pointer-events: none;
+    }
+    .glow-1 { top: -20%; left: -10%; }
+    .glow-2 { bottom: -20%; right: -10%; }
+
+    /* ==========================================
+       2. TYPOGRAPHY SYSTEM
+       ========================================== */
+    h1, h2, h3, h4, h5, h6 {
+      font-weight: 500;
+      letter-spacing: -0.02em;
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      margin-bottom: var(--space-md);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-heading {
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-md);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .label-uppercase {
+      font-family: var(--font-sans);
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-secondary);
+    }
+
+    .data-mono {
+      font-family: var(--font-mono);
+      font-size: 13px;
+    }
+
+    /* ==========================================
+       3. UTILITIES & GLASSMORPHISM
+       ========================================== */
+    .glass-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      box-shadow: var(--glass-shadow);
+      padding: var(--space-md);
+      transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .glass-card-interactive:hover {
+      background: var(--glass-bg-hover);
+      border-color: var(--glass-border-focus);
+    }
+
+    .glass-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+    
+    [data-theme="light"] .glass-input {
+      background: rgba(15, 23, 42, 0.03);
+    }
+
+    .glass-input:focus {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px var(--space-md);
+      font-size: 13px;
+      font-weight: 500;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: var(--font-sans);
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--accent-color);
+      color: #FFFFFF;
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--glass-bg);
+      border-color: var(--glass-border);
+      color: var(--text-primary);
+    }
+    .btn-secondary:hover {
+      background: var(--glass-bg-hover);
+      border-color: var(--glass-border-focus);
+    }
+
+    .btn-danger {
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: var(--danger-color);
+    }
+    .btn-danger:hover {
+      background: rgba(239, 68, 68, 0.25);
+      border-color: var(--danger-color);
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .badge-success { background: var(--success-bg); border: 1px solid var(--success-border); color: var(--success-color); }
+    .badge-warning { background: var(--warning-bg); border: 1px solid var(--warning-border); color: var(--warning-color); }
+    .badge-danger { background: var(--danger-bg); border: 1px solid var(--danger-border); color: var(--danger-color); }
+    .badge-info { background: var(--accent-alpha); border: 1px solid rgba(59, 130, 246, 0.3); color: var(--accent-color); }
+
+    /* Transitions & Toggles */
+    .screen {
+      opacity: 0;
+      transform: scale(0.99);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      display: none;
+      width: 100%;
+      min-height: 100vh;
+    }
+
+    .screen.active {
+      display: flex;
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Switch toggle styling */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+      cursor: pointer;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: var(--glass-border);
+      border-radius: 34px;
+      transition: .2s;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px; width: 16px;
+      left: 4px; bottom: 4px;
+      background-color: var(--text-primary);
+      border-radius: 50%;
+      transition: .2s;
+    }
+
+    input:checked + .slider {
+      background-color: var(--accent-color);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(20px);
+      background-color: #FFFFFF;
+    }
+
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--glass-border);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--text-muted);
+    }
+
+    /* ==========================================
+       4. SCREEN 1: LOGIN PAGE
+       ========================================== */
+    .login-container {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-md);
+      position: relative;
+      background: radial-gradient(ellipse at center, rgba(10, 15, 30, 0.7) 0%, rgba(10, 15, 30, 0.95) 100%);
+    }
+
+    /* Embed an aesthetic SVG skyline backdrop behind the card */
+    .login-backdrop-svg {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 35vh;
+      z-index: -1;
+      opacity: 0.15;
+      pointer-events: none;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 460px;
+      padding: var(--space-lg);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+    
+    [data-theme="light"] .login-card {
+      background: rgba(15, 23, 42, 0.06);
+      border-color: rgba(15, 23, 42, 0.12);
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: var(--space-lg);
+    }
+
+    .login-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 24px;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin-bottom: 8px;
+    }
+    
+    [data-theme="light"] .login-logo {
+      color: var(--text-primary);
+    }
+
+    .login-logo svg {
+      width: 32px;
+      height: 32px;
+    }
+
+    .login-subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+      letter-spacing: 0.02em;
+    }
+
+    .form-group {
+      margin-bottom: var(--space-md);
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .password-input-wrapper {
+      position: relative;
+    }
+
+    .password-toggle-btn {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 18px;
+      padding: 4px;
+    }
+
+    .forgot-link-wrapper {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: -6px;
+      margin-bottom: var(--space-md);
+    }
+
+    .forgot-link {
+      font-size: 12px;
+      color: var(--accent-color);
+      text-decoration: none;
+    }
+    .forgot-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Demo Credentials Soft Info Box */
+    .demo-credentials-box {
+      background: rgba(59, 130, 246, 0.08);
+      border: 1px solid rgba(59, 130, 246, 0.15);
+      border-radius: 12px;
+      padding: 14px;
+      margin-top: var(--space-md);
+      font-size: 12px;
+    }
+
+    .demo-credentials-title {
+      font-weight: 600;
+      color: var(--accent-color);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .demo-credential-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 8px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--glass-border);
+      margin-bottom: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .demo-credential-item:last-child {
+      margin-bottom: 0;
+    }
+    .demo-credential-item:hover {
+      background: rgba(59, 130, 246, 0.15);
+      border-color: rgba(59, 130, 246, 0.3);
+    }
+
+    .demo-role {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .demo-details {
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+
+    .login-footer {
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: var(--space-lg);
+      letter-spacing: 0.05em;
+    }
+
+    /* ==========================================
+       5. MAIN LAYOUT (SIDEBAR + TOP NAVBAR)
+       ========================================== */
+    .app-layout {
+      display: flex;
+      width: 100%;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .app-sidebar {
+      width: var(--sidebar-width);
+      min-height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background: var(--glass-bg);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-right: 1px solid var(--glass-border);
+      display: flex;
+      flex-direction: column;
+      padding: var(--space-md);
+      z-index: 100;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: var(--space-sm) 0;
+      margin-bottom: var(--space-lg);
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .sidebar-logo {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sidebar-logo svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    .sidebar-nav {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex-grow: 1;
+    }
+
+    .nav-item-btn {
+      width: 100%;
+      background: none;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      font-size: 13.5px;
+      font-weight: 500;
+      text-align: left;
+      transition: all 0.2s ease;
+    }
+
+    .nav-item-btn i {
+      font-size: 18px;
+      color: var(--text-secondary);
+    }
+
+    .nav-item-btn:hover {
+      background: var(--glass-bg-hover);
+      color: var(--text-primary);
+    }
+
+    .nav-item-btn.active {
+      background: var(--accent-alpha);
+      border-color: rgba(59, 130, 246, 0.2);
+      color: var(--accent-color);
+    }
+
+    .nav-item-btn.active i {
+      color: var(--accent-color);
+    }
+
+    /* Sidebar Footer */
+    .sidebar-footer {
+      padding-top: var(--space-md);
+      border-top: 1px solid var(--glass-border);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .sidebar-user-summary {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 4px;
+    }
+
+    .user-avatar-sm {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #3B82F6 0%, #10B981 100%);
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .user-details-sm {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .user-name-sm {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .user-role-sm {
+      font-size: 10px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Main Panel Content Area */
+    .main-panel {
+      margin-left: var(--sidebar-width);
+      width: calc(100% - var(--sidebar-width));
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Navbar */
+    .topbar {
+      height: var(--header-height);
+      border-bottom: 1px solid var(--glass-border);
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 0 var(--space-lg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 90;
+    }
+
+    .search-wrapper {
+      position: relative;
+      width: 300px;
+    }
+
+    .search-input {
+      padding-left: 36px;
+    }
+
+    .search-wrapper i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+      font-size: 16px;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* Notifications Dropdown */
+    .nav-action-btn {
+      position: relative;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--text-primary);
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .nav-action-btn:hover {
+      background: var(--glass-bg-hover);
+      border-color: var(--glass-border-focus);
+    }
+
+    .badge-count {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      background: var(--danger-color);
+      color: #FFFFFF;
+      font-size: 9px;
+      font-weight: 700;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--bg-color);
+    }
+
+    .notifications-dropdown {
+      position: absolute;
+      top: 50px;
+      right: 0;
+      width: 320px;
+      background: rgba(10, 15, 30, 0.95);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      padding: var(--space-sm);
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 100;
+    }
+    
+    [data-theme="light"] .notifications-dropdown {
+      background: rgba(255, 255, 255, 0.98);
+      box-shadow: 0 8px 32px rgba(15, 23, 42, 0.15);
+    }
+
+    .notifications-dropdown.active {
+      display: flex;
+    }
+
+    .dropdown-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .notification-item {
+      display: flex;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .notification-item:hover {
+      background: var(--glass-bg-hover);
+    }
+
+    .notif-icon {
+      font-size: 18px;
+      color: var(--accent-color);
+      padding-top: 2px;
+    }
+    
+    .notif-icon.notif-danger { color: var(--danger-color); }
+    .notif-icon.notif-warning { color: var(--warning-color); }
+
+    .notif-details {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .notif-title {
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .notif-time {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    /* Topbar Profile Avatar Trigger */
+    .topbar-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 30px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      transition: all 0.2s ease;
+    }
+
+    .topbar-profile:hover {
+      background: var(--glass-bg-hover);
+      border-color: var(--glass-border-focus);
+    }
+
+    .topbar-profile-name {
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    /* Content Wrapper */
+    .content-body {
+      padding: var(--space-lg);
+      flex-grow: 1;
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* ==========================================
+       6. SCREEN 2: DASHBOARD OVERVIEW VIEW
+       ========================================== */
+    
+    /* 4 Column KPI Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+
+    .kpi-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .kpi-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .kpi-number {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+
+    .kpi-trend {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    
+    .trend-up { color: var(--success-color); }
+    .trend-down { color: var(--danger-color); }
+
+    .kpi-icon-wrapper {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--accent-alpha);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-color);
+      font-size: 22px;
+    }
+
+    /* Dashboard Layout Grid */
+    .dashboard-layout-grid {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: var(--space-lg);
+      margin-bottom: var(--space-lg);
+    }
+    
+    .dashboard-full-width {
+      grid-column: span 2;
+    }
+
+    /* Priority Issues Table */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: 8px;
+    }
+
+    .priority-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13.5px;
+    }
+
+    .priority-table th {
+      padding: var(--space-sm) var(--space-md);
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .priority-table td {
+      padding: var(--space-sm) var(--space-md);
+      border-bottom: 1px solid var(--glass-border);
+      color: var(--text-primary);
+    }
+
+    .priority-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .priority-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    
+    [data-theme="light"] .priority-table tr:hover td {
+      background: rgba(15, 23, 42, 0.01);
+    }
+
+    /* Heatmap Placeholder Grid */
+    .heatmap-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .heatmap-cell {
+      aspect-ratio: 1.2;
+      border-radius: 8px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .heatmap-cell:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    }
+
+    .heatmap-cell-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.9);
+    }
+
+    .heatmap-cell-desc {
+      font-size: 9px;
+      color: rgba(255,255,255,0.7);
+    }
+
+    /* Heat levels */
+    .heat-critical {
+      background: linear-gradient(135deg, rgba(239,68,68,0.25) 0%, rgba(239,68,68,0.4) 100%);
+      border-color: rgba(239,68,68,0.45);
+      color: #FFC0C0;
+    }
+    .heat-critical:hover {
+      border-color: var(--danger-color);
+    }
+
+    .heat-high {
+      background: linear-gradient(135deg, rgba(245,158,11,0.2) 0%, rgba(245,158,11,0.35) 100%);
+      border-color: rgba(245,158,11,0.4);
+      color: #FFE0A0;
+    }
+    .heat-high:hover {
+      border-color: var(--warning-color);
+    }
+
+    .heat-normal {
+      background: linear-gradient(135deg, rgba(16,185,129,0.15) 0%, rgba(16,185,129,0.3) 100%);
+      border-color: rgba(16,185,129,0.35);
+      color: #A0FFD0;
+    }
+    .heat-normal:hover {
+      border-color: var(--success-color);
+    }
+
+    /* Ward Metric Box Modal / Tooltip details */
+    .ward-metric-box {
+      margin-top: var(--space-md);
+      background: var(--accent-alpha);
+      border: 1px solid rgba(59, 130, 246, 0.25);
+      padding: var(--space-sm);
+      border-radius: 8px;
+      display: none;
+      animation: fadeIn 0.20s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* AI assistant preview card styling */
+    .ai-preview-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .ai-bubble-query {
+      align-self: flex-end;
+      background: var(--accent-color);
+      color: #FFFFFF;
+      padding: 10px 14px;
+      border-radius: 16px 16px 2px 16px;
+      font-size: 13px;
+      max-width: 90%;
+    }
+
+    .ai-bubble-response {
+      align-self: flex-start;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--glass-border);
+      color: var(--text-primary);
+      padding: 12px 16px;
+      border-radius: 16px 16px 16px 2px;
+      font-size: 13px;
+      max-width: 95%;
+      border-left: 3px solid var(--accent-color);
+    }
+
+    /* ==========================================
+       7. SCREEN 3: PROFILE SETTINGS VIEW
+       ========================================== */
+    .profile-layout-grid {
+      display: grid;
+      grid-template-columns: 1fr 2.2fr;
+      gap: var(--space-lg);
+      align-items: start;
+    }
+
+    .profile-sidebar-card {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .avatar-large-wrapper {
+      position: relative;
+      margin-bottom: var(--space-sm);
+    }
+
+    .avatar-large {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #3B82F6 0%, #10B981 100%);
+      color: #FFFFFF;
+      font-size: 36px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 4px solid var(--glass-border);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+      transition: transform 0.3s ease;
+    }
+
+    .avatar-large:hover {
+      transform: scale(1.03);
+    }
+
+    .avatar-edit-overlay {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 32px;
+      height: 32px;
+      background: var(--accent-color);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFFFFF;
+      border: 2px solid var(--bg-color);
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+    .avatar-edit-overlay:hover {
+      background: var(--accent-hover);
+    }
+
+    .profile-name-lg {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .profile-details-grid {
+      width: 100%;
+      text-align: left;
+      margin-top: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .profile-details-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--glass-border);
+    }
+    .profile-details-row:last-child {
+      border-bottom: none;
+    }
+
+    /* Stacked Settings Cards */
+    .settings-stack {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+    }
+
+    .settings-group-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--accent-color);
+      margin-bottom: var(--space-md);
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--glass-border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .settings-form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-md);
+    }
+    
+    .form-span-2 {
+      grid-column: span 2;
+    }
+
+    /* Preference Row with Switch */
+    .pref-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--glass-border);
+    }
+    .pref-row:last-child {
+      border-bottom: none;
+    }
+
+    .pref-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      max-width: 80%;
+    }
+
+    .pref-title {
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .pref-desc {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    /* Appearance Option Inputs */
+    .appearance-radio-group {
+      display: flex;
+      gap: 12px;
+    }
+
+    .appearance-radio-label {
+      flex: 1;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .appearance-radio-label input {
+      display: none;
+    }
+
+    .appearance-radio-label:hover {
+      background: var(--glass-bg-hover);
+    }
+
+    .appearance-radio-label.selected {
+      border-color: var(--accent-color);
+      background: var(--accent-alpha);
+      color: var(--accent-color);
+    }
+
+    /* ==========================================
+       8. SUB-VIEWS (INTERACTIVE DETAILS)
+       ========================================== */
+       
+    /* 8a. AI Assistant View */
+    .ai-assistant-container {
+      display: grid;
+      grid-template-rows: 1fr auto;
+      height: 65vh;
+      border-radius: 12px;
+      border: 1px solid var(--glass-border);
+      background: rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    .ai-chat-history {
+      padding: var(--space-md);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .ai-chat-bubble {
+      max-width: 80%;
+      padding: 12px 16px;
+      border-radius: 14px;
+      font-size: 13.5px;
+      line-height: 1.6;
+    }
+
+    .chat-user {
+      align-self: flex-end;
+      background: var(--accent-color);
+      color: #FFFFFF;
+      border-bottom-right-radius: 2px;
+    }
+
+    .chat-assistant {
+      align-self: flex-start;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--text-primary);
+      border-bottom-left-radius: 2px;
+      border-left: 3px solid var(--accent-color);
+    }
+
+    .ai-chat-input-wrapper {
+      padding: var(--space-sm);
+      border-top: 1px solid var(--glass-border);
+      background: var(--glass-bg);
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .preset-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: var(--space-md);
+    }
+
+    .preset-chip {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: all 0.2s ease;
+    }
+    .preset-chip:hover {
+      background: var(--glass-bg-hover);
+      color: var(--text-primary);
+      border-color: var(--glass-border-focus);
+    }
+
+    /* 8b. Ward Map View (Interactive Chennai Map Mock) */
+    .map-canvas-mock {
+      position: relative;
+      height: 480px;
+      background: radial-gradient(circle, rgba(17, 24, 39, 0.8) 0%, rgba(9, 12, 22, 0.95) 100%);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .map-grid-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    .map-svg {
+      width: 80%;
+      height: 80%;
+      filter: drop-shadow(0 8px 24px rgba(0,0,0,0.5));
+      z-index: 2;
+    }
+
+    .map-path {
+      fill: rgba(59, 130, 246, 0.15);
+      stroke: var(--glass-border);
+      stroke-width: 1.5;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .map-path:hover {
+      fill: var(--accent-alpha);
+      stroke: var(--accent-color);
+      stroke-width: 2.5;
+    }
+
+    .map-path.active {
+      fill: rgba(59, 130, 246, 0.35);
+      stroke: var(--accent-color);
+      stroke-width: 3px;
+    }
+
+    .map-marker {
+      cursor: pointer;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.7; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .map-hud-overlay {
+      position: absolute;
+      top: var(--space-sm);
+      left: var(--space-sm);
+      z-index: 5;
+      width: 240px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* 8c. Trends View (Charts) */
+    .trends-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-lg);
+    }
+
+    .chart-container-mock {
+      height: 250px;
+      display: flex;
+      align-items: flex-end;
+      gap: 16px;
+      padding: var(--space-md) var(--space-sm);
+      border-bottom: 2px solid var(--glass-border);
+      border-left: 2px solid var(--glass-border);
+      position: relative;
+    }
+
+    .chart-bar-group {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      height: 100%;
+      justify-content: flex-end;
+    }
+
+    .chart-bar {
+      width: 100%;
+      max-width: 32px;
+      background: linear-gradient(180deg, var(--accent-color) 0%, rgba(59,130,246,0.3) 100%);
+      border-radius: 6px 6px 0 0;
+      transition: height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      cursor: pointer;
+    }
+
+    .chart-bar:hover {
+      filter: brightness(1.2);
+    }
+
+    .chart-bar-tooltip {
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.8);
+      color: #FFFFFF;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .chart-bar:hover .chart-bar-tooltip {
+      opacity: 1;
+    }
+
+    .chart-bar-label {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    /* Toast Notification */
+    .toast-container {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .toast {
+      pointer-events: auto;
+      background: rgba(10, 15, 30, 0.9);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: var(--text-primary);
+      padding: 12px 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transform: translateX(120%);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.15);
+      font-size: 13.5px;
+    }
+
+    .toast.active {
+      transform: translateX(0);
+    }
+
+    .toast-icon-success { color: var(--success-color); }
+    .toast-icon-error { color: var(--danger-color); }
+    .toast-icon-info { color: var(--accent-color); }
+
+    /* ==========================================
+       9. RESPONSIVE DESIGN (DOWN TO 375px)
+       ========================================== */
+    @media (max-width: 1024px) {
+      .dashboard-layout-grid {
+        grid-template-columns: 1fr;
+      }
+      .profile-layout-grid {
+        grid-template-columns: 1fr;
+      }
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        font-size: 13.5px;
+      }
+      .app-sidebar {
+        width: 70px;
+        padding: var(--space-xs);
+      }
+      .sidebar-logo span, 
+      .nav-item-btn span,
+      .sidebar-footer .user-details-sm {
+        display: none;
+      }
+      .sidebar-header {
+        justify-content: center;
+      }
+      .main-panel {
+        margin-left: 70px;
+        width: calc(100% - 70px);
+      }
+      .topbar {
+        padding: 0 var(--space-md);
+      }
+      .search-wrapper {
+        width: 180px;
+      }
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+      .trends-grid {
+        grid-template-columns: 1fr;
+      }
+      .heatmap-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .settings-form-grid {
+        grid-template-columns: 1fr;
+      }
+      .form-span-2 {
+        grid-column: span 1;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient glowing layout blobs -->
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+
+  <!-- Toast system target container -->
+  <div class="toast-container" id="toast-root"></div>
+
+  <!-- ==========================================
+       SCREEN 1 — LOGIN SCREEN
+       ========================================== -->
+  <div id="screen-login" class="screen active">
+    <div class="login-container">
+      
+      <!-- Backing Skyline Path Visual (100% SVG self-contained) -->
+      <svg class="login-backdrop-svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
+        <path d="M0 320 L0 220 L60 220 L60 250 L120 250 L120 180 L180 180 L180 230 L240 230 L240 280 L300 280 L300 160 L360 160 L360 220 L420 220 L420 240 L480 240 L480 190 L540 190 L540 270 L600 270 L600 140 L660 140 L660 200 L720 200 L720 260 L780 260 L780 180 L840 180 L840 230 L900 230 L900 280 L960 280 L960 150 L1020 150 L1020 210 L1080 210 L1080 240 L1140 240 L1140 170 L1200 170 L1200 260 L1260 260 L1260 190 L1320 190 L1320 250 L1380 250 L1380 210 L1440 210 L1440 320 Z" fill="rgba(59, 130, 246, 0.08)"></path>
+        <path d="M0 320 L0 260 L80 260 L80 280 L160 280 L160 240 L240 240 L240 270 L320 270 L320 210 L400 210 L400 250 L480 250 L480 230 L560 230 L560 290 L640 290 L640 220 L720 220 L720 270 L800 270 L800 250 L880 250 L880 280 L960 280 L960 230 L1040 230 L1040 260 L1120 260 L1120 240 L1200 240 L1200 295 L1280 295 L1280 250 L1360 250 L1360 270 L1440 270 L1440 320 Z" fill="rgba(59, 130, 246, 0.04)"></path>
+      </svg>
+
+      <div class="login-card glass-card">
+        <div class="login-header">
+          <div class="login-logo">
+            <!-- Inline SVG Logo matching requested style -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+              <rect width="64" height="64" rx="14" fill="#3B82F6"/>
+              <path d="M32 14c-7.7 0-14 6.3-14 14 0 9.8 14 24 14 24s14-14.2 14-24c0-7.7-6.3-14-14-14z" fill="#ffffff" opacity="0.95"/>
+              <circle cx="32" cy="28" r="5.5" fill="#3B82F6"/>
+              <path d="M20 52h24" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity="0.85"/>
+            </svg>
+            <span>UrbanMind</span>
+          </div>
+          <p class="login-subtitle">AI Intelligence Platform for City Governance</p>
+        </div>
+
+        <form id="login-form">
+          <div class="form-group">
+            <label class="label-uppercase">Email Address</label>
+            <input type="email" id="login-email" class="glass-input" placeholder="officer@urbanmind.gov.in" required>
+          </div>
+
+          <div class="form-group">
+            <label class="label-uppercase">Password</label>
+            <div class="password-input-wrapper">
+              <input type="password" id="login-password" class="glass-input" placeholder="••••••••••••" required>
+              <button type="button" class="password-toggle-btn" id="password-toggle" aria-label="Toggle Password Visibility">
+                <i class="ti ti-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="forgot-link-wrapper">
+            <a href="#" class="forgot-link" onclick="triggerForgotPasswordToast(event)">Forgot password?</a>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; height: 42px;" id="login-btn-submit">
+            <span id="login-btn-text">Sign in</span>
+          </button>
+        </form>
+
+        <!-- Demo credentials box -->
+        <div class="demo-credentials-box">
+          <div class="demo-credentials-title">
+            <i class="ti ti-info-circle"></i>
+            <span>DEMO CREDENTIALS</span>
+          </div>
+
+          <div class="demo-credential-item" data-email="admin@urbanmind.gov.in" data-pass="UrbanMind@2024" data-role="Admin Officer" data-name="Nithya Shree P G" data-dept="Municipal Corporation of Chennai">
+            <span class="demo-role">Admin Officer</span>
+            <span class="demo-details">Email: admin@urbanmind.gov.in | Pass: UrbanMind@2024</span>
+          </div>
+
+          <div class="demo-credential-item" data-email="ward@urbanmind.gov.in" data-pass="WardDemo@2024" data-role="Ward Officer" data-name="Rajesh Kumar K" data-dept="Royapuram Zone Administration">
+            <span class="demo-role">Ward Officer</span>
+            <span class="demo-details">Email: ward@urbanmind.gov.in | Pass: WardDemo@2024</span>
+          </div>
+
+          <div class="demo-credential-item" data-email="analyst@urbanmind.gov.in" data-pass="Analyst@2024" data-role="Viewer / Analyst" data-name="Arun Pandian S" data-dept="Smart City Analytics Bureau">
+            <span class="demo-role">Viewer / Analyst</span>
+            <span class="demo-details">Email: analyst@urbanmind.gov.in | Pass: Analyst@2024</span>
+          </div>
+        </div>
+
+        <div class="login-footer">
+          SECURED BY AI · UN SDG 16 · VERSION 1.0
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MAIN LAYOUT CONTAINER (FOR DASHBOARD & PROFILE)
+       ========================================== -->
+  <div id="screen-main-app" class="screen app-layout">
+    
+    <!-- LEFT SIDEBAR -->
+    <aside class="app-sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+            <rect width="64" height="64" rx="14" fill="#3B82F6"/>
+            <path d="M32 14c-7.7 0-14 6.3-14 14 0 9.8 14 24 14 24s14-14.2 14-24c0-7.7-6.3-14-14-14z" fill="#ffffff" opacity="0.95"/>
+            <circle cx="32" cy="28" r="5.5" fill="#3B82F6"/>
+            <path d="M20 52h24" stroke="#ffffff" stroke-width="4" stroke-linecap="round" opacity="0.85"/>
+          </svg>
+          <span>UrbanMind</span>
+        </div>
+      </div>
+
+      <!-- Navigation links -->
+      <nav class="sidebar-nav">
+        <li>
+          <button class="nav-item-btn active" data-target-view="view-overview">
+            <i class="ti ti-layout-dashboard"></i>
+            <span>Overview</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-item-btn" data-target-view="view-grievances">
+            <i class="ti ti-alert-circle"></i>
+            <span>Grievances</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-item-btn" data-target-view="view-map">
+            <i class="ti ti-map-2"></i>
+            <span>Ward Map</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-item-btn" data-target-view="view-trends">
+            <i class="ti ti-trending-up"></i>
+            <span>Trends</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-item-btn" data-target-view="view-ai-assistant">
+            <i class="ti ti-cpu"></i>
+            <span>AI Assistant</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-item-btn" data-target-view="view-reports">
+            <i class="ti ti-file-analytics"></i>
+            <span>Reports</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-item-btn" data-target-view="view-settings">
+            <i class="ti ti-settings"></i>
+            <span>Settings</span>
+          </button>
+        </li>
+      </nav>
+
+      <!-- Sidebar footer with profile summary and Logout -->
+      <div class="sidebar-footer">
+        <div class="sidebar-user-summary" id="sidebar-user-trigger" style="cursor: pointer;">
+          <div class="user-avatar-sm" id="sidebar-avatar-initials">NS</div>
+          <div class="user-details-sm">
+            <span class="user-name-sm" id="sidebar-user-name">Nithya Shree P G</span>
+            <span class="user-role-sm" id="sidebar-user-role">Admin Officer</span>
+          </div>
+        </div>
+        <button class="nav-item-btn" id="logout-btn" style="color: var(--danger-color);">
+          <i class="ti ti-logout" style="color: var(--danger-color);"></i>
+          <span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- RIGHT MAIN PANEL -->
+    <main class="main-panel">
+      
+      <!-- TOP NAVBAR -->
+      <header class="topbar">
+        <!-- Search bar -->
+        <div class="search-wrapper">
+          <i class="ti ti-search"></i>
+          <input type="text" class="glass-input search-input" placeholder="Search grievances, wards, officers...">
+        </div>
+
+        <!-- Right actions -->
+        <div class="topbar-actions">
+          <!-- Notification Bell -->
+          <div style="position: relative;">
+            <button class="nav-action-btn" id="notification-bell-btn" aria-label="Notifications Dropdown">
+              <i class="ti ti-bell"></i>
+              <span class="badge-count">3</span>
+            </button>
+            
+            <!-- Notifications Dropdown Panel -->
+            <div class="notifications-dropdown" id="notifications-dropdown-menu">
+              <div class="dropdown-header">
+                <span class="label-uppercase" style="color: var(--text-primary);">Recent Alerts</span>
+                <a href="#" style="font-size: 11px; color: var(--accent-color); text-decoration: none;" onclick="clearNotifications(event)">Clear all</a>
+              </div>
+              
+              <div class="notification-item">
+                <div class="notif-icon notif-danger"><i class="ti ti-alert-circle"></i></div>
+                <div class="notif-details">
+                  <span class="notif-title">Critical pipeline rupture in Mylapore</span>
+                  <span class="notif-time">Just now · Water & Sanitation</span>
+                </div>
+              </div>
+
+              <div class="notification-item">
+                <div class="notif-icon notif-warning"><i class="ti ti-alert-triangle"></i></div>
+                <div class="notif-details">
+                  <span class="notif-title">Clogged stormwater drains: Ward 108</span>
+                  <span class="notif-time">10 mins ago · Infrastructure</span>
+                </div>
+              </div>
+
+              <div class="notification-item">
+                <div class="notif-icon"><i class="ti ti-info-circle"></i></div>
+                <div class="notif-details">
+                  <span class="notif-title">AI generated weekly summary is ready</span>
+                  <span class="notif-time">2 hours ago · Analytics</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- User Quick Profile Trigger -->
+          <div class="topbar-profile" id="topbar-profile-trigger">
+            <div class="user-avatar-sm" id="topbar-avatar-initials">NS</div>
+            <span class="topbar-profile-name" id="topbar-user-name">Nithya Shree P G</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- DYNAMIC CONTENT VIEWPORTS -->
+      <div class="content-body">
+        
+        <!-- ==========================================
+             VIEW 1 — OVERVIEW / DASHBOARD SCREEN
+             ========================================== -->
+        <section id="view-overview" class="view-panel" style="display: block;">
+          <h2 class="page-title">
+            <i class="ti ti-layout-dashboard" style="color: var(--accent-color);"></i>
+            <span>Executive Governance Overview</span>
+          </h2>
+
+          <!-- 4 KPI Card Row -->
+          <div class="kpi-grid">
+            <!-- Card 1 -->
+            <div class="kpi-card glass-card">
+              <div class="kpi-left">
+                <span class="label-uppercase">Total Complaints</span>
+                <span class="kpi-number data-mono">4,21,847</span>
+                <span class="kpi-trend trend-up">
+                  <i class="ti ti-arrow-up-right"></i> +3.2% this month
+                </span>
+              </div>
+              <div class="kpi-icon-wrapper">
+                <i class="ti ti-file-text"></i>
+              </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="kpi-card glass-card">
+              <div class="kpi-left">
+                <span class="label-uppercase">Resolved This Week</span>
+                <span class="kpi-number data-mono">2,340</span>
+                <span class="kpi-trend trend-up">
+                  <i class="ti ti-arrow-up-right"></i> +12.4% vs last week
+                </span>
+              </div>
+              <div class="kpi-icon-wrapper" style="background: rgba(16, 185, 129, 0.15); color: var(--success-color);">
+                <i class="ti ti-circle-check"></i>
+              </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="kpi-card glass-card">
+              <div class="kpi-left">
+                <span class="label-uppercase">High Priority Issues</span>
+                <span class="kpi-number data-mono">187</span>
+                <span class="kpi-trend trend-down">
+                  <i class="ti ti-arrow-up-right"></i> +8.1% urgency
+                </span>
+              </div>
+              <div class="kpi-icon-wrapper" style="background: rgba(239, 68, 68, 0.15); color: var(--danger-color);">
+                <i class="ti ti-alert-octagon"></i>
+              </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="kpi-card glass-card">
+              <div class="kpi-left">
+                <span class="label-uppercase">Avg. Resolution</span>
+                <span class="kpi-number data-mono">12 Days</span>
+                <span class="kpi-trend trend-up">
+                  <i class="ti ti-arrow-down-right"></i> -2 days delay
+                </span>
+              </div>
+              <div class="kpi-icon-wrapper" style="background: rgba(245, 158, 11, 0.15); color: var(--warning-color);">
+                <i class="ti ti-clock"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mid Section: Table & Map -->
+          <div class="dashboard-layout-grid">
+            
+            <!-- Table Card -->
+            <div class="glass-card">
+              <div class="section-heading">
+                <span>Priority Issues Queue</span>
+                <span class="badge badge-danger">Urgent Action Required</span>
+              </div>
+              <div class="table-container">
+                <table class="priority-table">
+                  <thead>
+                    <tr>
+                      <th>Rank</th>
+                      <th>Issue Description</th>
+                      <th>Ward</th>
+                      <th>Category</th>
+                      <th>Score</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="data-mono" style="font-weight: 700;">#1</td>
+                      <td>Main pipe leakage causing drinking water pollution</td>
+                      <td>Ward 124 (Mylapore)</td>
+                      <td>Water &amp; Sanitation</td>
+                      <td class="data-mono" style="color: var(--danger-color); font-weight: 700;">94/100</td>
+                      <td><span class="badge badge-danger">CRITICAL</span></td>
+                    </tr>
+                    <tr>
+                      <td class="data-mono" style="font-weight: 700;">#2</td>
+                      <td>Stormwater drain clogging before monsoon</td>
+                      <td>Ward 108 (T. Nagar)</td>
+                      <td>Infrastructure</td>
+                      <td class="data-mono" style="color: var(--danger-color); font-weight: 700;">88/100</td>
+                      <td><span class="badge badge-danger">CRITICAL</span></td>
+                    </tr>
+                    <tr>
+                      <td class="data-mono" style="font-weight: 700;">#3</td>
+                      <td>High-voltage overhead cable hanging dangerously low</td>
+                      <td>Ward 172 (Adyar)</td>
+                      <td>Electrical Safety</td>
+                      <td class="data-mono" style="color: var(--warning-color); font-weight: 700;">85/100</td>
+                      <td><span class="badge badge-warning">HIGH</span></td>
+                    </tr>
+                    <tr>
+                      <td class="data-mono" style="font-weight: 700;">#4</td>
+                      <td>Open garbage dumping yard emitting toxic fumes</td>
+                      <td>Ward 136 (Kodambakkam)</td>
+                      <td>Waste Mgmt</td>
+                      <td class="data-mono" style="color: var(--warning-color); font-weight: 700;">79/100</td>
+                      <td><span class="badge badge-warning">HIGH</span></td>
+                    </tr>
+                    <tr>
+                      <td class="data-mono" style="font-weight: 700;">#5</td>
+                      <td>Public streetlights non-operational for 2 weeks</td>
+                      <td>Ward 078 (Anna Nagar)</td>
+                      <td>Public Lighting</td>
+                      <td class="data-mono" style="color: var(--text-secondary); font-weight: 500;">72/100</td>
+                      <td><span class="badge badge-success">RESOLVED</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Heatmap / Metric Card -->
+            <div class="glass-card">
+              <div class="section-heading">
+                <span>Ward Priority Heatmap</span>
+                <span class="label-uppercase">12 KEY METRO ZONES</span>
+              </div>
+              
+              <!-- 12 Ward Heat cells -->
+              <div class="heatmap-grid">
+                <div class="heatmap-cell heat-critical" onclick="selectHeatmapWard('Ward 124 (Mylapore)', 'Water & Sanitation pipeline failure', '94/100')">
+                  <span class="heatmap-cell-title">W-124</span>
+                  <span class="heatmap-cell-desc">MYL</span>
+                </div>
+                <div class="heatmap-cell heat-critical" onclick="selectHeatmapWard('Ward 108 (T. Nagar)', 'Stormwater drain blockage', '88/100')">
+                  <span class="heatmap-cell-title">W-108</span>
+                  <span class="heatmap-cell-desc">TNG</span>
+                </div>
+                <div class="heatmap-cell heat-high" onclick="selectHeatmapWard('Ward 172 (Adyar)', 'Electrical overhead cable sagging', '85/100')">
+                  <span class="heatmap-cell-title">W-172</span>
+                  <span class="heatmap-cell-desc">ADY</span>
+                </div>
+                <div class="heatmap-cell heat-high" onclick="selectHeatmapWard('Ward 136 (Kodambakkam)', 'Open dumping & garbage fire', '79/100')">
+                  <span class="heatmap-cell-title">W-136</span>
+                  <span class="heatmap-cell-desc">KDB</span>
+                </div>
+                
+                <div class="heatmap-cell heat-normal" onclick="selectHeatmapWard('Ward 078 (Anna Nagar)', 'No major active failures reported', '34/100')">
+                  <span class="heatmap-cell-title">W-078</span>
+                  <span class="heatmap-cell-desc">ANR</span>
+                </div>
+                <div class="heatmap-cell heat-critical" onclick="selectHeatmapWard('Ward 045 (Royapuram)', 'Sewage overflow near market street', '91/100')">
+                  <span class="heatmap-cell-title">W-045</span>
+                  <span class="heatmap-cell-desc">ROY</span>
+                </div>
+                <div class="heatmap-cell heat-high" onclick="selectHeatmapWard('Ward 092 (Velachery)', 'Potholes on bypass junction roads', '76/100')">
+                  <span class="heatmap-cell-title">W-092</span>
+                  <span class="heatmap-cell-desc">VLC</span>
+                </div>
+                <div class="heatmap-cell heat-normal" onclick="selectHeatmapWard('Ward 111 (Nungambakkam)', 'Standard municipal services active', '40/100')">
+                  <span class="heatmap-cell-title">W-111</span>
+                  <span class="heatmap-cell-desc">NGB</span>
+                </div>
+
+                <div class="heatmap-cell heat-normal" onclick="selectHeatmapWard('Ward 150 (Guindy)', 'Industrial waste disposal monitored', '28/100')">
+                  <span class="heatmap-cell-title">W-150</span>
+                  <span class="heatmap-cell-desc">GDY</span>
+                </div>
+                <div class="heatmap-cell heat-normal" onclick="selectHeatmapWard('Ward 032 (Madhavaram)', 'Cleanliness campaigns active', '22/100')">
+                  <span class="heatmap-cell-title">W-032</span>
+                  <span class="heatmap-cell-desc">MDV</span>
+                </div>
+                <div class="heatmap-cell heat-high" onclick="selectHeatmapWard('Ward 064 (Kolathur)', 'Stray cattle and traffic congestions', '70/100')">
+                  <span class="heatmap-cell-title">W-064</span>
+                  <span class="heatmap-cell-desc">KLT</span>
+                </div>
+                <div class="heatmap-cell heat-normal" onclick="selectHeatmapWard('Ward 180 (Perungudi)', 'IT highway maintenance active', '31/100')">
+                  <span class="heatmap-cell-title">W-180</span>
+                  <span class="heatmap-cell-desc">PRD</span>
+                </div>
+              </div>
+
+              <!-- Interactive Ward Metric Detail Box -->
+              <div class="ward-metric-box" id="ward-metric-display">
+                <span class="label-uppercase" style="display: block; margin-bottom: 4px; color: var(--accent-color);" id="ward-metric-title">Ward Detail</span>
+                <p style="font-size: 13px; color: var(--text-primary);" id="ward-metric-desc">Click any ward cell to view real-time telemetry.</p>
+                <div style="margin-top: 8px; display: flex; align-items: center; justify-content: space-between;">
+                  <span class="data-mono" style="font-size: 12px; font-weight: 700;" id="ward-metric-score">Score: --</span>
+                  <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px;" id="view-ward-btn">Inspect Ward</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Grid: AI Assistant Preview -->
+          <div class="dashboard-layout-grid" style="grid-template-columns: 1fr;">
+            <div class="glass-card">
+              <div class="section-heading">
+                <span>AI Governance Assistant</span>
+                <span class="badge badge-info">LLM Engine Active</span>
+              </div>
+              <div class="ai-preview-inner">
+                <div class="ai-bubble-query">
+                  Which ward needs immediate water intervention?
+                </div>
+                <div class="ai-bubble-response">
+                  <strong>UrbanMind AI:</strong> Ward 124 (Mylapore) currently reports 14 active water pollution grievances with a computed severity index of 94/100. Contaminants detected in municipal pipelines indicate a cross-contamination incident. Immediate pipeline flushing, valve closures, and sanitation dispatch are advised.
+                </div>
+                <div style="display: flex; justify-content: flex-end;">
+                  <button class="btn btn-primary" onclick="switchToView('view-ai-assistant')">
+                    <i class="ti ti-message-dots"></i> Open Assistant
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==========================================
+             VIEW 2 — GRIEVANCES QUEUE LIST
+             ========================================== -->
+        <section id="view-grievances" class="view-panel" style="display: none;">
+          <h2 class="page-title">
+            <i class="ti ti-alert-circle" style="color: var(--accent-color);"></i>
+            <span>Grievances Queue</span>
+          </h2>
+          
+          <div class="glass-card" style="margin-bottom: var(--space-md);">
+            <div style="display: flex; gap: var(--space-sm); align-items: center; flex-wrap: wrap;">
+              <span class="label-uppercase">Filter Severity:</span>
+              <button class="btn btn-secondary btn-active-mock" style="padding: 6px 12px; font-size: 12px;">All Issues</button>
+              <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">Critical (90+)</button>
+              <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">High (75-89)</button>
+              <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">Medium (50-74)</button>
+            </div>
+          </div>
+
+          <div class="glass-card">
+            <div class="table-container">
+              <table class="priority-table">
+                <thead>
+                  <tr>
+                    <th>Grievance ID</th>
+                    <th>Reported Location</th>
+                    <th>Issue Description</th>
+                    <th>Reported Date</th>
+                    <th>Priority Score</th>
+                    <th>Assigned Agency</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="data-mono">#GRV-29402</td>
+                    <td>Ward 124 (Mylapore)</td>
+                    <td>Drinking water pipeline sewage contamination</td>
+                    <td class="data-mono">Today at 11:32 AM</td>
+                    <td><span class="badge badge-danger">94 (Critical)</span></td>
+                    <td>CMWSSB (Metro Water)</td>
+                    <td><button class="btn btn-primary" style="padding: 6px 12px; font-size: 11px;" onclick="dispatchService('GRV-29402')">Dispatch</button></td>
+                  </tr>
+                  <tr>
+                    <td class="data-mono">#GRV-29188</td>
+                    <td>Ward 108 (T. Nagar)</td>
+                    <td>Silt accumulation in SWD before monsoon</td>
+                    <td class="data-mono">Yesterday</td>
+                    <td><span class="badge badge-danger">88 (Critical)</span></td>
+                    <td>GCC Engineering</td>
+                    <td><button class="btn btn-primary" style="padding: 6px 12px; font-size: 11px;" onclick="dispatchService('GRV-29188')">Dispatch</button></td>
+                  </tr>
+                  <tr>
+                    <td class="data-mono">#GRV-28956</td>
+                    <td>Ward 172 (Adyar)</td>
+                    <td>Fallen transformer power cable blocking road</td>
+                    <td class="data-mono">2 days ago</td>
+                    <td><span class="badge badge-warning">85 (High)</span></td>
+                    <td>TANGEDCO (Electricity)</td>
+                    <td><button class="btn btn-primary" style="padding: 6px 12px; font-size: 11px;" onclick="dispatchService('GRV-28956')">Dispatch</button></td>
+                  </tr>
+                  <tr>
+                    <td class="data-mono">#GRV-28741</td>
+                    <td>Ward 136 (Kodambakkam)</td>
+                    <td>Unregulated medical waste dumping near hospital</td>
+                    <td class="data-mono">3 days ago</td>
+                    <td><span class="badge badge-warning">79 (High)</span></td>
+                    <td>GCC Solid Waste Mgmt</td>
+                    <td><button class="btn btn-primary" style="padding: 6px 12px; font-size: 11px;" onclick="dispatchService('GRV-28741')">Dispatch</button></td>
+                  </tr>
+                  <tr>
+                    <td class="data-mono">#GRV-28100</td>
+                    <td>Ward 078 (Anna Nagar)</td>
+                    <td>14 non-functional streetlights on main road</td>
+                    <td class="data-mono">1 week ago</td>
+                    <td><span class="badge badge-info">72 (Medium)</span></td>
+                    <td>GCC Electrical</td>
+                    <td><button class="btn btn-secondary" style="padding: 6px 12px; font-size: 11px;" disabled>Resolved</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==========================================
+             VIEW 3 — INTERACTIVE WARD MAP
+             ========================================== -->
+        <section id="view-map" class="view-panel" style="display: none;">
+          <h2 class="page-title">
+            <i class="ti ti-map-2" style="color: var(--accent-color);"></i>
+            <span>Interactive Municipal Map</span>
+          </h2>
+
+          <div class="dashboard-layout-grid">
+            
+            <div class="map-canvas-mock">
+              <div class="map-grid-overlay"></div>
+              
+              <!-- Map HUD Overlay -->
+              <div class="map-hud-overlay">
+                <div class="glass-card" style="padding: 10px; font-size: 11px;">
+                  <span class="label-uppercase" style="display: block; margin-bottom: 6px;">MAP LEGEND</span>
+                  <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <div style="width: 12px; height: 12px; background: rgba(239, 68, 68, 0.4); border: 1px solid var(--danger-color); border-radius: 2px;"></div>
+                      <span>Critical (90+)</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <div style="width: 12px; height: 12px; background: rgba(245, 158, 11, 0.35); border: 1px solid var(--warning-color); border-radius: 2px;"></div>
+                      <span>High Alert (70-89)</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <div style="width: 12px; height: 12px; background: rgba(16, 185, 129, 0.3); border: 1px solid var(--success-color); border-radius: 2px;"></div>
+                      <span>Normal Operations</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Inline SVG Mock Map representing Chennai wards -->
+              <svg class="map-svg" viewBox="0 0 400 400">
+                <!-- Ward 124 -->
+                <path class="map-path active" d="M150,50 L250,50 L280,120 L180,150 Z" onclick="mapSelectWard('Ward 124 (Mylapore)', 'Water pollution event detected in metroline', '94/100', 'Red')" id="map-ward-124" style="fill: rgba(239, 68, 68, 0.3); stroke: var(--danger-color);"></path>
+                <!-- Ward 108 -->
+                <path class="map-path" d="M250,50 L350,70 L380,160 L280,120 Z" onclick="mapSelectWard('Ward 108 (T. Nagar)', 'Stormwater drain blockage & silt buildup', '88/100', 'Red')" id="map-ward-108" style="fill: rgba(239, 68, 68, 0.35); stroke: var(--danger-color);"></path>
+                <!-- Ward 172 -->
+                <path class="map-path" d="M180,150 L280,120 L310,230 L210,250 Z" onclick="mapSelectWard('Ward 172 (Adyar)', 'Transformer cable sagging on high road', '85/100', 'Amber')" id="map-ward-172" style="fill: rgba(245, 158, 11, 0.3); stroke: var(--warning-color);"></path>
+                <!-- Ward 136 -->
+                <path class="map-path" d="M280,120 L380,160 L390,260 L310,230 Z" onclick="mapSelectWard('Ward 136 (Kodambakkam)', 'Open medical garbage pile fires', '79/100', 'Amber')" id="map-ward-136" style="fill: rgba(245, 158, 11, 0.25); stroke: var(--warning-color);"></path>
+                <!-- Ward 078 -->
+                <path class="map-path" d="M50,120 L150,50 L180,150 L100,200 Z" onclick="mapSelectWard('Ward 078 (Anna Nagar)', 'Stable infrastructure parameters', '34/100', 'Green')" style="fill: rgba(16, 185, 129, 0.2); stroke: var(--success-color);"></path>
+                
+                <!-- Markers for Critical Alerts -->
+                <g class="map-marker" transform="translate(200, 90)">
+                  <circle r="6" fill="#EF4444"></circle>
+                  <circle r="12" fill="none" stroke="#EF4444" stroke-width="2" opacity="0.5"></circle>
+                </g>
+                <g class="map-marker" transform="translate(310, 100)">
+                  <circle r="6" fill="#EF4444"></circle>
+                  <circle r="12" fill="none" stroke="#EF4444" stroke-width="2" opacity="0.5"></circle>
+                </g>
+              </svg>
+            </div>
+
+            <!-- Map Inspector Panel -->
+            <div class="glass-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <span class="label-uppercase" style="display: block; margin-bottom: 12px; color: var(--accent-color);">Telemetry Inspector</span>
+                <h3 id="map-inspect-name" style="margin-bottom: 6px;">Ward 124 (Mylapore)</h3>
+                
+                <div style="display: flex; gap: 8px; margin-bottom: var(--space-md);">
+                  <span class="badge badge-danger" id="map-inspect-badge">CRITICAL</span>
+                  <span class="badge badge-info" id="map-inspect-score">94 Priority Index</span>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: var(--space-sm); font-size: 13px;">
+                  <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--glass-border); padding-bottom: 6px;">
+                    <span style="color: var(--text-secondary);">Primary Grievance</span>
+                    <span id="map-inspect-grievance" style="font-weight: 500;">Water pipe pollution</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--glass-border); padding-bottom: 6px;">
+                    <span style="color: var(--text-secondary);">Water Quality index</span>
+                    <span class="data-mono" style="color: var(--danger-color);">42 ppm (Unsafe)</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--glass-border); padding-bottom: 6px;">
+                    <span style="color: var(--text-secondary);">Avg Response Time</span>
+                    <span class="data-mono">4.2 hours</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between;">
+                    <span style="color: var(--text-secondary);">Monitors Active</span>
+                    <span class="data-mono">14 IoT nodes</span>
+                  </div>
+                </div>
+              </div>
+
+              <div style="margin-top: var(--space-lg); display: flex; flex-direction: column; gap: 10px;">
+                <button class="btn btn-primary" style="width: 100%;" onclick="runDiagnostic('Ward 124')">Run Sensor Diagnostic</button>
+                <button class="btn btn-secondary" style="width: 100%;" onclick="switchToView('view-grievances')">View Ward Grievance Logs</button>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ==========================================
+             VIEW 4 — TRENDS & ANALYTICS
+             ========================================== -->
+        <section id="view-trends" class="view-panel" style="display: none;">
+          <h2 class="page-title">
+            <i class="ti ti-trending-up" style="color: var(--accent-color);"></i>
+            <span>Analytical Trends</span>
+          </h2>
+
+          <div class="trends-grid">
+            <!-- Grid item 1 -->
+            <div class="glass-card">
+              <div class="section-heading">
+                <span>Grievance Category Distribution</span>
+                <span class="label-uppercase">Past 30 Days</span>
+              </div>
+              
+              <!-- Mock bar chart -->
+              <div class="chart-container-mock">
+                <!-- Bar 1 -->
+                <div class="chart-bar-group">
+                  <div class="chart-bar" style="height: 85%;">
+                    <div class="chart-bar-tooltip">Water (1,450)</div>
+                  </div>
+                  <span class="chart-bar-label">Water</span>
+                </div>
+                <!-- Bar 2 -->
+                <div class="chart-bar-group">
+                  <div class="chart-bar" style="height: 60%;">
+                    <div class="chart-bar-tooltip">Roads (980)</div>
+                  </div>
+                  <span class="chart-bar-label">Roads</span>
+                </div>
+                <!-- Bar 3 -->
+                <div class="chart-bar-group">
+                  <div class="chart-bar" style="height: 45%;">
+                    <div class="chart-bar-tooltip">Garbage (740)</div>
+                  </div>
+                  <span class="chart-bar-label">Garbage</span>
+                </div>
+                <!-- Bar 4 -->
+                <div class="chart-bar-group">
+                  <div class="chart-bar" style="height: 30%;">
+                    <div class="chart-bar-tooltip">Lighting (520)</div>
+                  </div>
+                  <span class="chart-bar-label">Light</span>
+                </div>
+                <!-- Bar 5 -->
+                <div class="chart-bar-group">
+                  <div class="chart-bar" style="height: 18%;">
+                    <div class="chart-bar-tooltip">Others (210)</div>
+                  </div>
+                  <span class="chart-bar-label">Other</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Grid item 2 -->
+            <div class="glass-card">
+              <div class="section-heading">
+                <span>Mean Resolution Rate (Days)</span>
+                <span class="label-uppercase">Higher is slower</span>
+              </div>
+              
+              <div class="chart-container-mock">
+                <!-- Bar 1 -->
+                <div class="chart-bar-group">
+                  <div class="chart-bar" style="height: 80%; background: linear-gradient(180deg, var(--danger-color) 0%, rgba(239,68,68,0.2) 100%);">
+                    <div class="chart-bar-tooltip">Mylapore (16 days)</div>
+                  </div>
+                  <span class="chart-bar-label">Mylapore</span>
+                </div>
+                <!-- Bar 2 -->
+                <div class="chart-bar-group">
+                  <div class="chart-bar" style="height: 65%; background: linear-gradient(180deg, var(--danger-color) 0%, rgba(239,68,68,0.2) 100%);">
+                    <div class="chart-bar-tooltip">Royapuram (13 days)</div>
+                  </div>
+                  <span class="chart-bar-label">Royapuram</span>
+                </div>
+                <!-- Bar 3 -->
+                <div class="chart-bar-group">
+                  <div class="chart-bar" style="height: 55%; background: linear-gradient(180deg, var(--warning-color) 0%, rgba(245,158,11,0.2) 100%);">
+                    <div class="chart-bar-tooltip">T. Nagar (11 days)</div>
+                  </div>
+                  <span class="chart-bar-label">T. Nagar</span>
+                </div>
+                <!-- Bar 4 -->
+                <div class="chart-bar-group">
+                  <div class="chart-bar" style="height: 40%; background: linear-gradient(180deg, var(--success-color) 0%, rgba(16,185,129,0.2) 100%);">
+                    <div class="chart-bar-tooltip">Anna Nagar (8 days)</div>
+                  </div>
+                  <span class="chart-bar-label">Anna Nagar</span>
+                </div>
+                <!-- Bar 5 -->
+                <div class="chart-bar-group">
+                  <div class="chart-bar" style="height: 30%; background: linear-gradient(180deg, var(--success-color) 0%, rgba(16,185,129,0.2) 100%);">
+                    <div class="chart-bar-tooltip">Adyar (6 days)</div>
+                  </div>
+                  <span class="chart-bar-label">Adyar</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==========================================
+             VIEW 5 — AI ASSISTANT CHAT VIEW
+             ========================================== -->
+        <section id="view-ai-assistant" class="view-panel" style="display: none;">
+          <h2 class="page-title">
+            <i class="ti ti-cpu" style="color: var(--accent-color);"></i>
+            <span>AI Governance Assistant</span>
+          </h2>
+
+          <div class="preset-chips">
+            <button class="preset-chip" onclick="askPresetQuestion('Analyze infrastructure trends in Ward 108')">Analyze Ward 108 (T. Nagar) drainage</button>
+            <button class="preset-chip" onclick="askPresetQuestion('What is the water resolution rate in Mylapore?')">Mylapore water resolution metrics</button>
+            <button class="preset-chip" onclick="askPresetQuestion('Show me critical garbage clearance complaints')">Critical waste dump incidents</button>
+          </div>
+
+          <div class="ai-assistant-container">
+            <div class="ai-chat-history" id="chat-history-container">
+              <div class="ai-chat-bubble chat-assistant">
+                Hello. I am the UrbanMind Civic Intelligence Assistant. Ask me to extract metrics, identify ward bottlenecks, or write diagnostic briefs about Chennai's city infrastructure.
+              </div>
+            </div>
+            
+            <form id="ai-chat-form" class="ai-chat-input-wrapper" onsubmit="submitChatMessage(event)">
+              <input type="text" id="ai-chat-input" class="glass-input" style="flex-grow: 1;" placeholder="Type your municipal question (e.g. Which zones report water pollution?)...">
+              <button type="submit" class="btn btn-primary">
+                <i class="ti ti-send"></i>
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <!-- ==========================================
+             VIEW 6 — REPORTS GENERATOR VIEW
+             ========================================== -->
+        <section id="view-reports" class="view-panel" style="display: none;">
+          <h2 class="page-title">
+            <i class="ti ti-file-analytics" style="color: var(--accent-color);"></i>
+            <span>Reports &amp; Summaries</span>
+          </h2>
+
+          <div class="dashboard-layout-grid">
+            <div class="glass-card">
+              <div class="section-heading">
+                <span>Weekly Intelligence Report</span>
+                <span class="label-uppercase">Auto-generated</span>
+              </div>
+              <p style="font-size: 13.5px; margin-bottom: var(--space-md); color: var(--text-secondary);">
+                Every Monday morning, UrbanMind compiles telemetry from ward IoT sensors, citizen portals, and agency response teams to output an audit of city infrastructure health.
+              </p>
+              <div style="display: flex; gap: var(--space-sm);">
+                <button class="btn btn-primary" onclick="showToast('Downloading intelligence brief...', 'info')">
+                  <i class="ti ti-download"></i> PDF Summary
+                </button>
+                <button class="btn btn-secondary" onclick="showToast('Exporting data sheets...', 'info')">
+                  <i class="ti ti-table"></i> CSV telemetry
+                </button>
+              </div>
+            </div>
+
+            <div class="glass-card">
+              <div class="section-heading">
+                <span>Archived Reports</span>
+                <span class="label-uppercase">Last 3 Months</span>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--glass-border); padding-bottom: 6px;">
+                  <span>July Week 3 Intelligence Audit</span>
+                  <a href="#" style="color: var(--accent-color); font-size: 12px; text-decoration: none;" onclick="showToast('Downloading brief...', 'info')">Download</a>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--glass-border); padding-bottom: 6px;">
+                  <span>July Week 2 Infrastructure Audit</span>
+                  <a href="#" style="color: var(--accent-color); font-size: 12px; text-decoration: none;" onclick="showToast('Downloading brief...', 'info')">Download</a>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--glass-border); padding-bottom: 6px;">
+                  <span>July Week 1 Municipal Audit</span>
+                  <a href="#" style="color: var(--accent-color); font-size: 12px; text-decoration: none;" onclick="showToast('Downloading brief...', 'info')">Download</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==========================================
+             SCREEN 3 — PROFILE & SETTINGS VIEW
+             ========================================== -->
+        <section id="view-settings" class="view-panel" style="display: none;">
+          <h2 class="page-title">
+            <i class="ti ti-settings" style="color: var(--accent-color);"></i>
+            <span>System Settings &amp; Profile</span>
+          </h2>
+
+          <div class="profile-layout-grid">
+            
+            <!-- Left Profile Card -->
+            <div class="glass-card profile-sidebar-card">
+              <div class="avatar-large-wrapper">
+                <div class="avatar-large" id="profile-avatar-large">NS</div>
+                <div class="avatar-edit-overlay" onclick="cycleAvatarGradient()" aria-label="Change Avatar color theme">
+                  <i class="ti ti-photo-edit"></i>
+                </div>
+              </div>
+
+              <div>
+                <h3 class="profile-name-lg" id="profile-name-display">Nithya Shree P G</h3>
+                <span class="badge badge-info" id="profile-role-badge" style="margin-top: 6px;">Admin Officer</span>
+              </div>
+
+              <p style="font-size: 12px; color: var(--text-secondary); line-height: 1.5;" id="profile-dept-display">
+                Municipal Corporation of Chennai
+              </p>
+
+              <div class="profile-details-grid">
+                <div class="profile-details-row">
+                  <span class="label-uppercase">Email address</span>
+                  <span class="data-mono" id="profile-email-display">admin@urbanmind.gov.in</span>
+                </div>
+                <div class="profile-details-row">
+                  <span class="label-uppercase">Contact Mobile</span>
+                  <span class="data-mono" id="profile-phone-display">+91 94440 12345</span>
+                </div>
+                <div class="profile-details-row">
+                  <span class="label-uppercase">Employee ID</span>
+                  <span class="data-mono">CH-GCC-2024-889</span>
+                </div>
+              </div>
+
+              <button class="btn btn-secondary" style="width: 100%; margin-top: 10px;" onclick="focusAccountForm()">Edit Profile</button>
+            </div>
+
+            <!-- Right Column Settings Stack -->
+            <div class="settings-stack">
+              
+              <!-- Panel 1: Account Settings -->
+              <div class="glass-card">
+                <div class="settings-group-title">
+                  <i class="ti ti-user-cog"></i>
+                  <span>Account Settings</span>
+                </div>
+                
+                <form id="settings-account-form" onsubmit="saveAccountSettings(event)">
+                  <div class="settings-form-grid">
+                    <div class="form-group">
+                      <label class="label-uppercase">Full Name</label>
+                      <input type="text" id="settings-name-input" class="glass-input" value="Nithya Shree P G" required>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="label-uppercase">Email Address</label>
+                      <input type="email" id="settings-email-input" class="glass-input" value="admin@urbanmind.gov.in" required>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="label-uppercase">Phone Number</label>
+                      <input type="text" id="settings-phone-input" class="glass-input" value="+91 94440 12345" required>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="label-uppercase">Employee ID (Read Only)</label>
+                      <input type="text" class="glass-input" value="CH-GCC-2024-889" style="opacity: 0.65; cursor: not-allowed;" readonly>
+                    </div>
+
+                    <div class="form-group form-span-2">
+                      <label class="label-uppercase">Department / Zone Jurisdiction</label>
+                      <select id="settings-dept-select" class="glass-input" style="background-image: none; cursor: pointer;">
+                        <option value="Municipal Corporation of Chennai" selected>Municipal Corporation of Chennai</option>
+                        <option value="Royapuram Zone Administration">Royapuram Zone Administration</option>
+                        <option value="Smart City Analytics Bureau">Smart City Analytics Bureau</option>
+                        <option value="Metro Water &amp; Sewerage Board">Metro Water &amp; Sewerage Board</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div style="margin-top: var(--space-md); display: flex; justify-content: flex-end;">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                  </div>
+                </form>
+              </div>
+
+              <!-- Panel 2: Notification Preferences -->
+              <div class="glass-card">
+                <div class="settings-group-title">
+                  <i class="ti ti-bell-ringing"></i>
+                  <span>Notification Preferences</span>
+                </div>
+
+                <div class="pref-row">
+                  <div class="pref-info">
+                    <span class="pref-title">Email alerts for high priority issues</span>
+                    <span class="pref-desc">Receive immediate dispatches when a grievance severity breaches 80.</span>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" checked onclick="showPreferenceToast('Email alerts')">
+                    <span class="slider"></span>
+                  </label>
+                </div>
+
+                <div class="pref-row">
+                  <div class="pref-info">
+                    <span class="pref-title">Daily summary report</span>
+                    <span class="pref-desc">A condensed briefing of ward status sent to your inbox each morning.</span>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" checked onclick="showPreferenceToast('Daily summaries')">
+                    <span class="slider"></span>
+                  </label>
+                </div>
+
+                <div class="pref-row">
+                  <div class="pref-info">
+                    <span class="pref-title">Ward breach alerts</span>
+                    <span class="pref-desc">Instant alarms if automated IoT monitoring reports critical pipe pollution.</span>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" onclick="showPreferenceToast('Ward breaches')">
+                    <span class="slider"></span>
+                  </label>
+                </div>
+
+                <div class="pref-row">
+                  <div class="pref-info">
+                    <span class="pref-title">AI assistant suggestions</span>
+                    <span class="pref-desc">Enable interactive diagnostic popups during manual telemetry inspection.</span>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" checked onclick="showPreferenceToast('AI assistance')">
+                    <span class="slider"></span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Panel 3: Security -->
+              <div class="glass-card">
+                <div class="settings-group-title">
+                  <i class="ti ti-shield-lock"></i>
+                  <span>Security &amp; Active Sessions</span>
+                </div>
+
+                <form onsubmit="handleSecuritySave(event)" style="margin-bottom: var(--space-md);">
+                  <div class="settings-form-grid">
+                    <div class="form-group">
+                      <label class="label-uppercase">Current Password</label>
+                      <input type="password" class="glass-input" placeholder="••••••••">
+                    </div>
+                    <div class="form-group">
+                      <label class="label-uppercase">New Password</label>
+                      <input type="password" class="glass-input" placeholder="••••••••">
+                    </div>
+                    <div class="form-group form-span-2">
+                      <label class="label-uppercase">Confirm New Password</label>
+                      <input type="password" class="glass-input" placeholder="••••••••">
+                    </div>
+                  </div>
+                  <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
+                    <button type="submit" class="btn btn-primary">Update Password</button>
+                  </div>
+                </form>
+
+                <div class="pref-row" style="border-top: 1px solid var(--glass-border); padding-top: 16px;">
+                  <div class="pref-info">
+                    <span class="pref-title">Two-factor authentication</span>
+                    <span class="pref-desc">Add an extra layer of protection using authenticator tokens.</span>
+                  </div>
+                  <label class="switch">
+                    <input type="checkbox" id="2fa-toggle" onclick="toggle2FA()">
+                    <span class="slider"></span>
+                  </label>
+                </div>
+
+                <div style="margin-top: var(--space-md); padding: 12px; border-radius: 8px; background: rgba(0,0,0,0.1); font-size: 12px;">
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                    <span style="color: var(--text-secondary);">Last Sign-in Info</span>
+                    <span class="data-mono">Today at 9:42 AM from Chennai, IN</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between;">
+                    <span style="color: var(--text-secondary);">Active Sessions</span>
+                    <span class="data-mono" id="sessions-count">1 device active</span>
+                  </div>
+                </div>
+
+                <div style="margin-top: var(--space-md); display: flex; justify-content: flex-start;">
+                  <button type="button" class="btn btn-danger" onclick="signoutAllDevices()">Sign out all devices</button>
+                </div>
+              </div>
+
+              <!-- Panel 4: Appearance -->
+              <div class="glass-card">
+                <div class="settings-group-title">
+                  <i class="ti ti-palette"></i>
+                  <span>Interface Appearance</span>
+                </div>
+
+                <div class="form-group" style="margin-bottom: var(--space-md);">
+                  <label class="label-uppercase">Theme Settings</label>
+                  <div class="appearance-radio-group">
+                    <label class="appearance-radio-label selected" id="theme-btn-dark">
+                      <input type="radio" name="theme-radio" value="dark" checked onclick="setAppTheme('dark')">
+                      <i class="ti ti-moon" style="font-size: 18px;"></i>
+                      <span>Dark Theme</span>
+                    </label>
+                    <label class="appearance-radio-label" id="theme-btn-light">
+                      <input type="radio" name="theme-radio" value="light" onclick="setAppTheme('light')">
+                      <i class="ti ti-sun" style="font-size: 18px;"></i>
+                      <span>Light Theme</span>
+                    </label>
+                    <label class="appearance-radio-label" id="theme-btn-system">
+                      <input type="radio" name="theme-radio" value="system" onclick="setAppTheme('system')">
+                      <i class="ti ti-device-laptop" style="font-size: 18px;"></i>
+                      <span>System</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="settings-form-grid" style="margin-bottom: var(--space-md);">
+                  <div class="form-group">
+                    <label class="label-uppercase">Interface Language</label>
+                    <select class="glass-input" id="language-select" onchange="showToast('Language updated.', 'success')" style="cursor: pointer;">
+                      <option value="en">English (US/IN)</option>
+                      <option value="ta">Tamil (தமிழ்)</option>
+                      <option value="hi">Hindi (हिन्दी)</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="label-uppercase">Dashboard Density</label>
+                    <div style="display: flex; gap: 16px; align-items: center; height: 38px;">
+                      <label style="display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13px;">
+                        <input type="radio" name="density-radio" value="comfortable" checked onclick="setDensity('comfortable')"> Comfortable
+                      </label>
+                      <label style="display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13px;">
+                        <input type="radio" name="density-radio" value="compact" onclick="setDensity('compact')"> Compact
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end;">
+                  <button type="button" class="btn btn-primary" onclick="saveAppearancePrefs()">Save Preferences</button>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- ==========================================
+       10. CLIENT-SIDE INTERACTIVITY SCRIPTS
+       ========================================== -->
+  <script>
+    
+    // Core Application State
+    const AppState = {
+      currentUser: {
+        name: "Nithya Shree P G",
+        role: "Admin Officer",
+        email: "admin@urbanmind.gov.in",
+        phone: "+91 94440 12345",
+        department: "Municipal Corporation of Chennai",
+        avatarThemeIndex: 0
+      },
+      currentTheme: "dark",
+      currentDensity: "comfortable",
+      is2FAEnabled: false
+    };
+
+    // Pre-configured Avatar Gradients
+    const avatarGradients = [
+      "linear-gradient(135deg, #3B82F6 0%, #10B981 100%)",
+      "linear-gradient(135deg, #EC4899 0%, #8B5CF6 100%)",
+      "linear-gradient(135deg, #F59E0B 0%, #EF4444 100%)"
+    ];
+
+    // Initialize triggers
+    document.addEventListener("DOMContentLoaded", () => {
+      setupLoginAutofills();
+      setupPasswordVisibilityToggle();
+      setupSidebarNavigation();
+      setupDropdowns();
+      setupDashboardTriggers();
+    });
+
+    // ==========================================
+    // TOAST NOTIFICATION UTILITY
+    // ==========================================
+    function showToast(message, type = "success") {
+      const toastRoot = document.getElementById("toast-root");
+      
+      const toast = document.createElement("div");
+      toast.className = "toast";
+      
+      let icon = '<i class="ti ti-check-circle toast-icon-success"></i>';
+      if (type === "error") {
+        icon = '<i class="ti ti-alert-circle toast-icon-error"></i>';
+      } else if (type === "info") {
+        icon = '<i class="ti ti-info-circle toast-icon-info"></i>';
+      }
+
+      toast.innerHTML = `
+        ${icon}
+        <span>${message}</span>
+      `;
+      
+      toastRoot.appendChild(toast);
+      
+      // Trigger animations
+      setTimeout(() => toast.classList.add("active"), 10);
+      
+      // Dismiss
+      setTimeout(() => {
+        toast.classList.remove("active");
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    // ==========================================
+    // SCREEN 1: LOGIN ACTIONS
+    // ==========================================
+    function setupLoginAutofills() {
+      const items = document.querySelectorAll(".demo-credential-item");
+      const emailInput = document.getElementById("login-email");
+      const passwordInput = document.getElementById("login-password");
+
+      items.forEach(item => {
+        item.addEventListener("click", () => {
+          const email = item.getAttribute("data-email");
+          const pass = item.getAttribute("data-pass");
+          const role = item.getAttribute("data-role");
+          const name = item.getAttribute("data-name");
+          const dept = item.getAttribute("data-dept");
+
+          emailInput.value = email;
+          passwordInput.value = pass;
+
+          // Update state with credentials info
+          AppState.currentUser.name = name;
+          AppState.currentUser.role = role;
+          AppState.currentUser.email = email;
+          AppState.currentUser.department = dept;
+          
+          showToast(`Form autofilled as ${role}`, "info");
+        });
+      });
+
+      // Handle Sign In submission
+      const loginForm = document.getElementById("login-form");
+      loginForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        
+        const submitBtn = document.getElementById("login-btn-submit");
+        const btnText = document.getElementById("login-btn-text");
+        
+        submitBtn.disabled = true;
+        btnText.innerHTML = '<i class="ti ti-loader-2 animate-spin" style="display:inline-block; animation: spin 1s linear infinite;"></i> Authenticating...';
+
+        setTimeout(() => {
+          submitBtn.disabled = false;
+          btnText.innerHTML = 'Sign in';
+          
+          // Apply state adjustments to dashboard
+          updateDashboardUserLabels();
+          
+          // Switch Screen
+          switchScreen("screen-login", "screen-main-app");
+          showToast(`Welcome back, ${AppState.currentUser.name}!`, "success");
+        }, 900);
+      });
+    }
+
+    function setupPasswordVisibilityToggle() {
+      const toggleBtn = document.getElementById("password-toggle");
+      const passField = document.getElementById("login-password");
+      
+      toggleBtn.addEventListener("click", () => {
+        const type = passField.type === "password" ? "text" : "password";
+        passField.type = type;
+        
+        const icon = toggleBtn.querySelector("i");
+        icon.className = type === "password" ? "ti ti-eye" : "ti ti-eye-off";
+      });
+    }
+
+    function triggerForgotPasswordToast(e) {
+      e.preventDefault();
+      showToast("Verification code dispatched to officer mobile.", "info");
+    }
+
+    // ==========================================
+    // SIDEBAR & SCREEN ROUTING NAVIGATION
+    // ==========================================
+    function setupSidebarNavigation() {
+      const navButtons = document.querySelectorAll(".nav-item-btn");
+      
+      navButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+          const targetView = btn.getAttribute("data-target-view");
+          if (targetView) {
+            switchToView(targetView);
+            
+            // Update active states
+            navButtons.forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+          }
+        });
+      });
+
+      // Logout trigger
+      document.getElementById("logout-btn").addEventListener("click", () => {
+        switchScreen("screen-main-app", "screen-login");
+        showToast("Logged out of UrbanMind.", "info");
+      });
+    }
+
+    function switchScreen(fromId, toId) {
+      const from = document.getElementById(fromId);
+      const to = document.getElementById(toId);
+      
+      from.style.opacity = "0";
+      setTimeout(() => {
+        from.classList.remove("active");
+        to.classList.add("active");
+        setTimeout(() => {
+          to.style.opacity = "1";
+        }, 50);
+      }, 200);
+    }
+
+    function switchToView(viewId) {
+      const views = document.querySelectorAll(".view-panel");
+      views.forEach(v => v.style.display = "none");
+      
+      const target = document.getElementById(viewId);
+      if (target) {
+        target.style.display = "block";
+      }
+
+      // Update sidebar nav states to match view (in case triggered programmatically)
+      const navButtons = document.querySelectorAll(".nav-item-btn");
+      navButtons.forEach(btn => {
+        if (btn.getAttribute("data-target-view") === viewId) {
+          btn.classList.add("active");
+        } else {
+          btn.classList.remove("active");
+        }
+      });
+    }
+
+    // Bind inputs and sync labels
+    function updateDashboardUserLabels() {
+      const nameParts = AppState.currentUser.name.split(" ");
+      const initials = nameParts.map(p => p[0]).join("").substring(0, 2);
+      
+      document.querySelectorAll("#sidebar-avatar-initials, #topbar-avatar-initials, #profile-avatar-large").forEach(el => {
+        el.innerText = initials;
+      });
+
+      document.querySelectorAll("#sidebar-user-name, #topbar-user-name").forEach(el => {
+        el.innerText = AppState.currentUser.name;
+      });
+
+      document.getElementById("sidebar-user-role").innerText = AppState.currentUser.role;
+      
+      document.getElementById("profile-name-display").innerText = AppState.currentUser.name;
+      document.getElementById("profile-role-badge").innerText = AppState.currentUser.role;
+      document.getElementById("profile-dept-display").innerText = AppState.currentUser.department;
+      document.getElementById("profile-email-display").innerText = AppState.currentUser.email;
+      document.getElementById("profile-phone-display").innerText = AppState.currentUser.phone;
+
+      document.getElementById("settings-name-input").value = AppState.currentUser.name;
+      document.getElementById("settings-email-input").value = AppState.currentUser.email;
+      document.getElementById("settings-phone-input").value = AppState.currentUser.phone;
+      
+      const deptSelect = document.getElementById("settings-dept-select");
+      for(let option of deptSelect.options) {
+        if (option.value === AppState.currentUser.department) {
+          option.selected = true;
+          break;
+        }
+      }
+    }
+
+    // ==========================================
+    // TOP BAR DROPDOWNS & ACTIONS
+    // ==========================================
+    function setupDropdowns() {
+      const bellBtn = document.getElementById("notification-bell-btn");
+      const dropMenu = document.getElementById("notifications-dropdown-menu");
+      const userTrigger = document.getElementById("topbar-profile-trigger");
+      const sidebarUserTrigger = document.getElementById("sidebar-user-trigger");
+
+      bellBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        dropMenu.classList.toggle("active");
+      });
+
+      const navigateToProfile = () => {
+        switchToView("view-settings");
+      };
+      
+      userTrigger.addEventListener("click", navigateToProfile);
+      sidebarUserTrigger.addEventListener("click", navigateToProfile);
+
+      document.addEventListener("click", () => {
+        dropMenu.classList.remove("active");
+      });
+    }
+
+    function clearNotifications(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      document.getElementById("notifications-dropdown-menu").classList.remove("active");
+      document.querySelector(".badge-count").style.display = "none";
+      showToast("Notifications cleared", "info");
+    }
+
+    // ==========================================
+    // OVERVIEW & HEATMAP INTERACTIVITY
+    // ==========================================
+    function setupDashboardTriggers() {
+      selectHeatmapWard("Ward 124 (Mylapore)", "Water pollution event detected in metroline", "94/100");
+    }
+
+    function selectHeatmapWard(wardName, details, priorityScore) {
+      const display = document.getElementById("ward-metric-display");
+      const title = document.getElementById("ward-metric-title");
+      const desc = document.getElementById("ward-metric-desc");
+      const score = document.getElementById("ward-metric-score");
+      const inspectBtn = document.getElementById("view-ward-btn");
+
+      display.style.display = "block";
+      title.innerText = wardName;
+      desc.innerText = details;
+      score.innerText = `Priority Index: ${priorityScore}`;
+      
+      inspectBtn.onclick = () => {
+        switchToView("view-map");
+        mapSelectWard(wardName, details, priorityScore);
+      };
+    }
+
+    // ==========================================
+    // WARD MAP PAGE VIEW ACTIONS
+    // ==========================================
+    function mapSelectWard(wardName, description, priorityScore, severityClass = "Red") {
+      document.getElementById("map-inspect-name").innerText = wardName;
+      document.getElementById("map-inspect-grievance").innerText = description;
+      
+      const badge = document.getElementById("map-inspect-badge");
+      badge.innerText = severityClass === "Green" ? "NORMAL" : "CRITICAL";
+      badge.className = `badge badge-${severityClass === "Red" ? "danger" : severityClass === "Amber" ? "warning" : "success"}`;
+      
+      document.getElementById("map-inspect-score").innerText = `${priorityScore} Priority Index`;
+
+      document.querySelectorAll(".map-path").forEach(p => p.classList.remove("active"));
+      
+      if (wardName.includes("124")) {
+        document.getElementById("map-ward-124").classList.add("active");
+      } else if (wardName.includes("108")) {
+        document.getElementById("map-ward-108").classList.add("active");
+      } else if (wardName.includes("172")) {
+        document.getElementById("map-ward-172").classList.add("active");
+      } else if (wardName.includes("136")) {
+        document.getElementById("map-ward-136").classList.add("active");
+      }
+    }
+
+    function runDiagnostic(wardName) {
+      showToast(`Running telemetry tests on ${wardName} IoT arrays...`, "info");
+      setTimeout(() => {
+        showToast("Telemetry verified. 14/14 monitoring nodes reporting active.", "success");
+      }, 1500);
+    }
+
+    function dispatchService(grvId) {
+      showToast(`Emergency dispatch response created for ${grvId}`, "success");
+    }
+
+    // ==========================================
+    // AI ASSISTANT CHAT ACTIONS
+    // ==========================================
+    function submitChatMessage(e) {
+      e.preventDefault();
+      const input = document.getElementById("ai-chat-input");
+      const text = input.value.trim();
+      if (!text) return;
+
+      appendChatMessage(text, "user");
+      input.value = "";
+      
+      setTimeout(() => {
+        const response = generateAIResponse(text);
+        appendChatMessage(response, "assistant");
+      }, 1000);
+    }
+
+    function askPresetQuestion(question) {
+      appendChatMessage(question, "user");
+      setTimeout(() => {
+        const response = generateAIResponse(question);
+        appendChatMessage(response, "assistant");
+      }, 1000);
+    }
+
+    function appendChatMessage(text, sender) {
+      const container = document.getElementById("chat-history-container");
+      const bubble = document.createElement("div");
+      bubble.className = `ai-chat-bubble chat-${sender}`;
+      bubble.innerHTML = text;
+      
+      container.appendChild(bubble);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function generateAIResponse(query) {
+      const q = query.toLowerCase();
+      if (q.includes("108") || q.includes("nagar") || q.includes("drain")) {
+        return "<strong>UrbanMind AI:</strong> Ward 108 (T. Nagar) silt metrics show 88% drainage capacity blockage in South Usman Road junction. GCC engineering has scheduled desilting crews for tonight at 11:00 PM. High flood risk averted if resolved within 18 hours.";
+      }
+      if (q.includes("mylapore") || q.includes("water") || q.includes("resolution")) {
+        return "<strong>UrbanMind AI:</strong> Water quality index in Mylapore stands at 42 ppm, indicating sewer line cross-leakage. Mean resolution time for Water category in Mylapore is currently 16 days. Urgency score remains critical (94). CMWSSB pipeline valve closures completed.";
+      }
+      if (q.includes("garbage") || q.includes("waste")) {
+        return "<strong>UrbanMind AI:</strong> Waste management telemetry detects open dump piles in Ward 136 (Kodambakkam) covering 140 sq meters. Thermal sensors indicate minor heat anomalies (potential waste burning). Urgency index 79. Local inspector notified.";
+      }
+      return "<strong>UrbanMind AI:</strong> Query parsed successfully. Civic analytics data indicates normal operations across 8 of 12 wards. No further critical alerts detected.";
+    }
+
+    // ==========================================
+    // SCREEN 3: SETTINGS ACTIONS & CONFIG
+    // ==========================================
+    function focusAccountForm() {
+      document.getElementById("settings-name-input").focus();
+    }
+
+    function cycleAvatarGradient() {
+      AppState.currentUser.themeIndex = ((AppState.currentUser.themeIndex || 0) + 1) % avatarGradients.length;
+      const gradient = avatarGradients[AppState.currentUser.themeIndex];
+      
+      document.querySelectorAll(".user-avatar-sm, .avatar-large").forEach(el => {
+        el.style.background = gradient;
+      });
+      
+      showToast("Avatar theme updated", "success");
+    }
+
+    function saveAccountSettings(e) {
+      e.preventDefault();
+      
+      const newName = document.getElementById("settings-name-input").value;
+      const newEmail = document.getElementById("settings-email-input").value;
+      const newPhone = document.getElementById("settings-phone-input").value;
+      const newDept = document.getElementById("settings-dept-select").value;
+
+      AppState.currentUser.name = newName;
+      AppState.currentUser.email = newEmail;
+      AppState.currentUser.phone = newPhone;
+      AppState.currentUser.department = newDept;
+
+      updateDashboardUserLabels();
+      showToast("Account settings saved successfully", "success");
+    }
+
+    function showPreferenceToast(prefName) {
+      showToast(`${prefName} settings toggled`, "info");
+    }
+
+    function toggle2FA() {
+      AppState.is2FAEnabled = !AppState.is2FAEnabled;
+      showToast(`Two-Factor Authentication: ${AppState.is2FAEnabled ? "ENABLED" : "DISABLED"}`, "info");
+    }
+
+    function signoutAllDevices() {
+      document.getElementById("sessions-count").innerText = "0 devices active";
+      showToast("All other active sessions revoked.", "info");
+    }
+
+    function handleSecuritySave(e) {
+      e.preventDefault();
+      showToast("Password updated successfully", "success");
+      e.target.reset();
+    }
+
+    function setAppTheme(themeName) {
+      const html = document.documentElement;
+      
+      if (themeName === 'system') {
+        const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        html.setAttribute("data-theme", isDark ? "dark" : "light");
+      } else {
+        html.setAttribute("data-theme", themeName);
+      }
+
+      document.querySelectorAll(".appearance-radio-label").forEach(l => l.classList.remove("selected"));
+      if (themeName === 'dark') document.getElementById("theme-btn-dark").classList.add("selected");
+      if (themeName === 'light') document.getElementById("theme-btn-light").classList.add("selected");
+      if (themeName === 'system') document.getElementById("theme-btn-system").classList.add("selected");
+      
+      showToast(`Interface theme changed to ${themeName}`, "info");
+    }
+
+    function setDensity(densityName) {
+      document.documentElement.setAttribute("data-density", densityName);
+      showToast(`Layout spacing set to ${densityName}`, "info");
+    }
+
+    function saveAppearancePrefs() {
+      showToast("Appearance settings saved successfully", "success");
+    }
+
+    // Keyframes loader
+    const styleSheet = document.createElement("style");
+    styleSheet.innerText = `
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      .animate-spin {
+        animation: spin 1s linear infinite;
+      }
+    `;
+    document.head.appendChild(styleSheet);
+
+  </script>
+</body>
+</html>
