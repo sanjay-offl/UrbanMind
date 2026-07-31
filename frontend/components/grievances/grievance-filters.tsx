@@ -12,6 +12,7 @@ export interface GrievanceFilters {
   ward_id?: string;
   status?: string;
   priority?: string;
+  [key: string]: string | undefined;
 }
 
 const PRIORITY_OPTIONS: Priority[] = ['critical', 'high', 'medium', 'low'];

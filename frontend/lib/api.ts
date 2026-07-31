@@ -1,6 +1,13 @@
+import type { Grievance } from '@/types/grievance';
+import type { AnalyticsSummary } from '@/types/analytics';
+import type { ChatMessage } from '@/types/agent';
+import type { Report } from '@/types/report';
+
 export const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000/api/v1';
 
-interface GrievanceParams {
+type QueryParams = Record<string, string | number | undefined>;
+
+interface GrievanceParams extends QueryParams {
   search?: string;
   category?: string;
   ward_id?: string;
@@ -21,7 +28,7 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
   return data as T;
 }
 
-function buildQuery(params?: Record<string, string | number | undefined>): string {
+function buildQuery(params?: QueryParams): string {
   const searchParams = new URLSearchParams();
   if (params) {
     for (const [key, value] of Object.entries(params)) {
@@ -34,15 +41,18 @@ function buildQuery(params?: Record<string, string | number | undefined>): strin
   return qs ? `?${qs}` : '';
 }
 
-export function getGrievances(params?: GrievanceParams) {
+export function getGrievances(params?: GrievanceParams): Promise<Grievance[]> {
   return request(`/api/grievances${buildQuery(params)}`);
 }
 
-export function getGrievance(id: number) {
+export function getGrievance(id: number): Promise<Grievance> {
   return request(`/api/grievances/${id}`);
 }
 
-export function updateGrievance(id: number, patch: Record<string, unknown>) {
+export function updateGrievance(
+  id: number,
+  patch: Record<string, unknown>
+): Promise<Grievance> {
   return request(`/api/grievances/${id}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
@@ -50,7 +60,7 @@ export function updateGrievance(id: number, patch: Record<string, unknown>) {
   });
 }
 
-export async function uploadCsv(file: File) {
+export async function uploadCsv(file: File): Promise<{ imported?: number; errors?: string[] }> {
   const formData = new FormData();
   formData.append('file', file);
   return request('/api/upload', {
@@ -67,7 +77,7 @@ export interface AgentHistoryEntry {
 export async function chatAgent(
   message: string,
   history: AgentHistoryEntry[] = []
-) {
+): Promise<ChatMessage> {
   return request('/api/agent', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -75,15 +85,18 @@ export async function chatAgent(
   });
 }
 
-export function getAnalytics() {
+export function getAnalytics(): Promise<AnalyticsSummary> {
   return request('/api/analytics');
 }
 
-export function getReports() {
+export function getReports(): Promise<Report[]> {
   return request('/api/reports');
 }
 
-export function generateReport(type: string, wardId?: number) {
+export function generateReport(
+  type: string,
+  wardId?: number
+): Promise<Report> {
   return request('/api/reports', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

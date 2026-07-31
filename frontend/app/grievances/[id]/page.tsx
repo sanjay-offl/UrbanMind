@@ -23,7 +23,7 @@ import {
 import { toast } from '@/components/ui/toast';
 
 export default function GrievanceDetailPage() {
-  const params = useParams<{ id: string }>();
+  const params = useParams();
   const id = Number(params.id);
   const [grievance, setGrievance] = useState<Grievance | null>(null);
   const [status, setStatus] = useState<Status | null>(null);

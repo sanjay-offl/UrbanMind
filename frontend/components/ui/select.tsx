@@ -8,6 +8,11 @@ export interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElemen
 
 const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
   ({ className, children, onValueChange, ...props }, ref) => {
+    const options = React.Children.toArray(children).filter(
+      (child): child is React.ReactElement<SelectItemProps> =>
+        React.isValidElement(child) &&
+        typeof (child.props as Partial<SelectItemProps>).value === 'string'
+    );
     return (
       <div className={cn('relative', className)}>
         <select
@@ -19,7 +24,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           }}
           {...props}
         >
-          {children}
+          {options}
         </select>
         <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-50" />
       </div>
