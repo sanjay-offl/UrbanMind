@@ -1,0 +1,72 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  frontend:
+    name: Deploy Frontend to Vercel
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy to Vercel (production)
+        uses: vercel/actions/deploy@v1
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: frontend
+          alias: urbanmind.vercel.app
+
+  backend:
+    name: Deploy Backend to Railway
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy via Railway CLI
+        uses: railwayapp/cli-action@v3
+        with:
+          railway-token: ${{ secrets.RAILWAY_TOKEN }}
+      - name: Run railway up
+        run: railway up --service urbanmind-api --detach
+
+  backend-deploy-hook:
+    name: Deploy Backend via Railway Deploy Hook
+    runs-on: ubuntu-latest
+    if: ${{ vars.USE_RAILWAY_DEPLOY_HOOK == 'true' }}
+    steps:
+      - name: Trigger Railway deploy hook
+        run: |
+          curl -f -X POST \
+            -H "Content-Type: application/json" \
+            -d '{"triggeredBy": "github-actions"}' \
+            "${{ secrets.RAILWAY_DEPLOY_HOOK }}"
