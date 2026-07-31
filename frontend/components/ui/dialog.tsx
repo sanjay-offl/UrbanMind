@@ -87,12 +87,13 @@ export function DialogContent({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-md"
+      style={{ background: 'rgba(0, 0, 0, 0.6)' }}
       onClick={() => setOpen(false)}
     >
       <div
         className={cn(
-          'relative z-50 w-full max-w-lg rounded-lg border bg-card p-6 shadow-lg',
+          'glass-card relative z-50 w-full max-w-lg p-6',
           className
         )}
         onClick={(e) => e.stopPropagation()}

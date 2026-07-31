@@ -4,15 +4,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff, KeyRound, Lock, Mail, ShieldCheck, Sparkles } from 'lucide-react';
 import { DEMO_CREDENTIALS, login } from '@/lib/auth';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { toast } from '@/components/ui/toast';
 
@@ -47,147 +38,208 @@ export default function LoginPage() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center relative p-4 transition-colors"
-      style={{ background: 'var(--bg-base)', color: 'var(--text-primary)' }}
+      style={{
+        minHeight: '100vh',
+        background: 'var(--bg-base)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'relative',
+        padding: '20px',
+      }}
     >
-      <div className="absolute right-6 top-6">
+      <div style={{ position: 'absolute', top: '24px', right: '24px' }}>
         <ThemeToggle />
       </div>
 
-      <div className="w-full max-w-md space-y-6">
-        <div className="text-center space-y-2">
+      <div className="glass-card" style={{ width: '100%', maxWidth: '440px', padding: '40px' }}>
+        <div style={{ textAlign: 'center', marginBottom: '24px' }}>
           <img
             id="logo-login"
-            className="um-logo mx-auto h-14 w-auto"
+            className="um-logo"
             src="/urbanmind_dark_logo.png"
             alt="UrbanMind"
+            style={{ height: '56px', width: 'auto', margin: '0 auto 12px auto', objectFit: 'contain' }}
           />
-          <p className="text-label tracking-widest text-center" style={{ color: 'var(--text-muted)' }}>
-            AI-powered citizen grievance intelligence
+          <p style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+            AI Intelligence Platform for City Governance
           </p>
         </div>
 
-        <div className="glass-card w-full p-8 space-y-6">
-          <div className="space-y-1">
-            <h1 className="text-h2" style={{ color: 'var(--text-primary)' }}>Sign in</h1>
-            <p className="text-caption" style={{ color: 'var(--text-secondary)' }}>
-              Enter your credentials to access the dashboard
-            </p>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <label htmlFor="email" className="text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--text-secondary)' }}>
-                Email address
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2" style={{ color: 'var(--text-muted)' }} />
-                <input
-                  id="email"
-                  type="email"
-                  required
-                  placeholder="admin@urbanmind.io"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl text-body font-mono outline-none transition-all"
-                  style={{
-                    background: 'var(--glass)',
-                    border: '1px solid var(--border)',
-                    color: 'var(--text-primary)',
-                  }}
-                  onFocus={(e) => (e.target.style.borderColor = 'var(--border-focus)')}
-                  onBlur={(e) => (e.target.style.borderColor = 'var(--border)')}
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <label htmlFor="password" className="text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--text-secondary)' }}>
-                Password
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2" style={{ color: 'var(--text-muted)' }} />
-                <input
-                  id="password"
-                  type={showPassword ? 'text' : 'password'}
-                  required
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-10 py-2.5 rounded-xl text-body font-mono outline-none transition-all"
-                  style={{
-                    background: 'var(--glass)',
-                    border: '1px solid var(--border)',
-                    color: 'var(--text-primary)',
-                  }}
-                  onFocus={(e) => (e.target.style.borderColor = 'var(--border-focus)')}
-                  onBlur={(e) => (e.target.style.borderColor = 'var(--border)')}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword((v) => !v)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2"
-                  style={{ color: 'var(--text-muted)' }}
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
-                >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
-              </div>
-            </div>
-
-            {error && (
-              <p
-                className="rounded-lg p-3 text-xs font-medium"
-                style={{
-                  background: 'rgba(255, 68, 68, 0.1)',
-                  border: '1px solid var(--status-critical)',
-                  color: 'var(--status-critical)',
-                }}
-              >
-                {error}
-              </p>
-            )}
-
-            <button type="submit" className="btn-accent w-full py-3" disabled={submitting}>
-              {submitting ? 'Signing in…' : 'Sign in'}
-            </button>
-          </form>
-
-          <div
-            className="rounded-xl p-4 space-y-2"
-            style={{ background: 'var(--glass)', border: '1px solid var(--glass-border)' }}
-          >
-            <div className="flex items-center gap-2 text-label">
-              <KeyRound className="h-3.5 w-3.5" />
-              Demo credentials
-            </div>
-            <div className="space-y-1 text-caption">
-              <p>
-                Email: <span className="font-mono" style={{ color: 'var(--text-primary)' }}>{DEMO_CREDENTIALS.email}</span>
-              </p>
-              <p>
-                Password: <span className="font-mono" style={{ color: 'var(--text-primary)' }}>{DEMO_CREDENTIALS.password}</span>
-              </p>
-            </div>
-            <button
-              type="button"
-              className="mt-2 w-full py-2 px-3 rounded-lg text-xs font-medium uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors"
-              style={{
-                background: 'var(--glass-hover)',
-                border: '1px solid var(--border)',
-                color: 'var(--text-primary)',
-              }}
-              onClick={fillDemo}
-            >
-              <Sparkles className="h-3.5 w-3.5" />
-              Fill demo credentials
-            </button>
-          </div>
+        <div style={{ marginBottom: '24px' }}>
+          <h1 style={{ color: 'var(--text-primary)', fontSize: '24px', fontWeight: 700, letterSpacing: '-0.02em', marginBottom: '4px' }}>
+            Sign in
+          </h1>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '12px' }}>
+            Enter your credentials to access the dashboard
+          </p>
         </div>
 
-        <p className="flex items-center justify-center gap-1.5 text-center text-caption" style={{ color: 'var(--text-muted)' }}>
-          <ShieldCheck className="h-3.5 w-3.5" />
-          Demo environment — credentials are stored locally in your browser
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+              Email address
+            </label>
+            <div style={{ position: 'relative' }}>
+              <Mail style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', width: '16px', height: '16px', color: 'var(--text-muted)' }} />
+              <input
+                type="email"
+                required
+                placeholder="admin@urbanmind.io"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                style={{
+                  background: 'var(--glass)',
+                  border: '1px solid var(--border)',
+                  color: 'var(--text-primary)',
+                  borderRadius: '10px',
+                  padding: '12px 16px 12px 40px',
+                  width: '100%',
+                  fontSize: '14px',
+                  outline: 'none',
+                  transition: 'border-color 0.2s',
+                  fontFamily: 'var(--font-mono), monospace',
+                }}
+                onFocus={(e) => (e.target.style.borderColor = 'var(--border-focus)')}
+                onBlur={(e) => (e.target.style.borderColor = 'var(--border)')}
+              />
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <label style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+              Password
+            </label>
+            <div style={{ position: 'relative' }}>
+              <Lock style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', width: '16px', height: '16px', color: 'var(--text-muted)' }} />
+              <input
+                type={showPassword ? 'text' : 'password'}
+                required
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                style={{
+                  background: 'var(--glass)',
+                  border: '1px solid var(--border)',
+                  color: 'var(--text-primary)',
+                  borderRadius: '10px',
+                  padding: '12px 40px 12px 40px',
+                  width: '100%',
+                  fontSize: '14px',
+                  outline: 'none',
+                  transition: 'border-color 0.2s',
+                  fontFamily: 'var(--font-mono), monospace',
+                }}
+                onFocus={(e) => (e.target.style.borderColor = 'var(--border-focus)')}
+                onBlur={(e) => (e.target.style.borderColor = 'var(--border)')}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                style={{
+                  position: 'absolute',
+                  right: '14px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'transparent',
+                  border: 'none',
+                  color: 'var(--text-muted)',
+                  cursor: 'pointer',
+                  padding: 0,
+                }}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+              >
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
+          </div>
+
+          {error && (
+            <p
+              style={{
+                background: 'rgba(255, 68, 68, 0.1)',
+                border: '1px solid var(--status-critical)',
+                color: 'var(--status-critical)',
+                borderRadius: '8px',
+                padding: '10px 14px',
+                fontSize: '12px',
+                margin: 0,
+              }}
+            >
+              {error}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            disabled={submitting}
+            style={{
+              background: 'var(--accent)',
+              color: 'var(--bg-base)',
+              width: '100%',
+              padding: '12px',
+              borderRadius: '10px',
+              fontWeight: 600,
+              fontSize: '13px',
+              letterSpacing: '0.04em',
+              textTransform: 'uppercase',
+              border: 'none',
+              cursor: 'pointer',
+              marginTop: '8px',
+            }}
+          >
+            {submitting ? 'Signing in…' : 'Sign in'}
+          </button>
+        </form>
+
+        <div
+          style={{
+            background: 'var(--glass)',
+            border: '1px solid var(--glass-border)',
+            borderRadius: '12px',
+            padding: '16px',
+            marginTop: '24px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '8px',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-muted)', fontSize: '11px', fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+            <KeyRound size={14} />
+            Demo credentials
+          </div>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '12px', margin: 0 }}>
+            Email: <span style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-mono), monospace' }}>{DEMO_CREDENTIALS.email}</span>
+          </p>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '12px', margin: 0 }}>
+            Password: <span style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-mono), monospace' }}>{DEMO_CREDENTIALS.password}</span>
+          </p>
+          <button
+            type="button"
+            onClick={fillDemo}
+            style={{
+              background: 'var(--glass-hover)',
+              border: '1px solid var(--border)',
+              color: 'var(--text-primary)',
+              borderRadius: '8px',
+              padding: '8px 12px',
+              fontSize: '12px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+              marginTop: '4px',
+            }}
+          >
+            <Sparkles size={14} />
+            Fill demo credentials
+          </button>
+        </div>
+
+        <p style={{ color: 'var(--text-secondary)', fontSize: '12px', textAlign: 'center', marginTop: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+          <ShieldCheck size={14} />
+          Demo environment — credentials stored locally
         </p>
       </div>
     </div>

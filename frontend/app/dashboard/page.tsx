@@ -8,21 +8,34 @@ import type { Grievance } from '@/types/grievance';
 import PageHeader from '@/components/layout/page-header';
 import CategoryChart from '@/components/charts/category-chart';
 import GrievanceCard from '@/components/grievances/grievance-card';
+import EmptyState from '@/components/ui/empty-state';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useWard } from '@/lib/ward-context';
 
 export default function DashboardPage() {
+  const { selectedWard } = useWard();
   const [data, setData] = useState<AnalyticsSummary | null>(null);
   const [criticalGrievances, setCriticalGrievances] = useState<Grievance[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Promise.all([getAnalytics(), getGrievances({ priority: 'critical' })])
+    setLoading(true);
+    const wardParam = selectedWard === 'all' ? undefined : selectedWard;
+
+    Promise.all([
+      getAnalytics(),
+      getGrievances({ priority: 'critical', ward_id: wardParam }),
+    ])
       .then(([analytics, critical]) => {
         setData(analytics);
-        setCriticalGrievances(critical);
+        const filteredCritical = wardParam
+          ? critical.filter((g) => g.ward === wardParam || g.ward_name === wardParam || String(g.ward_id) === wardParam)
+          : critical;
+        setCriticalGrievances(filteredCritical);
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [selectedWard]);
 
   const kpis = [
     { label: 'Total Grievances', value: data?.kpis?.total ?? 0, icon: Inbox },
@@ -35,7 +48,11 @@ export default function DashboardPage() {
     <div className="space-y-6">
       <PageHeader
         title="Dashboard"
-        description="Overview of citizen grievances across the city"
+        description={
+          selectedWard === 'all'
+            ? 'Overview of citizen grievances across the city'
+            : `Overview for ${selectedWard}`
+        }
       />
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {kpis.map((kpi) => (
@@ -46,12 +63,13 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {loading ? '—' : kpi.value}
+                {loading ? <Skeleton className="h-8 w-20" /> : kpi.value}
               </div>
             </CardContent>
           </Card>
         ))}
       </div>
+
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card className="glass-card">
           <CardHeader>
@@ -61,22 +79,37 @@ export default function DashboardPage() {
             {data ? (
               <CategoryChart data={data.categories} />
             ) : (
-              <div className="flex h-64 items-center justify-center text-sm text-muted-foreground">
-                Loading…
-              </div>
+              <Skeleton className="h-72 w-full" />
             )}
           </CardContent>
         </Card>
+
         <Card className="glass-card">
           <CardHeader>
-            <CardTitle>Top Critical Grievances</CardTitle>
+            <CardTitle>
+              Top Critical Grievances {selectedWard !== 'all' ? `(${selectedWard})` : ''}
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {criticalGrievances.map((g) => (
-              <GrievanceCard key={g.id} grievance={g} />
-            ))}
-            {!loading && criticalGrievances.length === 0 && (
-              <p className="py-8 text-center text-sm text-muted-foreground">No critical grievances</p>
+            {loading ? (
+              Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="space-y-2">
+                  <Skeleton className="h-4 w-3/4" />
+                  <Skeleton className="h-3 w-1/2" />
+                </div>
+              ))
+            ) : (
+              <>
+                {criticalGrievances.map((g) => (
+                  <GrievanceCard key={g.id} grievance={g} />
+                ))}
+                {criticalGrievances.length === 0 && (
+                  <EmptyState
+                    title="No critical grievances"
+                    description="All clear — no critical complaints right now"
+                  />
+                )}
+              </>
             )}
           </CardContent>
         </Card>

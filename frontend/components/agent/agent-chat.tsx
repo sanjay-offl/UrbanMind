@@ -58,7 +58,17 @@ export default function AgentChat() {
             <ChatMessageBubble key={i} message={message} />
           ))}
           {loading && (
-            <p className="text-sm text-muted-foreground">Thinking…</p>
+            <div className="flex justify-start">
+              <div className="flex items-center gap-1.5 rounded-lg border bg-muted p-3">
+                {[0, 1, 2].map((i) => (
+                  <span
+                    key={i}
+                    className="typing-dot"
+                    style={{ animationDelay: `${i * 150}ms` }}
+                  />
+                ))}
+              </div>
+            </div>
           )}
         </div>
       </div>

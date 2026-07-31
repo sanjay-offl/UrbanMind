@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import 'leaflet/dist/leaflet.css';
 import type { Grievance, Priority } from '@/types/grievance';
 import { formatScore } from '@/lib/format';
-import { useTheme } from '@/components/theme-provider';
+import { useTheme } from 'next-themes';
 
 const PRIORITY_COLORS: Record<Priority, string> = {
   critical: 'var(--status-critical)',

@@ -34,9 +34,10 @@ export default function CsvUploader() {
 
   return (
     <div
-      className={`flex flex-col items-center justify-center gap-4 rounded-lg border-2 border-dashed p-12 transition-colors ${
+      className={`flex cursor-pointer flex-col items-center justify-center gap-4 rounded-lg border-2 border-dashed p-12 transition-colors ${
         dragging ? 'border-primary bg-primary/5' : 'border-muted-foreground/30'
       }`}
+      onClick={() => inputRef.current?.click()}
       onDragOver={(e) => {
         e.preventDefault();
         setDragging(true);

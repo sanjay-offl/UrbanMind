@@ -7,46 +7,75 @@ import PageHeader from '@/components/layout/page-header';
 import TrendLine from '@/components/charts/trend-line';
 import CategoryChart from '@/components/charts/category-chart';
 import WardChart from '@/components/charts/ward-chart';
+import EmptyState from '@/components/ui/empty-state';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useWard } from '@/lib/ward-context';
 
 export default function TrendsPage() {
+  const { selectedWard } = useWard();
   const [data, setData] = useState<AnalyticsSummary | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getAnalytics().then(setData);
+    getAnalytics()
+      .then(setData)
+      .finally(() => setLoading(false));
   }, []);
 
   return (
     <div className="space-y-6">
       <PageHeader
         title="Trends"
-        description="Analytics across categories, wards and time"
+        description={
+          selectedWard === 'all'
+            ? 'Analytics across categories, wards and time'
+            : `Analytics overview for ${selectedWard}`
+        }
       />
-      <Card>
+      <Card className="glass-card">
         <CardHeader>
           <CardTitle>Grievances Over Time</CardTitle>
         </CardHeader>
         <CardContent>
-          <TrendLine data={data?.trends ?? []} />
+          {loading ? (
+            <Skeleton className="h-72 w-full" />
+          ) : data && data.trends.length > 0 ? (
+            <TrendLine data={data.trends} />
+          ) : (
+            <EmptyState title="No trend data yet" description="Upload grievances to see trends over time" />
+          )}
         </CardContent>
       </Card>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <Card>
+        <Card className="glass-card">
           <CardHeader>
             <CardTitle>By Category</CardTitle>
           </CardHeader>
           <CardContent>
-            <CategoryChart data={data?.categories ?? []} />
+            {loading ? (
+              <Skeleton className="h-72 w-full" />
+            ) : data && data.categories.length > 0 ? (
+              <CategoryChart data={data.categories} />
+            ) : (
+              <EmptyState title="No category data yet" />
+            )}
           </CardContent>
         </Card>
-        <Card>
+        <Card className="glass-card">
           <CardHeader>
             <CardTitle>By Ward</CardTitle>
           </CardHeader>
           <CardContent>
-            <WardChart
-              data={(data?.wards ?? []).map((w) => ({ ward: w.ward_name, count: w.count }))}
-            />
+            {loading ? (
+              <Skeleton className="h-72 w-full" />
+            ) : data && data.wards.length > 0 ? (
+              <WardChart
+                data={(data.wards ?? []).map((w) => ({ ward: w.ward_name, count: w.count }))}
+              />
+            ) : (
+              <EmptyState title="No ward data yet" />
+            )}
           </CardContent>
         </Card>
       </div>

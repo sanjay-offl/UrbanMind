@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
+import { WardProvider } from '@/lib/ward-context';
 import AppShell from '@/components/auth/app-shell';
 import { Toaster } from '@/components/ui/toast';
 
@@ -35,13 +36,14 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${inter.variable} ${mono.variable}`}
     >
-      <body className="min-h-screen">
+      <body>
         <ThemeProvider>
-          <AppShell>{children}</AppShell>
-          <Toaster position="top-right" richColors />
+          <WardProvider>
+            <AppShell>{children}</AppShell>
+            <Toaster position="top-right" richColors />
+          </WardProvider>
         </ThemeProvider>
       </body>
     </html>
   );
 }
-

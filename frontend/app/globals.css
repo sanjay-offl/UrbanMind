@@ -1,137 +1,48 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
-/* ─── SWISS + NEON WHITE DARK THEME (default) ─── */
-.dark {
-  /* Backgrounds — layered depth */
-  --bg-base:          #000000;
-  --bg-surface:       #0a0a0a;
-  --bg-elevated:      #111111;
-  --bg-overlay:       #1a1a1a;
-
-  /* Glass layers */
-  --glass:            rgba(255, 255, 255, 0.04);
-  --glass-hover:      rgba(255, 255, 255, 0.07);
-  --glass-active:     rgba(255, 255, 255, 0.10);
-  --glass-border:     rgba(255, 255, 255, 0.08);
-  --glass-border-hover: rgba(255, 255, 255, 0.16);
-  --glass-blur:       16px;
-
-  /* Typography */
-  --text-primary:     #f5f5f5;
-  --text-secondary:   #a0a0a0;
-  --text-muted:       #555555;
-  --text-disabled:    #2e2e2e;
-
-  /* Neon White Accents */
-  --accent:           #ffffff;
-  --accent-soft:      #d4d4d4;
-  --accent-glow:      0 0 20px rgba(255,255,255,0.18), 0 0 60px rgba(255,255,255,0.06);
-  --accent-glow-sm:   0 0 10px rgba(255,255,255,0.12);
-
-  /* Borders */
-  --border:           rgba(255, 255, 255, 0.07);
-  --border-strong:    rgba(255, 255, 255, 0.14);
-  --border-focus:     rgba(255, 255, 255, 0.40);
-
-  /* Status */
-  --status-critical:  #ff4444;
-  --status-high:      #ff8800;
-  --status-medium:    #f5c542;
-  --status-low:       #aaaaaa;
-  --status-resolved:  #44ff88;
-
-  /* Skeleton shimmer */
-  --skeleton-from:    rgba(255,255,255,0.04);
-  --skeleton-to:      rgba(255,255,255,0.09);
-
-  /* Shadows */
-  --shadow-sm:        0 1px 3px rgba(0,0,0,0.8);
-  --shadow-md:        0 4px 16px rgba(0,0,0,0.9);
-  --shadow-lg:        0 8px 40px rgba(0,0,0,1);
-  --shadow-glass:     0 8px 32px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06);
-
-  /* Scrollbar */
-  --scrollbar-track:  #0a0a0a;
-  --scrollbar-thumb:  #2a2a2a;
-  --scrollbar-hover:  #3a3a3a;
-
-  /* Chart */
-  --chart-grid:       rgba(255,255,255,0.05);
-  --chart-axis:       #444444;
-
-  /* shadcn HSL variable overrides */
-  --background: 0 0% 0%;
-  --foreground: 0 0% 96%;
-  --card: 0 0% 4%;
-  --card-foreground: 0 0% 96%;
-  --popover: 0 0% 4%;
-  --popover-foreground: 0 0% 96%;
-  --primary: 0 0% 100%;
-  --primary-foreground: 0 0% 0%;
-  --secondary: 0 0% 10%;
-  --secondary-foreground: 0 0% 96%;
-  --muted: 0 0% 10%;
-  --muted-foreground: 0 0% 63%;
-  --accent-foreground: 0 0% 96%;
-  --destructive: 0 84% 60%;
-  --destructive-foreground: 0 0% 98%;
-  --input: 0 0% 15%;
-  --ring: 0 0% 100%;
-}
-
-/* ─── LIGHT THEME ─── */
 :root {
-  --bg-base:          #f2f2f2;
-  --bg-surface:       #ffffff;
-  --bg-elevated:      #f8f8f8;
-  --bg-overlay:       #ececec;
+  /* Light theme */
+  --font-sans: -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'SF Mono', 'JetBrains Mono', Menlo, Consolas, 'Courier New', monospace;
+  --bg-base:             #f0f0f0;
+  --bg-surface:          #ffffff;
+  --bg-elevated:         #f8f8f8;
+  --bg-overlay:          #ececec;
+  --glass:               rgba(255,255,255,0.80);
+  --glass-hover:         rgba(255,255,255,0.92);
+  --glass-border:        rgba(0,0,0,0.08);
+  --glass-border-hover:  rgba(0,0,0,0.16);
+  --glass-blur:          16px;
+  --text-primary:        #0a0a0a;
+  --text-secondary:      #555555;
+  --text-muted:          #999999;
+  --text-disabled:       #cccccc;
+  --accent:              #000000;
+  --accent-soft:         #333333;
+  --accent-glow:         none;
+  --border:              rgba(0,0,0,0.08);
+  --border-strong:       rgba(0,0,0,0.16);
+  --border-focus:        rgba(0,0,0,0.50);
+  --status-critical:     #cc0000;
+  --status-high:         #cc6600;
+  --status-medium:       #997700;
+  --status-low:          #666666;
+  --status-resolved:     #006633;
+  --skeleton-from:       rgba(0,0,0,0.04);
+  --skeleton-to:         rgba(0,0,0,0.09);
+  --shadow-sm:           0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md:           0 4px 16px rgba(0,0,0,0.10);
+  --shadow-glass:        0 4px 24px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.9);
+  --scrollbar-track:     #f0f0f0;
+  --scrollbar-thumb:     #cccccc;
+  --scrollbar-hover:     #bbbbbb;
+  --chart-grid:          rgba(0,0,0,0.05);
+  --chart-axis:          #bbbbbb;
 
-  --glass:            rgba(255, 255, 255, 0.75);
-  --glass-hover:      rgba(255, 255, 255, 0.88);
-  --glass-active:     rgba(255, 255, 255, 0.95);
-  --glass-border:     rgba(0, 0, 0, 0.07);
-  --glass-border-hover: rgba(0, 0, 0, 0.14);
-  --glass-blur:       16px;
-
-  --text-primary:     #0a0a0a;
-  --text-secondary:   #555555;
-  --text-muted:       #999999;
-  --text-disabled:    #cccccc;
-
-  --accent:           #000000;
-  --accent-soft:      #333333;
-  --accent-glow:      0 0 20px rgba(0,0,0,0.10);
-  --accent-glow-sm:   0 0 8px rgba(0,0,0,0.07);
-
-  --border:           rgba(0, 0, 0, 0.07);
-  --border-strong:    rgba(0, 0, 0, 0.14);
-  --border-focus:     rgba(0, 0, 0, 0.40);
-
-  --status-critical:  #cc0000;
-  --status-high:      #cc6600;
-  --status-medium:    #997700;
-  --status-low:       #666666;
-  --status-resolved:  #006633;
-
-  --skeleton-from:    rgba(0,0,0,0.04);
-  --skeleton-to:      rgba(0,0,0,0.09);
-
-  --shadow-sm:        0 1px 3px rgba(0,0,0,0.10);
-  --shadow-md:        0 4px 16px rgba(0,0,0,0.10);
-  --shadow-lg:        0 8px 40px rgba(0,0,0,0.14);
-  --shadow-glass:     0 8px 32px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.9);
-
-  --scrollbar-track:  #f0f0f0;
-  --scrollbar-thumb:  #cccccc;
-  --scrollbar-hover:  #bbbbbb;
-
-  --chart-grid:       rgba(0,0,0,0.05);
-  --chart-axis:       #bbbbbb;
-
-  /* shadcn HSL variable overrides */
-  --background: 0 0% 95%;
+  /* shadcn HSL mappings */
+  --background: 0 0% 94%;
   --foreground: 0 0% 4%;
   --card: 0 0% 100%;
   --card-foreground: 0 0% 4%;
@@ -151,32 +62,68 @@
   --radius: 0.5rem;
 }
 
-/* ─── GLOBAL RESETS ─── */
-* { box-sizing: border-box; }
+.dark {
+  /* Dark theme — Black / Charcoal / Neon White */
+  --font-sans: -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'SF Mono', 'JetBrains Mono', Menlo, Consolas, 'Courier New', monospace;
+  --bg-base:             #000000;
+  --bg-surface:          #0a0a0a;
+  --bg-elevated:         #111111;
+  --bg-overlay:          #1a1a1a;
+  --glass:               rgba(255,255,255,0.04);
+  --glass-hover:         rgba(255,255,255,0.07);
+  --glass-border:        rgba(255,255,255,0.08);
+  --glass-border-hover:  rgba(255,255,255,0.16);
+  --glass-blur:          16px;
+  --text-primary:        #f5f5f5;
+  --text-secondary:      #a0a0a0;
+  --text-muted:          #555555;
+  --text-disabled:       #2e2e2e;
+  --accent:              #ffffff;
+  --accent-soft:         #d4d4d4;
+  --accent-glow:         0 0 24px rgba(255,255,255,0.18), 0 0 64px rgba(255,255,255,0.06);
+  --border:              rgba(255,255,255,0.07);
+  --border-strong:       rgba(255,255,255,0.14);
+  --border-focus:        rgba(255,255,255,0.45);
+  --status-critical:     #ff4444;
+  --status-high:         #ff8800;
+  --status-medium:       #f5c542;
+  --status-low:          #aaaaaa;
+  --status-resolved:     #44ff88;
+  --skeleton-from:       rgba(255,255,255,0.04);
+  --skeleton-to:         rgba(255,255,255,0.09);
+  --shadow-sm:           0 1px 3px rgba(0,0,0,0.8);
+  --shadow-md:           0 4px 16px rgba(0,0,0,0.9);
+  --shadow-glass:        0 8px 32px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.06);
+  --scrollbar-track:     #0a0a0a;
+  --scrollbar-thumb:     #2a2a2a;
+  --scrollbar-hover:     #3a3a3a;
+  --chart-grid:          rgba(255,255,255,0.05);
+  --chart-axis:          #444444;
 
-html {
-  font-family: var(--font-sans), 'Helvetica Neue', Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* shadcn HSL mappings */
+  --background: 0 0% 0%;
+  --foreground: 0 0% 96%;
+  --card: 0 0% 4%;
+  --card-foreground: 0 0% 96%;
+  --popover: 0 0% 4%;
+  --popover-foreground: 0 0% 96%;
+  --primary: 0 0% 100%;
+  --primary-foreground: 0 0% 0%;
+  --secondary: 0 0% 10%;
+  --secondary-foreground: 0 0% 96%;
+  --muted: 0 0% 10%;
+  --muted-foreground: 0 0% 63%;
+  --accent-foreground: 0 0% 96%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+  --input: 0 0% 15%;
+  --ring: 0 0% 100%;
 }
 
-body {
-  background-color: var(--bg-base);
-  color: var(--text-primary);
-  transition: background-color 0.3s ease, color 0.2s ease;
-}
+html { font-family: var(--font-sans), 'Helvetica Neue', Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+body { background-color: var(--bg-base); color: var(--text-primary); transition: background-color 0.3s ease, color 0.2s ease; }
 
-/* ─── SWISS TYPOGRAPHY SCALE ─── */
-.text-display  { font-size: 56px; font-weight: 700; letter-spacing: -0.04em; line-height: 1.0; }
-.text-h1       { font-size: 40px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; }
-.text-h2       { font-size: 28px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.15; }
-.text-h3       { font-size: 20px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; }
-.text-label    { font-size: 11px; font-weight: 500; letter-spacing: 0.08em;  text-transform: uppercase; color: var(--text-muted); }
-.text-body     { font-size: 14px; font-weight: 400; line-height: 1.65; }
-.text-caption  { font-size: 12px; font-weight: 300; letter-spacing: 0.02em; color: var(--text-secondary); }
-.text-mono     { font-family: var(--font-mono), 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
-
-/* ─── GLASS CARD (core reusable) ─── */
 .glass-card {
   background: var(--glass);
   border: 1px solid var(--glass-border);
@@ -184,48 +131,21 @@ body {
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
   box-shadow: var(--shadow-glass);
-  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s;
 }
 .glass-card:hover {
   background: var(--glass-hover);
   border-color: var(--glass-border-hover);
   transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
 }
 
-/* ─── NEON WHITE ACCENT BUTTON ─── */
-.btn-accent {
-  background: var(--accent);
-  color: var(--bg-base);
-  font-weight: 600;
-  font-size: 13px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  border-radius: 8px;
-  padding: 10px 20px;
-  border: none;
-  cursor: pointer;
-  transition: box-shadow 0.2s ease, transform 0.15s ease;
-}
-.dark .btn-accent:hover {
-  box-shadow: var(--accent-glow);
-  transform: translateY(-1px);
-}
-
-/* ─── SCROLLBARS ─── */
-::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: var(--scrollbar-track); }
 ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 99px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-hover); }
 
-/* ─── FOCUS RING ─── */
-*:focus-visible {
-  outline: 2px solid var(--border-focus);
-  outline-offset: 3px;
-  border-radius: 4px;
-}
+*:focus-visible { outline: 2px solid var(--border-focus); outline-offset: 3px; border-radius: 4px; }
 
-/* ─── SKELETON SHIMMER ─── */
 @keyframes shimmer {
   0%   { background-position: -400px 0; }
   100% { background-position:  400px 0; }
@@ -237,7 +157,6 @@ body {
   border-radius: 8px;
 }
 
-/* Logo image rules */
 .um-logo {
   object-fit: contain;
   display: block;
@@ -267,4 +186,47 @@ body {
   object-fit: contain;
   display: block;
   flex-shrink: 0;
+}
+
+/* Leaflet — theme-aware */
+.leaflet-container {
+  background: var(--bg-base);
+  font-family: var(--font-sans), sans-serif;
+}
+.leaflet-popup-content-wrapper {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+}
+.leaflet-popup-tip {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+}
+.leaflet-popup-content {
+  margin: 0;
+}
+.leaflet-container a.leaflet-popup-close-button {
+  color: var(--text-muted);
+}
+.leaflet-control-attribution {
+  background: var(--bg-overlay) !important;
+  color: var(--text-muted) !important;
+}
+.leaflet-control-attribution a {
+  color: var(--text-secondary) !important;
+}
+
+/* Typing indicator */
+@keyframes typing-bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+.typing-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--text-muted);
+  animation: typing-bounce 1.2s infinite ease-in-out;
 }

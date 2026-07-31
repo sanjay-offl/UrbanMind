@@ -5,25 +5,24 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Bell, ChevronDown, LogOut, Search, UserRound } from 'lucide-react';
 import { getSession, logout, type User } from '@/lib/auth';
-import { Input } from '@/components/ui/input';
-import { Select, SelectItem, SelectValue } from '@/components/ui/select';
+import { useWard } from '@/lib/ward-context';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { toast } from '@/components/ui/toast';
 
-const WARDS = [
-  { id: 1, name: 'Ward 1' },
-  { id: 2, name: 'Ward 2' },
-  { id: 3, name: 'Ward 3' },
-];
+const WARDS = ['all', 'Ward 1', 'Ward 2', 'Ward 3', 'Ward 4', 'Ward 5'];
 
 export default function Header() {
   const router = useRouter();
+  const { selectedWard, setSelectedWard } = useWard();
   const [user, setUser] = useState<User | null>(null);
+  const [userName, setUserName] = useState('Admin User');
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setUser(getSession());
+    const storedName = localStorage.getItem('user_name');
+    if (storedName) setUserName(storedName);
   }, []);
 
   useEffect(() => {
@@ -43,15 +42,26 @@ export default function Header() {
     router.replace('/login');
   }
 
-  const initials = (user?.name ?? 'SU')
+  const initials = userName
     .split(' ')
     .map((p) => p[0])
     .slice(0, 2)
     .join('')
-    .toUpperCase();
+    .toUpperCase() || 'AU';
 
   return (
-    <header className="flex h-16 min-h-16 max-h-16 shrink-0 items-center justify-between gap-4 overflow-hidden border-b bg-card px-6">
+    <header
+      style={{
+        background: 'var(--glass)',
+        backdropFilter: 'blur(var(--glass-blur))',
+        WebkitBackdropFilter: 'blur(var(--glass-blur))',
+        borderBottom: '1px solid var(--glass-border)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 50,
+      }}
+      className="flex h-16 shrink-0 items-center justify-between gap-4 px-6"
+    >
       <div className="flex w-full max-w-md items-center gap-3">
         <img
           id="logo-navbar"
@@ -59,60 +69,164 @@ export default function Header() {
           src="/urbanmind_dark_logo.png"
           alt="UrbanMind"
           height={28}
+          style={{ height: '28px', width: 'auto', objectFit: 'contain' }}
         />
         <div className="relative w-full">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input placeholder="Search grievances…" className="pl-9" />
+          <Search style={{ color: 'var(--text-muted)' }} className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2" />
+          <input
+            type="text"
+            placeholder="Search grievances…"
+            style={{
+              background: 'var(--glass)',
+              border: '1px solid var(--border)',
+              color: 'var(--text-primary)',
+              borderRadius: 8,
+              padding: '6px 12px 6px 36px',
+              fontSize: 13,
+              width: '100%',
+              outline: 'none',
+            }}
+          />
         </div>
       </div>
+
       <div className="flex items-center gap-3">
-        <Select value="all" onValueChange={() => undefined}>
-          <SelectValue>All Wards</SelectValue>
-          <SelectItem value="all">All Wards</SelectItem>
-          {WARDS.map((ward) => (
-            <SelectItem key={ward.id} value={String(ward.id)}>
-              {ward.name}
-            </SelectItem>
+        {/* Ward Dropdown */}
+        <select
+          value={selectedWard}
+          onChange={(e) => setSelectedWard(e.target.value)}
+          style={{
+            background: 'var(--glass)',
+            border: '1px solid var(--border)',
+            color: 'var(--text-primary)',
+            borderRadius: 8,
+            padding: '6px 12px',
+            fontSize: 13,
+            cursor: 'pointer',
+            backdropFilter: 'blur(var(--glass-blur))',
+            outline: 'none',
+          }}
+        >
+          {WARDS.map((w) => (
+            <option key={w} value={w} style={{ background: 'var(--bg-elevated)', color: 'var(--text-primary)' }}>
+              {w === 'all' ? 'All Wards' : w}
+            </option>
           ))}
-        </Select>
+        </select>
+
         <ThemeToggle />
-        <button className="relative rounded-full p-2 text-muted-foreground hover:bg-accent hover:text-accent-foreground">
-          <Bell className="h-5 w-5" />
+
+        <button
+          type="button"
+          style={{
+            background: 'var(--glass)',
+            border: '1px solid var(--border)',
+            color: 'var(--text-primary)',
+            borderRadius: 8,
+            padding: '8px',
+            cursor: 'pointer',
+            position: 'relative',
+          }}
+          aria-label="Notifications"
+        >
+          <Bell className="h-4 w-4" />
           <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-red-500" />
         </button>
+
+        {/* Profile Dropdown */}
         <div className="relative" ref={menuRef}>
           <button
+            type="button"
             onClick={() => setMenuOpen((v) => !v)}
-            className="flex items-center gap-2 rounded-full p-1 hover:bg-accent"
+            className="flex items-center gap-2 rounded-full p-1 transition-all"
+            style={{ cursor: 'pointer' }}
             aria-label="Account menu"
           >
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
+            <span
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: '50%',
+                background: 'var(--accent)',
+                color: 'var(--bg-base)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 700,
+                fontSize: 14,
+              }}
+            >
               {initials}
             </span>
-            <ChevronDown className="h-4 w-4 text-muted-foreground" />
+            <ChevronDown className="h-4 w-4" style={{ color: 'var(--text-secondary)' }} />
           </button>
+
           {menuOpen && (
-            <div className="absolute right-0 top-12 z-50 w-56 overflow-hidden rounded-lg border bg-popover text-popover-foreground shadow-lg">
-              <div className="border-b px-4 py-3">
-                <p className="truncate text-sm font-semibold">{user?.name}</p>
-                <p className="truncate text-xs text-muted-foreground">{user?.email}</p>
+            <div
+              style={{
+                position: 'absolute',
+                right: 0,
+                top: '48px',
+                zIndex: 50,
+                background: 'var(--bg-elevated)',
+                border: '1px solid var(--glass-border)',
+                borderRadius: 12,
+                boxShadow: 'var(--shadow-md)',
+                minWidth: 200,
+                backdropFilter: 'blur(16px)',
+                WebkitBackdropFilter: 'blur(16px)',
+                overflow: 'hidden',
+              }}
+            >
+              <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border)' }}>
+                <p style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: 14 }} className="truncate">
+                  {userName}
+                </p>
+                <p style={{ color: 'var(--text-secondary)', fontSize: 12 }} className="truncate">
+                  {user?.email ?? 'admin@urbanmind.io'}
+                </p>
               </div>
-              <div className="p-1">
+
+              <div style={{ padding: '4px 0' }}>
                 <Link
                   href="/profile"
                   onClick={() => setMenuOpen(false)}
-                  className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground"
+                  style={{
+                    color: 'var(--text-primary)',
+                    padding: '10px 16px',
+                    fontSize: 14,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    textDecoration: 'none',
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--glass-hover)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
                 >
                   <UserRound className="h-4 w-4" />
                   Profile & settings
                 </Link>
-                <button
+
+                <div style={{ borderColor: 'var(--border)', margin: '4px 0', borderTop: '1px solid var(--border)' }} />
+
+                <div
                   onClick={handleSignOut}
-                  className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground"
+                  style={{
+                    color: 'var(--status-critical)',
+                    padding: '10px 16px',
+                    fontSize: 14,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--glass-hover)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
                 >
                   <LogOut className="h-4 w-4" />
                   Sign out
-                </button>
+                </div>
               </div>
             </div>
           )}

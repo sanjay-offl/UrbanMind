@@ -10,6 +10,7 @@ export interface Grievance {
   subcategory?: string;
   ward_id: number;
   ward_name: string;
+  ward?: string;
   lat: number;
   lng: number;
   status: Status;
