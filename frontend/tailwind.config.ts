@@ -5,6 +5,7 @@ const config: Config = {
   content: [
     './app/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
+    './lib/**/*.{ts,tsx}',
   ],
   theme: {
     container: {
@@ -15,7 +16,15 @@ const config: Config = {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ['var(--font-sans)', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        mono: ['var(--font-mono)', 'JetBrains Mono', 'monospace'],
+      },
       colors: {
+        base: 'var(--bg-base)',
+        surface: 'var(--bg-surface)',
+        elevated: 'var(--bg-elevated)',
+        accent: 'var(--accent)',
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
@@ -37,10 +46,6 @@ const config: Config = {
           DEFAULT: 'hsl(var(--muted))',
           foreground: 'hsl(var(--muted-foreground))',
         },
-        accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          foreground: 'hsl(var(--accent-foreground))',
-        },
         popover: {
           DEFAULT: 'hsl(var(--popover))',
           foreground: 'hsl(var(--popover-foreground))',
@@ -49,6 +54,19 @@ const config: Config = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
+      },
+      backdropBlur: {
+        glass: 'var(--glass-blur)',
+      },
+      boxShadow: {
+        glass: 'var(--shadow-glass)',
+        glow: 'var(--accent-glow)',
+      },
+      borderColor: {
+        DEFAULT: 'var(--border)',
+      },
+      transitionProperty: {
+        theme: 'background-color, color, border-color, box-shadow',
       },
       borderRadius: {
         lg: 'var(--radius)',

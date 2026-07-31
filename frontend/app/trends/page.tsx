@@ -27,7 +27,7 @@ export default function TrendsPage() {
           <CardTitle>Grievances Over Time</CardTitle>
         </CardHeader>
         <CardContent>
-          <TrendLine data={data?.trend ?? []} />
+          <TrendLine data={data?.trends ?? []} />
         </CardContent>
       </Card>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -36,7 +36,7 @@ export default function TrendsPage() {
             <CardTitle>By Category</CardTitle>
           </CardHeader>
           <CardContent>
-            <CategoryChart data={data?.byCategory ?? []} />
+            <CategoryChart data={data?.categories ?? []} />
           </CardContent>
         </Card>
         <Card>
@@ -44,7 +44,9 @@ export default function TrendsPage() {
             <CardTitle>By Ward</CardTitle>
           </CardHeader>
           <CardContent>
-            <WardChart data={data?.byWard ?? []} />
+            <WardChart
+              data={(data?.wards ?? []).map((w) => ({ ward: w.ward_name, count: w.count }))}
+            />
           </CardContent>
         </Card>
       </div>

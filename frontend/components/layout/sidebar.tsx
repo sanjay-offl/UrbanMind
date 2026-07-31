@@ -10,6 +10,7 @@ import {
   Bot,
   FileText,
   Upload,
+  Settings,
 } from 'lucide-react';
 
 const NAV_ITEMS = [
@@ -22,18 +23,25 @@ const NAV_ITEMS = [
   { href: '/upload', label: 'Upload', icon: Upload },
 ];
 
+const FOOTER_ITEMS = [
+  { href: '/profile', label: 'Settings', icon: Settings },
+];
+
 export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="flex w-60 flex-col border-r bg-card">
-      <div className="flex h-16 items-center gap-2 border-b px-5">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal-600 text-sm font-bold text-white">
-          UM
-        </div>
-        <span className="text-lg font-bold">UrbanMind</span>
+    <aside className="flex w-60 min-w-60 max-w-60 flex-col overflow-hidden border-r bg-card">
+      <div className="flex items-center gap-2 overflow-hidden border-b px-4 pb-4 pt-5">
+        <img
+          id="logo-sidebar"
+          className="um-logo"
+          src="/urbanmind_dark_logo.png"
+          alt="UrbanMind"
+          height={32}
+        />
       </div>
-      <nav className="flex-1 space-y-1 p-3">
+      <nav className="flex-1 space-y-1 overflow-y-auto p-3">
         {NAV_ITEMS.map((item) => {
           const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
           return (
@@ -52,6 +60,25 @@ export default function Sidebar() {
           );
         })}
       </nav>
+      <div className="space-y-1 border-t p-3">
+        {FOOTER_ITEMS.map((item) => {
+          const active = pathname === item.href;
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                active
+                  ? 'bg-primary text-primary-foreground'
+                  : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+              }`}
+            >
+              <item.icon className="h-4 w-4" />
+              {item.label}
+            </Link>
+          );
+        })}
+      </div>
     </aside>
   );
 }

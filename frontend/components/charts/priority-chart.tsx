@@ -14,10 +14,10 @@ export interface PriorityDatum {
 }
 
 const COLORS: Record<string, string> = {
-  critical: '#dc2626',
-  high: '#f97316',
-  medium: '#eab308',
-  low: '#16a34a',
+  critical: 'var(--status-critical)',
+  high: 'var(--status-high)',
+  medium: 'var(--status-medium)',
+  low: 'var(--status-low)',
 };
 
 export default function PriorityChart({ data }: { data: PriorityDatum[] }) {
@@ -39,22 +39,36 @@ export default function PriorityChart({ data }: { data: PriorityDatum[] }) {
               paddingAngle={2}
             >
               {data.map((entry) => (
-                <Cell key={entry.name} fill={COLORS[entry.name] ?? '#94a3b8'} />
+                <Cell key={entry.name} fill={COLORS[entry.name] ?? 'var(--text-muted)'} />
               ))}
             </Pie>
-            <Tooltip />
+            <Tooltip
+              contentStyle={{
+                background: 'var(--bg-elevated)',
+                border: '1px solid var(--glass-border)',
+                borderRadius: '12px',
+                color: 'var(--text-primary)',
+                backdropFilter: 'blur(16px)',
+                WebkitBackdropFilter: 'blur(16px)',
+                boxShadow: 'var(--shadow-md)',
+                fontSize: '13px',
+                fontFamily: 'var(--font-sans)',
+              }}
+              labelStyle={{ color: 'var(--text-secondary)', fontWeight: 500 }}
+              itemStyle={{ color: 'var(--text-primary)' }}
+            />
           </PieChart>
         </ResponsiveContainer>
       </div>
       <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
         {data.map((entry) => (
-          <div key={entry.name} className="flex items-center gap-2 text-sm">
+          <div key={entry.name} className="flex items-center gap-2 text-sm font-sans">
             <span
               className="h-3 w-3 rounded-full"
-              style={{ backgroundColor: COLORS[entry.name] ?? '#94a3b8' }}
+              style={{ backgroundColor: COLORS[entry.name] ?? 'var(--text-muted)' }}
             />
-            <span className="capitalize">{entry.name}</span>
-            <span className="font-medium text-muted-foreground">
+            <span className="capitalize" style={{ color: 'var(--text-primary)' }}>{entry.name}</span>
+            <span className="font-mono text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>
               {total > 0 ? Math.round((entry.value / total) * 100) : 0}%
             </span>
           </div>

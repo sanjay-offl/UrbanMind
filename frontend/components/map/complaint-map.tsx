@@ -5,15 +5,27 @@ import { useEffect, useState } from 'react';
 import 'leaflet/dist/leaflet.css';
 import type { Grievance, Priority } from '@/types/grievance';
 import { formatScore } from '@/lib/format';
+import { useTheme } from '@/components/theme-provider';
 
 const PRIORITY_COLORS: Record<Priority, string> = {
-  critical: '#dc2626',
-  high: '#f97316',
-  medium: '#eab308',
-  low: '#16a34a',
+  critical: 'var(--status-critical)',
+  high: 'var(--status-high)',
+  medium: 'var(--status-medium)',
+  low: 'var(--status-low)',
 };
 
 const DEFAULT_CENTER: [number, number] = [17.385, 78.4867];
+
+const TILES = {
+  light: {
+    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  },
+  dark: {
+    url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+  },
+};
 
 const MapContainer = dynamic(
   () => import('react-leaflet').then((m) => m.MapContainer),
@@ -26,6 +38,9 @@ interface ComplaintMapProps {
 }
 
 export default function ComplaintMap({ grievances, className }: ComplaintMapProps) {
+  const { resolvedTheme } = useTheme();
+  const tile = TILES[resolvedTheme === 'dark' ? 'dark' : 'light'];
+
   const [tileLayer, setTileLayer] = useState<React.ElementType | null>(null);
   const [circleMarker, setCircleMarker] = useState<React.ElementType | null>(null);
   const [popup, setPopup] = useState<React.ElementType | null>(null);
@@ -57,8 +72,9 @@ export default function ComplaintMap({ grievances, className }: ComplaintMapProp
       >
         {Tile && (
           <Tile
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            key={resolvedTheme}
+            url={tile.url}
+            attribution={tile.attribution}
           />
         )}
         {Marker &&
@@ -76,11 +92,22 @@ export default function ComplaintMap({ grievances, className }: ComplaintMapProp
               }}
             >
               <PopupBox>
-                <div className="min-w-[180px] space-y-1 text-sm">
+                <div
+                  style={{
+                    background: 'var(--bg-elevated)',
+                    color: 'var(--text-primary)',
+                    border: '1px solid var(--border)',
+                    borderRadius: 10,
+                    padding: '10px 14px',
+                    fontFamily: 'var(--font-sans)',
+                    fontSize: 13,
+                  }}
+                  className="min-w-[180px] space-y-1"
+                >
                   <div className="font-semibold">{g.title}</div>
-                  <div className="text-muted-foreground">{g.category}</div>
+                  <div style={{ color: 'var(--text-secondary)' }}>{g.category}</div>
                   <div>
-                    Score: <span className="font-medium">{formatScore(g.score)}</span>
+                    Score: <span className="font-mono font-medium">{formatScore(g.score)}</span>
                   </div>
                   <div className="capitalize">
                     Priority: <span className="font-medium">{g.priority}</span>

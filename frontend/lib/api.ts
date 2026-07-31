@@ -41,8 +41,15 @@ function buildQuery(params?: QueryParams): string {
   return qs ? `?${qs}` : '';
 }
 
+interface GrievanceList {
+  items: Grievance[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
 export function getGrievances(params?: GrievanceParams): Promise<Grievance[]> {
-  return request(`/api/grievances${buildQuery(params)}`);
+  return request<GrievanceList>(`/api/grievances${buildQuery(params)}`).then((r) => r.items);
 }
 
 export function getGrievance(id: number): Promise<Grievance> {

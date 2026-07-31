@@ -2,28 +2,33 @@
 
 import { useEffect, useState } from 'react';
 import { Inbox, AlertTriangle, Star, Activity } from 'lucide-react';
-import { getAnalytics } from '@/lib/api';
+import { getAnalytics, getGrievances } from '@/lib/api';
 import type { AnalyticsSummary } from '@/types/analytics';
+import type { Grievance } from '@/types/grievance';
 import PageHeader from '@/components/layout/page-header';
-import PriorityChart from '@/components/charts/priority-chart';
+import CategoryChart from '@/components/charts/category-chart';
 import GrievanceCard from '@/components/grievances/grievance-card';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function DashboardPage() {
   const [data, setData] = useState<AnalyticsSummary | null>(null);
+  const [criticalGrievances, setCriticalGrievances] = useState<Grievance[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getAnalytics()
-      .then(setData)
+    Promise.all([getAnalytics(), getGrievances({ priority: 'critical' })])
+      .then(([analytics, critical]) => {
+        setData(analytics);
+        setCriticalGrievances(critical);
+      })
       .finally(() => setLoading(false));
   }, []);
 
   const kpis = [
-    { label: 'Total Grievances', value: data?.kpiCards.total ?? 0, icon: Inbox },
-    { label: 'Open', value: data?.kpiCards.open ?? 0, icon: Activity },
-    { label: 'Critical', value: data?.kpiCards.critical ?? 0, icon: AlertTriangle },
-    { label: 'Avg Score', value: data?.kpiCards.avgScore ?? 0, icon: Star },
+    { label: 'Total Grievances', value: data?.kpis?.total ?? 0, icon: Inbox },
+    { label: 'Open', value: data?.kpis?.open ?? 0, icon: Activity },
+    { label: 'Critical', value: data?.kpis?.critical ?? 0, icon: AlertTriangle },
+    { label: 'Avg Score', value: data?.kpis?.avg_score ?? 0, icon: Star },
   ];
 
   return (
@@ -34,7 +39,7 @@ export default function DashboardPage() {
       />
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {kpis.map((kpi) => (
-          <Card key={kpi.label}>
+          <Card key={kpi.label} className="glass-card">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">{kpi.label}</CardTitle>
               <kpi.icon className="h-4 w-4 text-muted-foreground" />
@@ -48,18 +53,13 @@ export default function DashboardPage() {
         ))}
       </div>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <Card>
+        <Card className="glass-card">
           <CardHeader>
-            <CardTitle>Grievances by Priority</CardTitle>
+            <CardTitle>Grievances by Category</CardTitle>
           </CardHeader>
           <CardContent>
             {data ? (
-              <PriorityChart
-                data={Object.entries(data.priorityBreakdown ?? {}).map(([name, value]) => ({
-                  name,
-                  value,
-                }))}
-              />
+              <CategoryChart data={data.categories} />
             ) : (
               <div className="flex h-64 items-center justify-center text-sm text-muted-foreground">
                 Loading…
@@ -67,15 +67,15 @@ export default function DashboardPage() {
             )}
           </CardContent>
         </Card>
-        <Card>
+        <Card className="glass-card">
           <CardHeader>
             <CardTitle>Top Critical Grievances</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {(data?.topCritical ?? []).map((g) => (
+            {criticalGrievances.map((g) => (
               <GrievanceCard key={g.id} grievance={g} />
             ))}
-            {!loading && (data?.topCritical?.length ?? 0) === 0 && (
+            {!loading && criticalGrievances.length === 0 && (
               <p className="py-8 text-center text-sm text-muted-foreground">No critical grievances</p>
             )}
           </CardContent>

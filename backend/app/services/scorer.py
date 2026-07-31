@@ -9,9 +9,9 @@ RECENCY_DAYS = 30
 SEVERITY_KEYWORDS = {
     "water outage": 25,
     "sewage leak": 30,
-    "pothole": 20,
+    "pothole": 25,
     "electrical hazard": 35,
-    "garbage pileup": 15,
+    "garbage pileup": 20,
     "road accident": 45,
     "medical": 40,
     "crime": 50,

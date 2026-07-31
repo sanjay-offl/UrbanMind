@@ -1,8 +1,23 @@
 import type { Metadata } from 'next';
+import { Inter, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
-import Sidebar from '@/components/layout/sidebar';
-import Header from '@/components/layout/header';
+import { ThemeProvider } from '@/components/theme-provider';
+import AppShell from '@/components/auth/app-shell';
 import { Toaster } from '@/components/ui/toast';
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-sans',
+  weight: ['300', '400', '500', '600', '700'],
+  display: 'swap',
+});
+
+const mono = JetBrains_Mono({
+  subsets: ['latin'],
+  variable: '--font-mono',
+  weight: ['400', '500'],
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'UrbanMind — Citizen Complaint Intelligence',
@@ -15,15 +30,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className="flex min-h-screen">
-        <Sidebar />
-        <div className="flex flex-1 flex-col">
-          <Header />
-          <main className="flex-1 p-6">{children}</main>
-        </div>
-        <Toaster position="top-right" richColors />
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${inter.variable} ${mono.variable}`}
+    >
+      <body className="min-h-screen">
+        <ThemeProvider>
+          <AppShell>{children}</AppShell>
+          <Toaster position="top-right" richColors />
+        </ThemeProvider>
       </body>
     </html>
   );
 }
+

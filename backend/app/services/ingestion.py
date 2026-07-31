@@ -47,8 +47,8 @@ def parse_csv(content: bytes) -> tuple[list[dict], list[str]]:
     errors: list[str] = []
     for index, record in df.iterrows():
         row = record.to_dict()
-        title = clean(str(row.get("title", "")))
-        ward_name = clean(str(row.get("ward_name", "")))
+        title = clean(str(row.get("title", ""))) if not pd.isna(row.get("title")) else ""
+        ward_name = clean(str(row.get("ward_name", ""))) if not pd.isna(row.get("ward_name")) else ""
         if not title or not ward_name:
             errors.append(f"Row {index + 1}: missing title or ward_name")
             continue

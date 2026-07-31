@@ -4,7 +4,7 @@ export interface KpiCards {
   total: number;
   open: number;
   critical: number;
-  avgScore: number;
+  avg_score: number;
 }
 
 export interface CategoryCount {
@@ -13,7 +13,8 @@ export interface CategoryCount {
 }
 
 export interface WardCount {
-  ward: string;
+  ward_id: number;
+  ward_name: string;
   count: number;
 }
 
@@ -23,10 +24,8 @@ export interface TrendPoint {
 }
 
 export interface AnalyticsSummary {
-  kpiCards: KpiCards;
-  priorityBreakdown: Record<string, number>;
-  topCritical: Grievance[];
-  trend: TrendPoint[];
-  byCategory: CategoryCount[];
-  byWard: WardCount[];
+  kpis: KpiCards;
+  categories: CategoryCount[];
+  wards: WardCount[];
+  trends: TrendPoint[];
 }
