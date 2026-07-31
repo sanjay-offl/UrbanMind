@@ -18,8 +18,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     setAuthed(Boolean(session));
     if (!session && !isLoginPage) {
       router.replace('/login');
-    } else if (session && isLoginPage) {
-      router.replace('/dashboard');
     }
   }, [pathname, router, isLoginPage]);
 
