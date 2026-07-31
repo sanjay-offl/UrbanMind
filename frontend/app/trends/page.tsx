@@ -10,7 +10,7 @@ import WardChart from '@/components/charts/ward-chart';
 import EmptyState from '@/components/ui/empty-state';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useWard } from '@/lib/ward-context';
+import { useWard, wardIdFromSelection } from '@/lib/ward-context';
 
 export default function TrendsPage() {
   const { selectedWard } = useWard();
@@ -18,10 +18,11 @@ export default function TrendsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getAnalytics()
+    setLoading(true);
+    getAnalytics({ ward_id: wardIdFromSelection(selectedWard) })
       .then(setData)
       .finally(() => setLoading(false));
-  }, []);
+  }, [selectedWard]);
 
   return (
     <div className="space-y-6">

@@ -7,7 +7,7 @@ import PageHeader from '@/components/layout/page-header';
 import GrievanceFilters from '@/components/grievances/grievance-filters';
 import GrievanceTable from '@/components/grievances/grievance-table';
 import type { GrievanceFilters as Filters } from '@/components/grievances/grievance-filters';
-import { useWard } from '@/lib/ward-context';
+import { useWard, wardIdFromSelection } from '@/lib/ward-context';
 
 export default function GrievancesPage() {
   const { selectedWard } = useWard();
@@ -18,12 +18,8 @@ export default function GrievancesPage() {
   const fetchGrievances = useCallback(async (f: Filters, ward: string) => {
     setLoading(true);
     try {
-      const wardParam = ward === 'all' ? undefined : ward;
-      const data = await getGrievances({ ...f, ward_id: wardParam });
-      const filtered = wardParam
-        ? data.filter((g) => g.ward === wardParam || g.ward_name === wardParam || String(g.ward_id) === wardParam)
-        : data;
-      setGrievances(filtered);
+      const data = await getGrievances({ ...f, ward_id: wardIdFromSelection(ward) });
+      setGrievances(data);
     } finally {
       setLoading(false);
     }

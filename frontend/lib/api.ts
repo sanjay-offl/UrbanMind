@@ -10,7 +10,7 @@ type QueryParams = Record<string, string | number | undefined>;
 interface GrievanceParams extends QueryParams {
   search?: string;
   category?: string;
-  ward_id?: string;
+  ward_id?: number;
   status?: string;
   priority?: string;
 }
@@ -92,8 +92,8 @@ export async function chatAgent(
   });
 }
 
-export function getAnalytics(): Promise<AnalyticsSummary> {
-  return request('/api/analytics');
+export function getAnalytics(params?: { ward_id?: number }): Promise<AnalyticsSummary> {
+  return request(`/api/analytics${buildQuery(params)}`);
 }
 
 export function getReports(): Promise<Report[]> {

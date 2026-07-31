@@ -14,6 +14,12 @@ const WardContext = createContext<WardContextType>({
 
 export const useWard = () => useContext(WardContext);
 
+export function wardIdFromSelection(selection: string): number | undefined {
+  if (!selection || selection === 'all') return undefined;
+  const match = /ward\s+(\d+)/i.exec(selection);
+  return match ? parseInt(match[1], 10) : undefined;
+}
+
 export function WardProvider({ children }: { children: ReactNode }) {
   const [selectedWard, setSelectedWard] = useState('all');
 

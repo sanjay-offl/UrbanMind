@@ -12,6 +12,7 @@
   --bg-overlay:          #ececec;
   --glass:               rgba(255,255,255,0.80);
   --glass-hover:         rgba(255,255,255,0.92);
+  --glass-active:        rgba(0,0,0,0.06);
   --glass-border:        rgba(0,0,0,0.08);
   --glass-border-hover:  rgba(0,0,0,0.16);
   --glass-blur:          16px;
@@ -72,6 +73,7 @@
   --bg-overlay:          #1a1a1a;
   --glass:               rgba(255,255,255,0.04);
   --glass-hover:         rgba(255,255,255,0.07);
+  --glass-active:        rgba(255,255,255,0.10);
   --glass-border:        rgba(255,255,255,0.08);
   --glass-border-hover:  rgba(255,255,255,0.16);
   --glass-blur:          16px;

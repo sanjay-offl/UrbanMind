@@ -7,19 +7,15 @@ import PageHeader from '@/components/layout/page-header';
 import ComplaintMap from '@/components/map/complaint-map';
 import MapLegend from '@/components/map/map-legend';
 import { Card, CardContent } from '@/components/ui/card';
-import { useWard } from '@/lib/ward-context';
+import { useWard, wardIdFromSelection } from '@/lib/ward-context';
 
 export default function MapPage() {
   const { selectedWard } = useWard();
   const [grievances, setGrievances] = useState<Grievance[]>([]);
 
   useEffect(() => {
-    const wardParam = selectedWard === 'all' ? undefined : selectedWard;
-    getGrievances({ ward_id: wardParam }).then((data) => {
-      const filtered = wardParam
-        ? data.filter((g) => g.ward === wardParam || g.ward_name === wardParam || String(g.ward_id) === wardParam)
-        : data;
-      setGrievances(filtered);
+    getGrievances({ ward_id: wardIdFromSelection(selectedWard) }).then((data) => {
+      setGrievances(data);
     });
   }, [selectedWard]);
 

@@ -11,7 +11,7 @@ import GrievanceCard from '@/components/grievances/grievance-card';
 import EmptyState from '@/components/ui/empty-state';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useWard } from '@/lib/ward-context';
+import { useWard, wardIdFromSelection } from '@/lib/ward-context';
 
 export default function DashboardPage() {
   const { selectedWard } = useWard();
@@ -21,18 +21,15 @@ export default function DashboardPage() {
 
   useEffect(() => {
     setLoading(true);
-    const wardParam = selectedWard === 'all' ? undefined : selectedWard;
+    const wardId = wardIdFromSelection(selectedWard);
 
     Promise.all([
-      getAnalytics(),
-      getGrievances({ priority: 'critical', ward_id: wardParam }),
+      getAnalytics({ ward_id: wardId }),
+      getGrievances({ priority: 'critical', ward_id: wardId }),
     ])
       .then(([analytics, critical]) => {
         setData(analytics);
-        const filteredCritical = wardParam
-          ? critical.filter((g) => g.ward === wardParam || g.ward_name === wardParam || String(g.ward_id) === wardParam)
-          : critical;
-        setCriticalGrievances(filteredCritical);
+        setCriticalGrievances(critical);
       })
       .finally(() => setLoading(false));
   }, [selectedWard]);
