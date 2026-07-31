@@ -1,0 +1,17 @@
+fastapi
+uvicorn[standard]
+sqlalchemy>=2.0
+psycopg2-binary
+pydantic-settings
+alembic
+pandas
+python-multipart
+httpx
+openai
+pinecone-client
+anthropic
+redis
+apscheduler
+reportlab
+pytest
+pytest-asyncio

@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "categories": [
+    {
+      "name": "Roads & Infrastructure",
+      "keywords": ["pothole", "road", "speed breaker", "footpath", "traffic signal", "divider", "craters"],
+      "subcategories": ["Potholes", "Road Damage", "Footpaths", "Traffic Signals", "Speed Breakers"]
+    },
+    {
+      "name": "Water Supply",
+      "keywords": ["water supply", "water outage", "no water", "low pressure", "pipeline leak", "contamination", "tanker"],
+      "subcategories": ["Water Outage", "Pipeline Leak", "Contamination", "Low Pressure", "Tanker Supply"]
+    },
+    {
+      "name": "Sanitation & Waste",
+      "keywords": ["garbage", "waste collection", "dumping", "litter", "stench", "overflowing bin", "dead animal", "sewage"],
+      "subcategories": ["Garbage Collection", "Open Dumping", "Drains & Sewage", "Public Bin Overflow", "Dead Animals"]
+    },
+    {
+      "name": "Electricity",
+      "keywords": ["power cut", "streetlight", "electrical", "voltage fluctuation", "transformer", "wires", "electricity bill"],
+      "subcategories": ["Streetlights", "Power Outage", "Transformer Issues", "Voltage Fluctuation", "Illegal Wiring"]
+    },
+    {
+      "name": "Public Safety",
+      "keywords": ["crime", "theft", "unsafe", "security", "assault", "police", "dark area", "stray dog"],
+      "subcategories": ["Theft & Crime", "Unsafe Areas", "Stray Animals", "Police Response", "Street Lighting"]
+    },
+    {
+      "name": "Parks & Green Spaces",
+      "keywords": ["park", "playground", "tree", "garden", "open space", "horticulture", "swing", "fallen tree"],
+      "subcategories": ["Park Maintenance", "Playground Equipment", "Tree Felling", "Open Space Encroachment", "Tree Hazard"]
+    },
+    {
+      "name": "Health & Medical",
+      "keywords": ["hospital", "medical", "disease", "mosquito", "fever", "ambulance", "clinic", "mosquito breeding"],
+      "subcategories": ["Hospital Issues", "Mosquito Breeding", "Ambulance Access", "Clinic Availability"]
+    },
+    {
+      "name": "Education",
+      "keywords": ["school", "college", "education", "classroom", "mid-day meal", "teacher", "student"],
+      "subcategories": ["School Infrastructure", "Teacher Issues", "Mid-day Meals", "Transport to School"]
+    },
+    {
+      "name": "Housing & Buildings",
+      "keywords": ["building", "housing", "demolition", "illegal construction", "rent", "shelter", "encroachment"],
+      "subcategories": ["Illegal Construction", "Building Safety", "Slum Housing", "Encroachment"]
+    },
+    {
+      "name": "Noise & Environment",
+      "keywords": ["noise", "pollution", "dust", "air quality", "honking", "construction dust", "odour"],
+      "subcategories": ["Noise Pollution", "Air Quality", "Dust", "Industrial Pollution"]
+    },
+    {
+      "name": "Public Transport",
+      "keywords": ["bus", "metro", "auto", "rickshaw", "bus stop", "transport", "route", "overcharging"],
+      "subcategories": ["Bus Service", "Bus Stops", "Metro Issues", "Auto Overcharging"]
+    },
+    {
+      "name": "Others",
+      "keywords": ["other", "general", "complaint", "feedback", "suggestion", "civic"],
+      "subcategories": ["General Complaint", "Feedback", "Suggestion", "Other"]
+    }
+  ]
+}
