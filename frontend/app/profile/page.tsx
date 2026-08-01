@@ -3,14 +3,14 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { LogOut, UserRound, KeyRound, Palette } from 'lucide-react';
-import { useTheme } from 'next-themes';
 import { getSession, logout } from '@/lib/auth';
 import PageHeader from '@/components/layout/page-header';
 import { toast } from '@/components/ui/toast';
+import { useThemeController } from '@/components/theme-provider';
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { theme, setTheme } = useTheme();
+  const { theme: currentTheme, applyTheme } = useThemeController();
   const [mounted, setMounted] = useState(false);
 
   const [name, setName] = useState('Admin User');
@@ -74,7 +74,21 @@ export default function ProfilePage() {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Profile Card */}
         <div className="glass-card p-6">
-          <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'var(--accent)', color: 'var(--bg-base)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 22, marginBottom: 16 }}>
+          <div
+            style={{
+              width: 64,
+              height: 64,
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, #9A1750, #EE4C7C)',
+              color: '#FFFFFF',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontWeight: 700,
+              fontSize: 22,
+              marginBottom: 16,
+            }}
+          >
             AU
           </div>
           <div className="flex items-center gap-2 mb-4">
@@ -92,7 +106,7 @@ export default function ProfilePage() {
                 onChange={(e) => setName(e.target.value)}
                 style={{
                   background: 'var(--glass)',
-                  border: '1px solid var(--border)',
+                  border: '1px solid var(--glass-border)',
                   color: 'var(--text-primary)',
                   borderRadius: 8,
                   padding: '10px 14px',
@@ -110,10 +124,10 @@ export default function ProfilePage() {
               <input
                 type="email"
                 readOnly
-                value="admin@urbanmind.io"
+                value="admin@urbanmind.gov.in"
                 style={{
                   background: 'var(--glass)',
-                  border: '1px solid var(--border)',
+                  border: '1px solid var(--glass-border)',
                   color: 'var(--text-secondary)',
                   borderRadius: 8,
                   padding: '10px 14px',
@@ -134,7 +148,7 @@ export default function ProfilePage() {
                 value="Admin Officer"
                 style={{
                   background: 'var(--glass)',
-                  border: '1px solid var(--border)',
+                  border: '1px solid var(--glass-border)',
                   color: 'var(--text-secondary)',
                   borderRadius: 8,
                   padding: '10px 14px',
@@ -148,8 +162,8 @@ export default function ProfilePage() {
             <button
               type="submit"
               style={{
-                background: 'var(--accent)',
-                color: 'var(--bg-base)',
+                background: 'linear-gradient(135deg, #9A1750, #EE4C7C)',
+                color: '#FFFFFF',
                 padding: '10px 20px',
                 borderRadius: 8,
                 fontWeight: 600,
@@ -157,6 +171,7 @@ export default function ProfilePage() {
                 border: 'none',
                 cursor: 'pointer',
                 transition: 'all 0.2s',
+                boxShadow: '0 4px 16px rgba(154,23,80,0.30)',
               }}
             >
               {saved ? '✓ Saved' : 'Save changes'}
@@ -182,7 +197,7 @@ export default function ProfilePage() {
                 placeholder="••••••••"
                 style={{
                   background: 'var(--glass)',
-                  border: '1px solid var(--border)',
+                  border: '1px solid var(--glass-border)',
                   color: 'var(--text-primary)',
                   borderRadius: 8,
                   padding: '10px 14px',
@@ -204,7 +219,7 @@ export default function ProfilePage() {
                 placeholder="••••••••"
                 style={{
                   background: 'var(--glass)',
-                  border: '1px solid var(--border)',
+                  border: '1px solid var(--glass-border)',
                   color: 'var(--text-primary)',
                   borderRadius: 8,
                   padding: '10px 14px',
@@ -226,7 +241,7 @@ export default function ProfilePage() {
                 placeholder="••••••••"
                 style={{
                   background: 'var(--glass)',
-                  border: '1px solid var(--border)',
+                  border: '1px solid var(--glass-border)',
                   color: 'var(--text-primary)',
                   borderRadius: 8,
                   padding: '10px 14px',
@@ -241,7 +256,7 @@ export default function ProfilePage() {
               type="submit"
               style={{
                 background: 'var(--glass-hover)',
-                border: '1px solid var(--border)',
+                border: '1px solid var(--glass-border)',
                 color: 'var(--text-primary)',
                 padding: '10px 20px',
                 borderRadius: 8,
@@ -264,29 +279,102 @@ export default function ProfilePage() {
           <p style={{ color: 'var(--text-secondary)', fontSize: 12, marginBottom: 16 }}>
             Select your preferred color theme
           </p>
-          <div className="flex gap-4">
-            {mounted &&
-              ['dark', 'light', 'system'].map((t) => (
+          {mounted && (
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(3,1fr)',
+                gap: 8,
+                marginBottom: 16,
+              }}
+            >
+              {[
+                { id: 'dark', label: 'Dark', preview: 'dark' },
+                { id: 'light', label: 'Light', preview: 'light' },
+                { id: 'system', label: 'Auto', preview: 'system' },
+              ].map((t) => (
                 <button
-                  key={t}
+                  key={t.id}
                   type="button"
-                  onClick={() => setTheme(t)}
+                  onClick={() => applyTheme(t.id)}
                   style={{
-                    border: theme === t ? '2px solid var(--accent)' : '1px solid var(--border)',
-                    background: theme === t ? 'var(--glass-active)' : 'var(--glass)',
-                    color: 'var(--text-primary)',
+                    padding: 12,
                     borderRadius: 10,
-                    padding: '12px 20px',
                     cursor: 'pointer',
-                    transition: 'all 0.2s',
-                    fontWeight: theme === t ? 600 : 400,
-                    textTransform: 'capitalize',
+                    border:
+                      currentTheme === t.id
+                        ? '1.5px solid #EE4C7C'
+                        : '1px solid var(--glass-border)',
+                    background:
+                      currentTheme === t.id
+                        ? 'rgba(154,23,80,0.12)'
+                        : 'var(--glass)',
+                    boxShadow:
+                      currentTheme === t.id
+                        ? '0 0 0 3px rgba(154,23,80,0.20)'
+                        : 'none',
+                    backdropFilter: 'blur(12px)',
                   }}
                 >
-                  {t}
+                  {/* Mini preview */}
+                  <div
+                    style={{
+                      height: 48,
+                      borderRadius: 6,
+                      marginBottom: 8,
+                      overflow: 'hidden',
+                      background:
+                        t.id === 'dark'
+                          ? '#121212'
+                          : t.id === 'light'
+                            ? '#E3E2DF'
+                            : 'linear-gradient(135deg, #121212 50%, #E3E2DF 50%)',
+                    }}
+                  >
+                    {t.id !== 'system' && (
+                      <div style={{ padding: '8px 10px' }}>
+                        <div
+                          style={{
+                            height: 6,
+                            width: '60%',
+                            borderRadius: 3,
+                            background:
+                              t.id === 'dark'
+                                ? 'rgba(255,255,255,0.3)'
+                                : 'rgba(0,0,0,0.25)',
+                            marginBottom: 6,
+                          }}
+                        />
+                        <div
+                          style={{
+                            height: 4,
+                            width: '40%',
+                            borderRadius: 2,
+                            background:
+                              t.id === 'dark'
+                                ? 'rgba(255,255,255,0.15)'
+                                : 'rgba(0,0,0,0.12)',
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                  <span
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 500,
+                      color:
+                        currentTheme === t.id
+                          ? '#EE4C7C'
+                          : 'var(--text-secondary)',
+                    }}
+                  >
+                    {t.label}
+                  </span>
                 </button>
               ))}
-          </div>
+            </div>
+          )}
         </div>
 
         {/* Session Card */}
@@ -302,9 +390,9 @@ export default function ProfilePage() {
             type="button"
             onClick={handleSignOut}
             style={{
-              background: 'rgba(255, 68, 68, 0.15)',
-              border: '1px solid var(--status-critical)',
-              color: 'var(--status-critical)',
+              background: 'rgba(154,23,80,0.12)',
+              border: '1px solid rgba(154,23,80,0.30)',
+              color: '#EE4C7C',
               padding: '10px 18px',
               borderRadius: 8,
               fontWeight: 500,

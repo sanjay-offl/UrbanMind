@@ -8,10 +8,10 @@ import { formatScore } from '@/lib/format';
 import { useTheme } from 'next-themes';
 
 const PRIORITY_COLORS: Record<Priority, string> = {
-  critical: 'var(--status-critical)',
-  high: 'var(--status-high)',
-  medium: 'var(--status-medium)',
-  low: 'var(--status-low)',
+  critical: '#9A1750',
+  high: '#EE4C7C',
+  medium: '#E3AFBC',
+  low: '#E3E2DF',
 };
 
 const DEFAULT_CENTER: [number, number] = [17.385, 78.4867];
@@ -87,7 +87,7 @@ export default function ComplaintMap({ grievances, className }: ComplaintMapProp
               pathOptions={{
                 color: PRIORITY_COLORS[g.priority],
                 fillColor: PRIORITY_COLORS[g.priority],
-                fillOpacity: 0.6,
+                fillOpacity: 0.8,
                 weight: 1.5,
               }}
             >
@@ -96,7 +96,7 @@ export default function ComplaintMap({ grievances, className }: ComplaintMapProp
                   style={{
                     background: 'var(--bg-elevated)',
                     color: 'var(--text-primary)',
-                    border: '1px solid var(--border)',
+                    border: '1px solid var(--glass-border)',
                     borderRadius: 10,
                     padding: '10px 14px',
                     fontFamily: 'var(--font-sans)',

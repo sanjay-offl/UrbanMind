@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 export const runtime = 'nodejs';
 
@@ -6,24 +6,20 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000/api/v
 
 export async function POST(request: NextRequest) {
   const formData = await request.formData();
-  const file = formData.get('file');
-  if (!(file instanceof File)) {
-    return new Response(JSON.stringify({ detail: 'No file provided' }), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json' },
-    });
+
+  const res = await fetch(`${API_BASE}/upload/analyze`, {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const error = await res.json().catch(() => null);
+    return NextResponse.json(
+      { error: error?.detail || 'Analysis failed' },
+      { status: res.status }
+    );
   }
 
-  const backendForm = new FormData();
-  backendForm.append('file', file);
-
-  const res = await fetch(`${API_BASE}/upload`, {
-    method: 'POST',
-    body: backendForm,
-  });
   const data = await res.json();
-  return new Response(JSON.stringify(data), {
-    status: res.status,
-    headers: { 'Content-Type': 'application/json' },
-  });
+  return NextResponse.json(data);
 }

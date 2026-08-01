@@ -3,6 +3,7 @@
 import {
   BarChart,
   Bar,
+  Cell,
   XAxis,
   YAxis,
   Tooltip,
@@ -14,6 +15,8 @@ export interface CategoryDatum {
   category: string;
   count: number;
 }
+
+const BAR_COLORS = ['#9A1750', '#EE4C7C', '#E3AFBC', '#E3E2DF', '#9A1750', '#EE4C7C'];
 
 export default function CategoryChart({ data }: { data: CategoryDatum[] }) {
   return (
@@ -52,7 +55,11 @@ export default function CategoryChart({ data }: { data: CategoryDatum[] }) {
             itemStyle={{ color: 'var(--text-primary)' }}
             cursor={{ fill: 'var(--glass)', stroke: 'var(--glass-border)', strokeWidth: 1 }}
           />
-          <Bar dataKey="count" fill="var(--accent)" radius={[0, 4, 4, 0]} />
+          <Bar dataKey="count" radius={[0, 4, 4, 0]}>
+            {data.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={BAR_COLORS[index % BAR_COLORS.length]} />
+            ))}
+          </Bar>
         </BarChart>
       </ResponsiveContainer>
     </div>

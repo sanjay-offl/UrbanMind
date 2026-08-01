@@ -17,11 +17,19 @@ def test_parse_csv_valid_returns_three_rows():
     assert rows[0]["longitude"] == 78.4740
 
 
-def test_parse_csv_missing_required_column_returns_error():
+def test_parse_csv_falls_back_to_first_column_and_skips_short_rows():
     data = b"title,ward_name\nNo water,Ameerpet\n"
     rows, errors = parse_csv(data)
     assert rows == []
-    assert any("description" in error for error in errors)
+    assert any("Row 1" in error for error in errors)
+
+
+def test_parse_csv_complaint_text_variant():
+    data = b"complaint_text,ward,date\nSewage overflow near Ward 42 school,Ward 42 Adyar,2024-08-01\n"
+    rows, errors = parse_csv(data)
+    assert len(rows) == 1
+    assert rows[0]["title"] == "sewage overflow near ward 42 school"
+    assert rows[0]["ward_name"] == "ward 42 adyar"
 
 
 def test_parse_csv_empty_file_returns_error():

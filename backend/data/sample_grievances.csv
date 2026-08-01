@@ -1,21 +1,21 @@
-id,title,description,ward_name,ward_id,latitude,longitude,status,source,created_at
-1,Deep pothole on Begumpet main road,"A large pothole near the Begumpet flyover is damaging vehicles and causing traffic jams every evening.",Begumpet,1,17.4493,78.4740,pending,csv,2026-07-29T08:15:00Z
-2,No water supply in Ameerpet colony,"Residents of SBI Colony have had no water supply for two days. Water tanker has not arrived.",Ameerpet,2,17.4375,78.4483,pending,csv,2026-07-28T07:40:00Z
-3,Garbage not collected for a week,"Household waste is piling up on the street corner. Strong smell and stray dogs around the pile.",Kukatpally,3,17.4948,78.4074,classified,csv,2026-07-25T10:05:00Z
-4,Streetlight not working on Madhapur road,"Three consecutive streetlights near Madhapur HITEX junction are not working since last week. Dark stretch at night.",Madhapur,4,17.4483,78.3915,in_progress,csv,2026-07-22T18:30:00Z
-5,Sewage overflowing near Gachibowli junction,"Manholes near the Gachibowli flyover are overflowing onto the road. Very bad smell and slippery surface.",Gachibowli,5,17.4401,78.3489,pending,csv,2026-07-27T09:20:00Z
-6,Broken footpath outside Secunderabad railway station,"Tiles on the footpath are broken and uneven. Elderly commuters find it difficult to walk.",Secunderabad,6,17.4399,78.4983,resolved,csv,2026-07-10T11:00:00Z
-7,Open manhole near Charminar market,"Manhole cover is missing near the Charminar vegetable market. Children are at risk of falling in.",Charminar,7,17.3616,78.4747,in_progress,csv,2026-07-20T13:15:00Z
-8,Stray dogs menace in Banjara Hills,"A pack of stray dogs is chasing two-wheelers near Road No 12 every night. Dangerous for school children.",Banjara Hills,8,17.4189,78.4407,pending,csv,2026-07-26T06:45:00Z
-9,Power fluctuation in Jubilee Hills,"Voltage fluctuation is damaging appliances in our apartment. Frequent tripping during evenings.",Jubilee Hills,9,17.4319,78.4120,classified,csv,2026-07-18T19:50:00Z
-10,Water pipeline leak at Hitech City,"Water pipeline is leaking near Cyber Towers and wasting water on the road for many days.",Hitech City,10,17.4448,78.3865,pending,csv,2026-07-30T08:00:00Z
-11,Garbage dump near Tarnaka bus stop,"Open garbage dump right next to the bus stop. Commuters complain about the smell every day.",Tarnaka,11,17.4409,78.5496,in_progress,csv,2026-07-15T10:30:00Z
-12,Damaged road at Dilsukhnagar flyover,"Road surface near the Dilsukhnagar flyover has multiple craters and is dangerous for bikes.",Dilsukhnagar,12,17.3694,78.5243,pending,csv,2026-07-24T16:10:00Z
-13,Bus shelter damaged at Begumpet,"The bus shelter near Begumpet metro has a broken roof and no bench. Commuters stand in the sun.",Begumpet,1,17.4493,78.4740,resolved,csv,2026-07-05T09:00:00Z
-14,No streetlights on Ameerpet stretch,"The entire Ameerpet cross road stretch is dark. Earlier complaints about theft at night.",Ameerpet,2,17.4375,78.4483,closed,csv,2026-07-02T20:00:00Z
-15,Mosquito breeding at construction site,"Stagnant water at an abandoned construction site in Kukatpally is breeding mosquitoes.",Kukatpally,3,17.4948,78.4074,classified,csv,2026-07-21T12:00:00Z
-16,Drainage clogged in Madhapur lane,"Storm water drain behind my house is completely clogged. Water enters the house during rain.",Madhapur,4,17.4483,78.3915,pending,csv,2026-07-28T15:30:00Z
-17,Auto overcharging near Gachibowli IT hub,"Autos near the Gachibowli IT hub refuse to go by meter and charge double the fare.",Gachibowli,5,17.4401,78.3489,pending,csv,2026-07-23T17:45:00Z
-18,Playground equipment broken in Secunderabad park,"Swing chains in the children's park are broken and the slide is rusted. Kids cannot play safely.",Secunderabad,6,17.4399,78.4983,in_progress,csv,2026-07-12T07:30:00Z
-19,Fallen tree across road in Banjara Hills,"A tree fell across the service road near Kavuri Hills after the storm. Two lanes are blocked.",Banjara Hills,8,17.4189,78.4407,resolved,csv,2026-07-14T14:20:00Z
-20,Water contamination reports in Jubilee Hills,"Residents report the tap water is muddy and has a foul smell since two days.",Jubilee Hills,9,17.4319,78.4120,pending,csv,2026-07-29T09:55:00Z
+complaint_text,ward,date
+Sewage overflow blocking the road near Ward 42 school in Adyar,Ward 42 Adyar,2024-08-01
+Road has completely caved in on Kodambakkam High Road near signal,Ward 17 Kodambakkam,2024-08-01
+No water supply for 3 days in Mylapore residential area,Ward 31 Mylapore,2024-08-01
+Streetlights not working for 2 weeks in Velachery main road,Ward 56 Velachery,2024-08-01
+Garbage not collected for 5 days in T.Nagar,Ward 23 T.Nagar,2024-08-01
+Large pothole causing accidents near Anna Nagar roundabout,Ward 12 Anna Nagar,2024-08-01
+Drainage blocked and flooding compound in Tambaram,Ward 78 Tambaram,2024-08-01
+Encroachment blocking public footpath in Tondiarpet,Ward 11 Tondiarpet,2024-08-02
+Water pipe burst flooding the street in Guindy for 2 days,Ward 45 Guindy,2024-08-02
+Broken manhole cover dangerous for pedestrians in Perambur,Ward 34 Perambur,2024-08-02
+Illegal dumping of construction waste near Royapuram beach,Ward 09 Royapuram,2024-08-02
+Park benches and lighting broken in Sholinganallur,Ward 67 Sholinganallur,2024-08-02
+Sewage smell coming from blocked drain near Adyar market,Ward 42 Adyar,2024-08-02
+Same pothole reported 3 times near Mylapore temple not fixed,Ward 31 Mylapore,2024-08-02
+Water tanker not arriving as scheduled in Velachery layout,Ward 56 Velachery,2024-08-03
+Road flooded after rain no drainage in Guindy industrial area,Ward 45 Guindy,2024-08-03
+Stray dog menace near T.Nagar school causing fear for children,Ward 23 T.Nagar,2024-08-03
+Transformer fault causing power cuts daily in Kodambakkam,Ward 17 Kodambakkam,2024-08-03
+Public toilet locked and non-functional in Anna Nagar park,Ward 12 Anna Nagar,2024-08-03
+Sewage overflowing into children play area in Adyar colony,Ward 42 Adyar,2024-08-03
