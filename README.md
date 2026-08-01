@@ -89,6 +89,10 @@ See [`.env.example`](.env.example) for the full list. Key variables:
 - [Data Model](docs/data-model.md) — PostgreSQL schema, Redis keys, Pinecone index
 - [Setup Guide](docs/setup-guide.md) — local dev, migrations, tests, deployment
 
-## License
+  ## Live deployment
 
-MIT — see [LICENSE](LICENSE).
+  See the platform in action at the live demo: https://urban-mind-mauve.vercel.app
+
+  ## License
+
+  MIT — see [LICENSE](LICENSE).
