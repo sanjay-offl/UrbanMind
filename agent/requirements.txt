@@ -1,10 +1,9 @@
-langchain>=0.2
-langchain-anthropic
-langchain-community
-langchain-core
+# Agent now runs inside the backend service (backend/app/services/agent.py)
+# and talks to Gemini with function calling. Kept for reference/back-compat.
+google-generativeai
+vertexai
+google-cloud-aiplatform
 redis
-openai
-pinecone
 pandas
 psycopg2-binary
 python-dotenv

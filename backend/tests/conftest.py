@@ -1,11 +1,14 @@
 import os
 
+os.environ.setdefault("DATABASE_URL", "sqlite://")
 os.environ["DATABASE_URL"] = "sqlite://"
 os.environ["REDIS_URL"] = "redis://localhost:6379/0"
-os.environ["ANTHROPIC_API_KEY"] = ""
-os.environ["OPENAI_API_KEY"] = ""
-os.environ["PINECONE_API_KEY"] = ""
-os.environ["CLAUDE_MODEL"] = "claude-sonnet-4-6"
+os.environ["GOOGLE_API_KEY"] = ""
+os.environ["VERTEX_AI_PROJECT"] = ""
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = ""
+os.environ["FIREBASE_PROJECT_ID"] = ""
+os.environ["GOOGLE_MAPS_API_KEY"] = ""
+os.environ["TELEGRAM_BOT_TOKEN"] = ""
 os.environ["CORS_ORIGINS"] = "http://localhost:3000"
 
 from datetime import datetime, timedelta

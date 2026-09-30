@@ -11,6 +11,7 @@ DATABASE_URL = os.getenv(
     "postgresql+psycopg2://postgres:postgres@localhost:5432/urbanmind",
 )
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
-ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
-CLAUDE_MODEL = os.getenv("CLAUDE_MODEL", "claude-sonnet-4-6")
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY", "")
+VERTEX_AI_PROJECT = os.getenv("VERTEX_AI_PROJECT", "")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-1.5-flash")
 report_backend_url = os.getenv("report_backend_url", "http://localhost:8000")

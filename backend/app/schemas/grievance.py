@@ -8,8 +8,8 @@ class GrievanceBase(BaseModel):
     description: str
     category: str = "Others"
     ward_id: int | None = None
-    lat: float = 0.0
-    lng: float = 0.0
+    lat: float | None = None
+    lng: float | None = None
     source: str = "csv"
 
 
@@ -35,6 +35,10 @@ class GrievanceOut(GrievanceBase):
     sentiment: str
     created_at: datetime
     updated_at: datetime | None = None
+    state: str | None = None
+    district: str | None = None
+    block: str | None = None
+    photo_url: str | None = None
 
 
 class GrievanceList(BaseModel):
