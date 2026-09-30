@@ -89,3 +89,25 @@ def wards(db: Session = Depends(get_db)):
             .order_by(func.count(Grievance.id).desc())
         ).all()
     ]
+
+
+@router.get("/priority-scores")
+def priority_scores(limit: int = Query(50, ge=1, le=1000)):
+    from app.services.scorer import compute_priority_scores_sql
+    scores = compute_priority_scores_sql()
+    # Sort by priority index descending
+    scores.sort(key=lambda x: x["priority_index"], reverse=True)
+    return scores[:limit]
+
+
+@router.get("/forecast")
+def demand_forecast(district: str = Query("Dindigul"), sector: str = Query("water")):
+    from app.services.forecasting import get_district_trends
+    return get_district_trends(district, sector)
+
+
+@router.get("/eval")
+def eval_metrics():
+    from app.services.evaluator import get_cached_or_default_eval
+    return get_cached_or_default_eval()
+

@@ -1,25 +1,59 @@
 import type { Priority, Status } from '@/types/grievance';
 
+/**
+ * Google-inspired categorical palette. Used for charts, map clusters and
+ * status chips so the whole product reads as one system.
+ */
+export const PALETTE = {
+  blue: '#4285F4',
+  red: '#EA4335',
+  yellow: '#FBBC05',
+  green: '#34A853',
+  ink: '#111827',
+  slate: '#64748B',
+  line: '#E5E7EB',
+} as const;
+
+/** Sector colours — the same four accents, assigned by civic domain. */
+export const SECTOR_COLORS: Record<string, string> = {
+  water: PALETTE.blue,
+  roads: PALETTE.yellow,
+  sanitation: PALETTE.green,
+  electricity: PALETTE.red,
+  health: PALETTE.blue,
+  education: PALETTE.green,
+  public_safety: PALETTE.red,
+  agriculture: PALETTE.yellow,
+  environment: PALETTE.green,
+  transport: PALETTE.blue,
+};
+
 export const PRIORITY_COLORS: Record<Priority, string> = {
-  critical: '#9A1750',
-  high: '#EE4C7C',
-  medium: '#E3AFBC',
-  low: '#E3E2DF',
+  critical: PALETTE.red,
+  high: PALETTE.yellow,
+  medium: PALETTE.blue,
+  low: PALETTE.slate,
+};
+
+export const STATUS_COLORS: Record<Status, string> = {
+  pending: PALETTE.slate,
+  classified: PALETTE.blue,
+  in_progress: PALETTE.yellow,
+  resolved: PALETTE.green,
+  closed: PALETTE.slate,
 };
 
 export const CATEGORIES: string[] = [
-  'Roads & Infrastructure',
   'Water Supply',
+  'Road Infrastructure',
   'Sanitation & Waste',
   'Electricity',
-  'Public Safety',
-  'Parks & Green Spaces',
   'Health & Medical',
   'Education',
-  'Housing & Buildings',
-  'Noise & Environment',
+  'Public Safety',
+  'Agriculture & Rural Livelihoods',
+  'Environment & Ecology',
   'Public Transport',
-  'Others',
 ];
 
 export const STATUS_OPTIONS: Status[] = [
@@ -42,88 +76,135 @@ export const ROLES = {
 
 export type Role = (typeof ROLES)[keyof typeof ROLES];
 
+export const ROLE_LABELS: Record<Role, string> = {
+  admin: 'National Administrator',
+  ward_officer: 'Ward Officer',
+  analyst: 'Policy Analyst',
+};
+
+/**
+ * Capability names. Routes and API handlers check these rather than checking
+ * the role string directly, so a new role only needs one entry here.
+ */
+export const PERMISSIONS = {
+  VIEW_DASHBOARD: 'view_dashboard',
+  VIEW_GRIEVANCES: 'view_grievances',
+  EDIT_GRIEVANCES: 'edit_grievances',
+  VIEW_MAP: 'view_map',
+  VIEW_TRENDS: 'view_trends',
+  VIEW_HOTSPOTS: 'view_hotspots',
+  VIEW_PRIORITY: 'view_priority',
+  VIEW_RECOMMENDATIONS: 'view_recommendations',
+  USE_AGENT: 'use_agent',
+  VIEW_REPORTS: 'view_reports',
+  GENERATE_REPORTS: 'generate_reports',
+  UPLOAD_COMPLAINTS: 'upload_complaints',
+  SUBMIT_COMPLAINT: 'submit_complaint',
+  VIEW_ALL_WARDS: 'view_all_wards',
+  ACCESS_SETTINGS: 'access_settings',
+  MANAGE_USERS: 'manage_users',
+} as const;
+
 export const ROLE_PERMISSIONS: Record<Role, string[]> = {
-  admin: [
-    'view_dashboard',
-    'view_grievances',
-    'edit_grievances',
-    'view_map',
-    'view_trends',
-    'use_agent',
-    'view_reports',
-    'generate_reports',
-    'upload_complaints',
-    'view_all_wards',
-    'access_settings',
-    'manage_users',
-  ],
+  admin: Object.values(PERMISSIONS),
   ward_officer: [
-    'view_dashboard',
-    'view_grievances',
-    'view_map',
-    'view_trends',
-    'use_agent',
-    'view_reports',
-    'upload_complaints',
+    PERMISSIONS.VIEW_DASHBOARD,
+    PERMISSIONS.VIEW_GRIEVANCES,
+    PERMISSIONS.EDIT_GRIEVANCES,
+    PERMISSIONS.VIEW_MAP,
+    PERMISSIONS.VIEW_TRENDS,
+    PERMISSIONS.VIEW_HOTSPOTS,
+    PERMISSIONS.VIEW_PRIORITY,
+    PERMISSIONS.USE_AGENT,
+    PERMISSIONS.VIEW_REPORTS,
+    PERMISSIONS.GENERATE_REPORTS,
+    PERMISSIONS.UPLOAD_COMPLAINTS,
+    PERMISSIONS.SUBMIT_COMPLAINT,
     'view_own_ward',
   ],
   analyst: [
-    'view_dashboard',
-    'view_grievances',
-    'view_map',
-    'view_trends',
-    'view_reports',
-    'view_all_wards',
+    PERMISSIONS.VIEW_DASHBOARD,
+    PERMISSIONS.VIEW_GRIEVANCES,
+    PERMISSIONS.VIEW_MAP,
+    PERMISSIONS.VIEW_TRENDS,
+    PERMISSIONS.VIEW_HOTSPOTS,
+    PERMISSIONS.VIEW_PRIORITY,
+    PERMISSIONS.VIEW_RECOMMENDATIONS,
+    PERMISSIONS.VIEW_REPORTS,
+    PERMISSIONS.GENERATE_REPORTS,
+    PERMISSIONS.SUBMIT_COMPLAINT,
+    PERMISSIONS.VIEW_ALL_WARDS,
   ],
 };
 
-export const DEMO_USERS = [
+export interface DemoUser {
+  email: string;
+  password: string;
+  name: string;
+  role: Role;
+  initials: string;
+  department: string;
+  ward: string | null;
+  badgeLabel: string;
+  badgeBg: string;
+  badgeColor: string;
+  badgeBorder: string;
+  chipBorder: string;
+  chipHoverBg: string;
+  chipHoverBorder: string;
+}
+
+/**
+ * The three seeded government accounts. The login page renders these as cards
+ * that *fill the form* — clicking a card never authenticates by itself.
+ */
+export const DEMO_USERS: DemoUser[] = [
   {
     email: 'admin@urbanmind.gov.in',
     password: 'UrbanMind@2024',
-    name: 'Nithya Shree P G',
-    role: 'admin' as Role,
-    initials: 'NS',
-    department: 'Municipal Corporation of Chennai',
+    name: 'Sanjay S',
+    role: 'admin',
+    initials: 'SS',
+    department: 'Ministry of Housing & Urban Affairs — National Cell',
     ward: null,
-    badgeLabel: 'Admin Officer',
-    badgeBg: 'rgba(154,23,80,0.18)',
-    badgeColor: '#EE4C7C',
-    badgeBorder: 'rgba(154,23,80,0.35)',
-    chipBorder: 'rgba(154,23,80,0.20)',
-    chipHoverBg: 'rgba(154,23,80,0.08)',
-    chipHoverBorder: 'rgba(154,23,80,0.40)',
+    badgeLabel: 'National Admin',
+    badgeBg: 'rgba(66,133,244,0.12)',
+    badgeColor: PALETTE.blue,
+    badgeBorder: 'rgba(66,133,244,0.32)',
+    chipBorder: 'rgba(66,133,244,0.22)',
+    chipHoverBg: 'rgba(66,133,244,0.08)',
+    chipHoverBorder: 'rgba(66,133,244,0.45)',
   },
   {
     email: 'ward@urbanmind.gov.in',
     password: 'WardDemo@2024',
-    name: 'Sakthy Sabarish',
-    role: 'ward_officer' as Role,
-    initials: 'SS',
-    department: 'Ward 42 — Adyar',
-    ward: 'Ward 42',
+    name: 'Gowsik',
+    role: 'ward_officer',
+    initials: 'GW',
+    department: 'Greater Chennai Corporation — Ward 1, Chennai',
+    ward: 'Ward 1 — Kunj',
     badgeLabel: 'Ward Officer',
-    badgeBg: 'rgba(227,175,188,0.20)',
-    badgeColor: '#E3AFBC',
-    badgeBorder: 'rgba(227,175,188,0.40)',
-    chipBorder: 'rgba(227,175,188,0.20)',
-    chipHoverBg: 'rgba(227,175,188,0.08)',
-    chipHoverBorder: 'rgba(227,175,188,0.45)',
+    badgeBg: 'rgba(52,168,83,0.12)',
+    badgeColor: PALETTE.green,
+    badgeBorder: 'rgba(52,168,83,0.32)',
+    chipBorder: 'rgba(52,168,83,0.22)',
+    chipHoverBg: 'rgba(52,168,83,0.08)',
+    chipHoverBorder: 'rgba(52,168,83,0.45)',
   },
   {
     email: 'analyst@urbanmind.gov.in',
     password: 'Analyst@2024',
-    name: 'Sanjay S',
-    role: 'analyst' as Role,
-    initials: 'SJ',
-    department: 'Data & Analytics Division',
+    name: 'Dhanu Shree',
+    role: 'analyst',
+    initials: 'DS',
+    department: 'NITI Aayog — Policy & Analytics Division',
     ward: null,
-    badgeLabel: 'Analyst',
-    badgeBg: 'rgba(227,226,223,0.12)',
-    badgeColor: '#E3E2DF',
-    badgeBorder: 'rgba(227,226,223,0.30)',
-    chipBorder: 'rgba(227,226,223,0.15)',
-    chipHoverBg: 'rgba(227,226,223,0.06)',
-    chipHoverBorder: 'rgba(227,226,223,0.35)',
+    badgeLabel: 'Policy Analyst',
+    badgeBg: 'rgba(251,188,5,0.16)',
+    badgeColor: '#B06000',
+    badgeBorder: 'rgba(251,188,5,0.40)',
+    chipBorder: 'rgba(251,188,5,0.30)',
+    chipHoverBg: 'rgba(251,188,5,0.10)',
+    chipHoverBorder: 'rgba(251,188,5,0.55)',
   },
 ];

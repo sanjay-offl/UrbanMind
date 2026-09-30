@@ -64,9 +64,11 @@ const navItems = [
 function NavItem({
   item,
   pathname,
+  onNavigate,
 }: {
   item: (typeof navItems)[number];
   pathname: string;
+  onNavigate?: () => void;
 }) {
   const active =
     pathname === item.href ||
@@ -88,6 +90,7 @@ function NavItem({
   return (
     <Link
       href={item.href}
+      onClick={onNavigate}
       style={{
         display: 'flex',
         gap: 10,
@@ -143,7 +146,7 @@ function NavItem({
   );
 }
 
-export default function Sidebar() {
+export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
   const router = useRouter();
   const { user, can } = useAuth();
@@ -174,7 +177,8 @@ export default function Sidebar() {
         width: '240px',
         minWidth: '240px',
         maxWidth: '240px',
-        height: '100vh',
+        height: '100%',
+        minHeight: 0,
         display: 'flex',
         flexDirection: 'column',
         background: 'var(--sidebar-bg)',
@@ -229,7 +233,12 @@ export default function Sidebar() {
       {/* NAV ITEMS — Filtered by permissions */}
       <nav style={{ flex: 1, overflowY: 'auto', padding: 8 }}>
         {visibleItems.map((item) => (
-          <NavItem key={item.href} item={item} pathname={pathname} />
+          <NavItem
+            key={item.href}
+            item={item}
+            pathname={pathname}
+            onNavigate={onNavigate}
+          />
         ))}
       </nav>
 

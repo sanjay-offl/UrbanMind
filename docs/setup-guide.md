@@ -22,7 +22,7 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
-Edit `.env` and set at minimum `DATABASE_URL`, `ANTHROPIC_API_KEY`, `REDIS_URL`, and `PINECONE_API_KEY` (see root [`.env.example`](../.env.example)).
+Edit `.env` and set `DATABASE_URL` and `REDIS_URL`. Add `GOOGLE_API_KEY` or `VERTEX_AI_PROJECT` for live Gemini calls. Without either credential, the API starts in clearly labelled demo mode and uses precomputed examples (see root [`.env.example`](../.env.example)).
 
 Apply migrations and start the API:
 
@@ -51,7 +51,7 @@ Open http://localhost:3000.
 
 ## 3. Agent Setup
 
-The agent runs inside the backend process (exposes `/api/v1/agent/chat`). It requires `ANTHROPIC_API_KEY` and `REDIS_URL` from the backend `.env`. If you run the agent standalone:
+The agent runs inside the backend process (exposes `/api/v1/agent/chat`) and uses Redis conversation memory. Configure Google credentials for live Gemini access. If you run the agent standalone:
 
 ```bash
 cd agent
@@ -122,7 +122,7 @@ From `backend/` after linking the project. `RAILWAY_TOKEN` is required in non-in
 
 - **Test** (`.github/workflows/test.yml`): runs on every pull request — frontend lint + build, backend pytest.
 - **Deploy** (`.github/workflows/deploy.yml`): runs on push to `main` — Vercel for the frontend, Railway for the backend.
-- Required repository secrets: `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `PINECONE_API_KEY`, `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`, `RAILWAY_TOKEN`.
+- Required repository secrets depend on the selected deployment target. Google credentials belong in the hosting platform's secret store; do not commit them.
 - The `.env.example` in the repo is a template only; real secrets live in the hosting platform's secret store.
 
 ## Troubleshooting
@@ -133,4 +133,4 @@ From `backend/` after linking the project. `RAILWAY_TOKEN` is required in non-in
 | Alembic can't connect | Verify `DATABASE_URL` in `backend/.env`; confirm Postgres is running |
 | Frontend API 404s | Check `NEXT_PUBLIC_API_URL` in `.env.local`; backend on :8000? |
 | Upload rows rejected | CSV needs `title`, `description`, `ward_name`/`ward_id`, `lat`, `lng` columns |
-| Agent chat empty replies | Check `ANTHROPIC_API_KEY` and that Redis is reachable |
+| Classifications show demo mode | Configure `GOOGLE_API_KEY` or `VERTEX_AI_PROJECT`; demo output is precomputed, not a live model result |

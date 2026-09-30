@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
 from app.database.init_db import init_db
-from app.routers import agent, analytics, grievances, intake, reports, upload, webhooks
+from app.routers import agent, analytics, grievances, intake, recommendations, reports, upload, webhooks
 from app.services.classifier import describe as classifier_describe
 from app.services.demo_data import demo_description
 from app.tasks.score_refresh import shutdown_scheduler, start_scheduler
@@ -41,6 +41,7 @@ def create_app() -> FastAPI:
     app.include_router(intake.router)
     app.include_router(webhooks.router)
     app.include_router(analytics.router, prefix=API_PREFIX)
+    app.include_router(recommendations.router, prefix=API_PREFIX)
     app.include_router(agent.router, prefix=API_PREFIX)
     app.include_router(reports.router, prefix=API_PREFIX)
 

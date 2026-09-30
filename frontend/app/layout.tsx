@@ -11,6 +11,7 @@ const inter = Inter({
   variable: '--font-sans',
   weight: ['300', '400', '500', '600', '700'],
   display: 'swap',
+  preload: false,
 });
 
 const mono = JetBrains_Mono({
@@ -18,6 +19,7 @@ const mono = JetBrains_Mono({
   variable: '--font-mono',
   weight: ['400', '500'],
   display: 'swap',
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -34,6 +36,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
+      data-theme="light"
       className={`${inter.variable} ${mono.variable}`}
     >
       <head>

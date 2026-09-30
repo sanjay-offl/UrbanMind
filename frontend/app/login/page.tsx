@@ -2,693 +2,387 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { login } from '@/lib/auth';
+import { AlertCircle, Check, Eye, EyeOff, KeyRound } from 'lucide-react';
+import { getSession, login } from '@/lib/auth';
 import { DEMO_USERS } from '@/lib/constants';
 import { toast } from '@/components/ui/toast';
+
+const TEAM = ['Sanjay S', 'Gowsik', 'Dhanu Shree'] as const;
+const REMEMBER_EMAIL_KEY = 'urbanmind-remembered-email';
+
+/** Demo card metadata — presentation only; credentials come from constants. */
+const DEMO_META: Record<
+  string,
+  { slot: 'admin' | 'ward' | 'analyst'; role: string; scope: string }
+> = {
+  'admin@urbanmind.gov.in': {
+    slot: 'admin',
+    role: 'National Admin',
+    scope: 'All India · full access',
+  },
+  'ward@urbanmind.gov.in': {
+    slot: 'ward',
+    role: 'Ward Officer',
+    scope: 'Chennai Ward 1 · action rights',
+  },
+  'analyst@urbanmind.gov.in': {
+    slot: 'analyst',
+    role: 'Policy Analyst',
+    scope: 'All India · read + reports',
+  },
+};
+
+function Character({
+  variant,
+  label,
+}: {
+  variant: 'blue' | 'green' | 'yellow' | 'red';
+  label: string;
+}) {
+  return (
+    <div
+      className={`char char-${variant}`}
+      role="img"
+      aria-label={label}
+    >
+      <div className="char-face" aria-hidden="true">
+        <div className="char-eyes">
+          <span className="char-eye" />
+          <span className="char-eye" />
+        </div>
+        <div className="char-mouth" />
+      </div>
+    </div>
+  );
+}
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [remember, setRemember] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-  const [shakeError, setShakeError] = useState(false);
-  const [formProgress, setFormProgress] = useState(0);
-  const [resolvedTheme, setResolvedTheme] = useState('dark');
+  const [error, setError] = useState('');
+  const [touched, setTouched] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem('urbanmind-theme') || 'dark';
-    setResolvedTheme(saved);
-    document.documentElement.setAttribute('data-theme', saved);
+    // The login screen is always light: scope the light tokens to <body> so
+    // the page chrome and toasts match, whatever the stored app theme is.
+    document.body.classList.add('auth-light');
+    try {
+      const savedEmail = localStorage.getItem(REMEMBER_EMAIL_KEY);
+      if (savedEmail) {
+        setEmail(savedEmail);
+        setRemember(true);
+      }
+    } catch {
+      /* storage unavailable — non-fatal */
+    }
+    return () => {
+      document.body.classList.remove('auth-light');
+    };
   }, []);
 
-  function handleThemeToggle() {
-    const next = resolvedTheme === 'dark' ? 'light' : 'dark';
-    setResolvedTheme(next);
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('urbanmind-theme', next);
-  }
+  // An already-signed-in officer never sees the sign-in form again.
+  useEffect(() => {
+    if (getSession()) router.replace('/dashboard');
+  }, [router]);
 
-  function updateProgress(eVal = email, pVal = password) {
-    let score = 0;
-    if (eVal.trim().length > 0) score += 50;
-    if (pVal.length > 0) score += 50;
-    setFormProgress(score);
-  }
+  const emailInvalid =
+    touched && email.length > 0 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   function fillCredentials(fillEmail: string, fillPass: string) {
     setEmail(fillEmail);
     setPassword(fillPass);
-    setError(false);
-    updateProgress(fillEmail, fillPass);
+    setError('');
+    setTouched(false);
   }
 
-  function handleLogin(e: React.FormEvent) {
+  async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
-    if (!email || !password) {
-      triggerError();
+    setTouched(true);
+
+    if (!email.trim() || !password) {
+      setError('Enter both your email and password to continue.');
       return;
     }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setError('Enter a valid email address, for example you@example.com.');
+      return;
+    }
+
     setLoading(true);
-    setError(false);
+    setError('');
 
-    setTimeout(() => {
-      const user = login(email, password);
-      if (user) {
-        toast.success(`Welcome back, ${user.name}`);
-        router.replace('/dashboard');
-      } else {
-        setLoading(false);
-        triggerError();
+    try {
+      const user = await login(email, password);
+
+      // "Remember me" persists the email for the next visit.
+      try {
+        if (remember) {
+          localStorage.setItem(REMEMBER_EMAIL_KEY, email.trim());
+        } else {
+          localStorage.removeItem(REMEMBER_EMAIL_KEY);
+        }
+      } catch {
+        /* storage unavailable — non-fatal */
       }
-    }, 600);
-  }
 
-  function triggerError() {
-    setError(true);
-    setShakeError(true);
-    setTimeout(() => setShakeError(false), 500);
+      toast.success(`Welcome back, ${user.name}`);
+      router.replace('/dashboard');
+    } catch (err) {
+      setLoading(false);
+      setError(
+        err instanceof Error && err.message
+          ? err.message
+          : 'Those credentials did not match. Use a demo account below.'
+      );
+    }
   }
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '32px 16px',
-        position: 'relative',
-        zIndex: 1,
-      }}
-    >
-      {/* Fixed theme toggle — top right of login screen */}
-      <button
-        type="button"
-        onClick={handleThemeToggle}
-        style={{
-          position: 'fixed',
-          top: '20px',
-          right: '20px',
-          zIndex: 100,
-          width: '42px',
-          height: '42px',
-          borderRadius: '50%',
-          background: 'var(--glass)',
-          backdropFilter: 'blur(16px)',
-          WebkitBackdropFilter: 'blur(16px)',
-          border: '1px solid var(--glass-border)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          cursor: 'pointer',
-          color: 'var(--text-secondary)',
-          boxShadow: '0 2px 12px rgba(154,23,80,0.15)',
-          transition: 'all 200ms ease',
-          animation: 'fadeIn 600ms ease 800ms both',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.background = 'var(--accent-muted)';
-          e.currentTarget.style.borderColor = 'var(--accent-border)';
-          e.currentTarget.style.color = 'var(--rose)';
-          e.currentTarget.style.transform = 'scale(1.08) rotate(15deg)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = 'var(--glass)';
-          e.currentTarget.style.borderColor = 'var(--glass-border)';
-          e.currentTarget.style.color = 'var(--text-secondary)';
-          e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
-        }}
-        title={
-          resolvedTheme === 'dark'
-            ? 'Switch to light mode'
-            : 'Switch to dark mode'
-        }
-      >
-        <i
-          className={resolvedTheme === 'dark' ? 'ti ti-sun' : 'ti ti-moon'}
-          style={{ fontSize: '18px' }}
-        />
-      </button>
+    <div className="auth-shell auth-light">
+      {/* ─────────────── BRANDING / ART ─────────────── */}
+      <aside className="branding-panel" aria-label="UrbanMind branding">
+        <div className="branding-content">
+          <div className="branding-eyebrow">
+            <span className="branding-dots" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+              <span />
+            </span>
+            Live civic intelligence
+          </div>
 
-      {/* Logo — animate in */}
-      <div
-        style={{
-          animation: 'fadeUp 500ms cubic-bezier(0.4,0,0.2,1) both',
-          marginBottom: '12px',
-          textAlign: 'center',
-        }}
-      >
-        <img
-          src={
-            resolvedTheme === 'light'
-              ? '/logos/urbanmind_light_logo.png'
-              : '/logos/urbanmind_dark_logo.png'
-          }
-          alt="UrbanMind"
-          style={{
-            height: '56px',
-            width: 'auto',
-            maxWidth: '200px',
-            objectFit: 'contain',
-            display: 'block',
-            margin: '0 auto',
-          }}
-        />
-        {/* Accent underline below logo */}
-        <div
-          style={{
-            width: '40px',
-            height: '2px',
-            background: 'linear-gradient(90deg, var(--crimson), var(--rose))',
-            borderRadius: '2px',
-            margin: '10px auto 0',
-            animation: 'progressFill 600ms ease 300ms both',
-          }}
-        />
-      </div>
+          <div className="char-stage" aria-hidden="false">
+            <Character variant="blue" label="Blue geometric character" />
+            <Character variant="green" label="Green geometric character" />
+            <Character variant="yellow" label="Yellow geometric character" />
+            <Character variant="red" label="Red geometric character" />
+          </div>
 
-      {/* Subtitle */}
-      <p
-        style={{
-          fontSize: '13px',
-          color: 'var(--text-muted)',
-          marginBottom: '28px',
-          textAlign: 'center',
-          animation: 'fadeUp 500ms ease 150ms both',
-          letterSpacing: '0.02em',
-        }}
-      >
-        AI Intelligence Platform for City Governance
-      </p>
-
-      {/* Login card */}
-      <div
-        style={{
-          width: '100%',
-          maxWidth: '420px',
-          background: 'var(--glass)',
-          backdropFilter: 'blur(24px)',
-          WebkitBackdropFilter: 'blur(24px)',
-          borderTop: '1px solid var(--glass-border-top)',
-          borderLeft: '1px solid var(--glass-border)',
-          borderRight: '1px solid var(--glass-border)',
-          borderBottom: '1px solid var(--glass-border)',
-          borderRadius: 'var(--radius)',
-          padding: '36px',
-          boxShadow: 'var(--card-shadow)',
-          animation: 'cardEntrance 500ms cubic-bezier(0.4,0,0.2,1) 100ms both',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-        className={shakeError ? 'shake-anim' : ''}
-      >
-        {/* Decorative top-right corner glow */}
-        <div
-          style={{
-            position: 'absolute',
-            top: '-60px',
-            right: '-60px',
-            width: '180px',
-            height: '180px',
-            borderRadius: '50%',
-            background:
-              'radial-gradient(circle, rgba(154,23,80,0.12), transparent 70%)',
-            pointerEvents: 'none',
-          }}
-        />
-
-        {/* Progress bar */}
-        <div
-          style={{
-            height: '3px',
-            background: 'rgba(255,255,255,0.06)',
-            borderRadius: '2px',
-            marginBottom: '28px',
-            overflow: 'hidden',
-          }}
-        >
-          <div
-            style={{
-              height: '100%',
-              width: `${formProgress}%`,
-              background: 'linear-gradient(90deg, var(--crimson), var(--rose))',
-              borderRadius: '2px',
-              transition: 'width 300ms ease',
-            }}
-          />
+          <div>
+            <h2 className="branding-title">
+              Every complaint,
+              <br />
+              understood.
+            </h2>
+            <p className="branding-sub">
+              One calm workspace for citizens, ward officers and analysts to
+              track, classify and resolve city grievances.
+            </p>
+          </div>
         </div>
+      </aside>
 
-        {/* Heading */}
-        <h1
-          style={{
-            fontSize: '22px',
-            fontWeight: 500,
-            marginBottom: '4px',
-            color: 'var(--text-primary)',
-            animation: 'fadeUp 400ms ease 200ms both',
-          }}
-        >
-          Sign in
-        </h1>
-        <p
-          style={{
-            fontSize: '13px',
-            color: 'var(--text-muted)',
-            marginBottom: '24px',
-            animation: 'fadeUp 400ms ease 250ms both',
-          }}
-        >
-          Enter your credentials to access the dashboard
-        </p>
-
-        {/* Error state */}
-        {error && (
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              padding: '10px 14px',
-              borderRadius: 'var(--radius-sm)',
-              background: 'rgba(154,23,80,0.10)',
-              border: '1px solid rgba(154,23,80,0.30)',
-              color: '#EE4C7C',
-              fontSize: '13px',
-              marginBottom: '16px',
-              animation: 'fadeIn 200ms ease both',
-            }}
-          >
-            <i className="ti ti-alert-circle" style={{ fontSize: '16px' }} />
-            Invalid credentials. Try a demo account below.
-          </div>
-        )}
-
-        <form onSubmit={handleLogin}>
-          {/* Email field */}
-          <div
-            style={{
-              marginBottom: '14px',
-              animation: 'fadeUp 400ms ease 300ms both',
-            }}
-          >
-            <label
-              className="data-label"
-              style={{ display: 'block', marginBottom: '6px' }}
-            >
-              Email
-            </label>
-            <div style={{ position: 'relative' }}>
-              <i
-                className="ti ti-mail"
-                style={{
-                  position: 'absolute',
-                  left: '12px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  fontSize: '16px',
-                  color: 'var(--text-muted)',
-                  pointerEvents: 'none',
-                }}
-              />
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  updateProgress(e.target.value, password);
-                }}
-                placeholder="admin@urbanmind.gov.in"
-                style={{
-                  width: '100%',
-                  padding: '12px 14px 12px 38px',
-                  fontSize: '14px',
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = 'var(--input-focus)';
-                  e.target.style.boxShadow = '0 0 0 3px rgba(154,23,80,0.12)';
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = 'var(--input-border)';
-                  e.target.style.boxShadow = 'none';
-                }}
-              />
+      {/* ─────────────── AUTHENTICATION ─────────────── */}
+      <main className="auth-panel">
+        <div className="auth-form">
+          {/* Brand identity */}
+          <header className="auth-anim">
+            <div className="wordmark">
+              <span className="wordmark-bars" aria-hidden="true">
+                <span />
+                <span />
+                <span />
+                <span />
+              </span>
+              <span className="wordmark-text">UrbanMind</span>
             </div>
-          </div>
+            <p className="wordmark-sub">Citizen Complaint Intelligence</p>
+          </header>
 
-          {/* Password field */}
-          <div
-            style={{
-              marginBottom: '22px',
-              animation: 'fadeUp 400ms ease 350ms both',
-            }}
-          >
-            <label
-              className="data-label"
-              style={{ display: 'block', marginBottom: '6px' }}
+          <h1 className="auth-heading auth-anim">Welcome back</h1>
+          <p className="auth-subheading auth-anim">
+            Sign in to continue to UrbanMind.
+          </p>
+
+          <form onSubmit={handleLogin} noValidate>
+            {error && (
+              <div className="auth-alert" role="alert">
+                <AlertCircle size={18} aria-hidden="true" />
+                <span>{error}</span>
+              </div>
+            )}
+
+            {/* Email */}
+            <div
+              className={`auth-field auth-anim${emailInvalid ? ' has-error' : ''}`}
             >
-              Password
-            </label>
-            <div style={{ position: 'relative' }}>
-              <i
-                className="ti ti-lock"
-                style={{
-                  position: 'absolute',
-                  left: '12px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  fontSize: '16px',
-                  color: 'var(--text-muted)',
-                  pointerEvents: 'none',
-                }}
-              />
-              <input
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  updateProgress(email, e.target.value);
-                }}
-                placeholder="••••••••"
-                style={{
-                  width: '100%',
-                  padding: '12px 40px 12px 38px',
-                  fontSize: '14px',
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = 'var(--input-focus)';
-                  e.target.style.boxShadow = '0 0 0 3px rgba(154,23,80,0.12)';
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = 'var(--input-border)';
-                  e.target.style.boxShadow = 'none';
-                }}
-              />
+              <label className="auth-label" htmlFor="email">
+                Email
+              </label>
+              <div className="auth-underline">
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  inputMode="email"
+                  className="auth-input"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (error) setError('');
+                  }}
+                  onBlur={() => setTouched(true)}
+                  aria-invalid={emailInvalid || undefined}
+                  aria-describedby={emailInvalid ? 'email-error' : undefined}
+                />
+              </div>
+              {emailInvalid && (
+                <p className="auth-error-text" id="email-error">
+                  Enter a valid email address.
+                </p>
+              )}
+            </div>
+
+            {/* Password */}
+            <div className="auth-field auth-anim">
+              <label className="auth-label" htmlFor="password">
+                Password
+              </label>
+              <div className="auth-underline">
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? 'text' : 'password'}
+                  autoComplete="current-password"
+                  className="auth-input"
+                  placeholder="••••••••••••"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    if (error) setError('');
+                  }}
+                />
+                <button
+                  type="button"
+                  className="auth-eye"
+                  onClick={() => setShowPassword((v) => !v)}
+                  aria-label={
+                    showPassword ? 'Hide password' : 'Show password'
+                  }
+                  aria-pressed={showPassword}
+                >
+                  {showPassword ? (
+                    <EyeOff size={18} aria-hidden="true" />
+                  ) : (
+                    <Eye size={18} aria-hidden="true" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Remember me + Forgot password */}
+            <div className="auth-row auth-anim">
+              <label className="auth-check" htmlFor="remember">
+                <input
+                  id="remember"
+                  name="remember"
+                  type="checkbox"
+                  checked={remember}
+                  onChange={(e) => setRemember(e.target.checked)}
+                />
+                <span className="auth-check-box" aria-hidden="true">
+                  <Check size={13} strokeWidth={3.5} />
+                </span>
+                <span className="auth-check-label">Remember me</span>
+              </label>
               <button
                 type="button"
-                onClick={() => setShowPassword((v) => !v)}
-                style={{
-                  position: 'absolute',
-                  right: '12px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  padding: 0,
-                  color: 'var(--text-muted)',
-                  transition: 'color 150ms ease',
-                }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.color = 'var(--rose)')
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.color = 'var(--text-muted)')
+                className="auth-link"
+                onClick={() =>
+                  toast.success('Password reset is not enabled in this demo.')
                 }
               >
-                <i
-                  className={showPassword ? 'ti ti-eye-off' : 'ti ti-eye'}
-                  style={{ fontSize: '16px' }}
-                />
+                Forgot password?
               </button>
             </div>
-          </div>
 
-          {/* Sign in button */}
-          <button
-            type="submit"
-            disabled={loading}
-            style={{
-              width: '100%',
-              padding: '13px',
-              background: loading
-                ? 'rgba(154,23,80,0.50)'
-                : 'linear-gradient(135deg, #9A1750 0%, #EE4C7C 100%)',
-              border: 'none',
-              borderRadius: 'var(--radius-sm)',
-              color: '#FFFFFF',
-              fontSize: '15px',
-              fontWeight: 500,
-              cursor: loading ? 'wait' : 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              marginBottom: '14px',
-              transition: 'all 200ms ease',
-              letterSpacing: '0.01em',
-              animation: 'fadeUp 400ms ease 400ms both',
-              boxShadow: '0 4px 16px rgba(154,23,80,0.30)',
-            }}
-            onMouseEnter={(e) => {
-              if (!loading) {
-                e.currentTarget.style.background =
-                  'linear-gradient(135deg, #7D1241 0%, #D43D6B 100%)';
-                e.currentTarget.style.boxShadow =
-                  '0 6px 24px rgba(154,23,80,0.45)';
-                e.currentTarget.style.transform = 'translateY(-1px)';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!loading) {
-                e.currentTarget.style.background =
-                  'linear-gradient(135deg, #9A1750 0%, #EE4C7C 100%)';
-                e.currentTarget.style.boxShadow =
-                  '0 4px 16px rgba(154,23,80,0.30)';
-                e.currentTarget.style.transform = 'translateY(0)';
-              }
-            }}
-            onMouseDown={(e) =>
-              (e.currentTarget.style.transform = 'translateY(1px)')
-            }
-            onMouseUp={(e) =>
-              (e.currentTarget.style.transform = 'translateY(-1px)')
-            }
-          >
-            {loading ? (
-              <>
-                <i
-                  className="ti ti-loader-2"
-                  style={{
-                    fontSize: '18px',
-                    animation: 'spin 1s linear infinite',
-                  }}
-                />
-                Signing in...
-              </>
-            ) : (
-              <>
-                <i className="ti ti-login" style={{ fontSize: '18px' }} />
-                Sign in
-              </>
-            )}
-          </button>
-        </form>
-
-        {/* Forgot password */}
-        <div
-          style={{
-            textAlign: 'right',
-            marginBottom: '20px',
-            animation: 'fadeUp 400ms ease 450ms both',
-          }}
-        >
-          <button
-            type="button"
-            style={{
-              background: 'none',
-              border: 'none',
-              fontSize: '13px',
-              color: 'var(--rose)',
-              cursor: 'pointer',
-              padding: 0,
-              transition: 'color 150ms ease',
-            }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.color = 'var(--crimson)')
-            }
-            onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--rose)')}
-          >
-            Forgot password?
-          </button>
-        </div>
-
-        {/* Demo credentials box */}
-        <div
-          style={{
-            background: 'rgba(154,23,80,0.05)',
-            border: '1px solid rgba(154,23,80,0.15)',
-            borderRadius: 'var(--radius-sm)',
-            padding: '16px',
-            animation: 'fadeUp 400ms ease 500ms both',
-          }}
-        >
-          {/* Header */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              marginBottom: '12px',
-            }}
-          >
-            <i
-              className="ti ti-key"
-              style={{ fontSize: '14px', color: 'var(--rose)' }}
-            />
-            <span className="data-label" style={{ color: 'var(--rose)' }}>
-              Demo Credentials
-            </span>
-          </div>
-
-          {/* Role chips */}
-          {DEMO_USERS.map((u, idx) => (
             <button
-              key={u.email}
-              type="button"
-              onClick={() => fillCredentials(u.email, u.password)}
-              style={{
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                padding: '11px 14px',
-                background: 'rgba(255,255,255,0.03)',
-                border: `1px solid ${u.chipBorder}`,
-                borderRadius: 'var(--radius-sm)',
-                cursor: 'pointer',
-                marginBottom: idx < DEMO_USERS.length - 1 ? '8px' : 0,
-                transition: 'all 180ms ease',
-                animation: `fadeUp 400ms ease ${550 + idx * 60}ms both`,
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = u.chipHoverBg;
-                e.currentTarget.style.borderColor = u.chipHoverBorder;
-                e.currentTarget.style.transform = 'translateX(3px)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
-                e.currentTarget.style.borderColor = u.chipBorder;
-                e.currentTarget.style.transform = 'translateX(0)';
-              }}
+              type="submit"
+              className="auth-submit auth-anim"
+              disabled={loading}
             >
-              {/* Role badge */}
-              <span
-                style={{
-                  fontSize: '11px',
-                  fontWeight: 600,
-                  padding: '4px 10px',
-                  borderRadius: '99px',
-                  background: u.badgeBg,
-                  color: u.badgeColor,
-                  border: `1px solid ${u.badgeBorder}`,
-                  whiteSpace: 'nowrap',
-                  flexShrink: 0,
-                  letterSpacing: '0.02em',
-                }}
-              >
-                {u.badgeLabel}
-              </span>
-
-              {/* Email */}
-              <span
-                style={{
-                  fontSize: '12px',
-                  fontFamily: 'var(--font-data)',
-                  color: 'var(--text-secondary)',
-                  flex: 1,
-                  textAlign: 'left',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                {u.email}
-              </span>
-
-              {/* Use button */}
-              <span
-                style={{
-                  fontSize: '11px',
-                  fontWeight: 500,
-                  color: u.badgeColor,
-                  background: u.badgeBg,
-                  border: `1px solid ${u.badgeBorder}`,
-                  padding: '3px 10px',
-                  borderRadius: '4px',
-                  flexShrink: 0,
-                }}
-              >
-                Use
-              </span>
+              {loading ? (
+                <>
+                  <span className="spinner" aria-hidden="true" />
+                  Signing in…
+                </>
+              ) : (
+                'Sign in'
+              )}
             </button>
-          ))}
+          </form>
 
-          {/* Permissions summary per role */}
-          <div
-            style={{
-              marginTop: '12px',
-              paddingTop: '10px',
-              borderTop: '1px solid rgba(154,23,80,0.10)',
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3,1fr)',
-              gap: '6px',
-            }}
-          >
-            {[
-              { role: 'Admin', perms: 'Full access', color: '#EE4C7C' },
-              { role: 'Ward', perms: 'Ward 42 + Upload', color: '#E3AFBC' },
-              { role: 'Analyst', perms: 'Read only', color: '#E3E2DF' },
-            ].map((r) => (
-              <div
-                key={r.role}
-                style={{
-                  textAlign: 'center',
-                  padding: '6px 4px',
-                  background: 'rgba(154,23,80,0.05)',
-                  borderRadius: '6px',
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: '10px',
-                    fontWeight: 600,
-                    color: r.color,
-                    marginBottom: '2px',
-                  }}
-                >
-                  {r.role}
-                </div>
-                <div
-                  style={{
-                    fontSize: '9px',
-                    color: 'var(--text-muted)',
-                    lineHeight: 1.4,
-                  }}
-                >
-                  {r.perms}
-                </div>
-              </div>
-            ))}
+          {/* Demo access */}
+          <section className="auth-demo auth-anim" aria-labelledby="demo-heading">
+            <div className="auth-demo-head" id="demo-heading">
+              <KeyRound size={14} aria-hidden="true" />
+              Demo access
+            </div>
+            <p className="auth-demo-note">
+              Selecting a card fills the form only — you still press
+              &ldquo;Sign&nbsp;in&rdquo;.
+            </p>
+            <div className="demo-grid">
+              {DEMO_USERS.map((u) => {
+                const meta = DEMO_META[u.email];
+                return (
+                  <button
+                    key={u.email}
+                    type="button"
+                    data-role={meta?.slot}
+                    className="demo-card"
+                    onClick={() => fillCredentials(u.email, u.password)}
+                    aria-label={`Fill the ${meta?.role ?? u.badgeLabel} demo credentials`}
+                  >
+                    <span className="demo-role">
+                      <span className="dot" />
+                      {meta?.role ?? u.badgeLabel}
+                    </span>
+                    <span className="demo-email">{u.email}</span>
+                    <span className="demo-scope">{meta?.scope}</span>
+                    <span className="demo-hint">Fill form →</span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+
+          {/* Secondary action */}
+          <div className="auth-signup auth-anim">
+            <span>Don&rsquo;t have an account?</span>
+            <button
+              type="button"
+              className="auth-signup-link"
+              onClick={() =>
+                toast.success('Sign up is not enabled in this demo.')
+              }
+            >
+              Sign up
+            </button>
           </div>
-        </div>
-      </div>
 
-      {/* Footer */}
-      <p
-        style={{
-          fontSize: '12px',
-          color: 'var(--text-muted)',
-          marginTop: '24px',
-          textAlign: 'center',
-          animation: 'fadeUp 400ms ease 700ms both',
-          letterSpacing: '0.03em',
-        }}
-      >
-        Secured by AI · UN SDG 16 · Version 1.0
-      </p>
+          {/* Team attribution */}
+          <footer className="auth-footer auth-anim">
+            <span>Built by</span>
+            <span className="names">{TEAM[0]}</span>
+            <span className="sep" aria-hidden="true">
+              ·
+            </span>
+            <span className="names">{TEAM[1]}</span>
+            <span className="sep" aria-hidden="true">
+              ·
+            </span>
+            <span className="names">{TEAM[2]}</span>
+          </footer>
+        </div>
+      </main>
     </div>
   );
 }

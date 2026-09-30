@@ -91,6 +91,7 @@ SCHEMAS = {
         ("vulnerability_weight", "FLOAT"),
         ("investment_gap", "FLOAT"),
         ("priority_index", "FLOAT"),
+        ("total_population", "INTEGER"),
         ("formula_explanation", "STRING"),
         ("computed_at", "TIMESTAMP"),
     ],
@@ -110,6 +111,8 @@ def get_local_db() -> sqlite3.Connection:
     if _local_db is None:
         _local_db = sqlite3.connect(":memory:", check_same_thread=False)
         _local_db.row_factory = sqlite3.Row
+        _local_db.create_function("LEAST", -1, lambda *args: min(args) if args else 0.0)
+        _local_db.create_function("GREATEST", -1, lambda *args: max(args) if args else 0.0)
         init_local_tables(_local_db)
         load_local_data(_local_db)
     return _local_db

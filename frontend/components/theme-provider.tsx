@@ -18,35 +18,57 @@ export function useThemeController(): ThemeContextValue {
   return React.useContext(ThemeContext);
 }
 
+/**
+ * Resolves a next-themes value to the theme actually painted by globals.css.
+ * globals.css keys off `[data-theme]`, so that is the single source of truth
+ * — the legacy `.dark` / `.light` class attribute is no longer written.
+ */
+export function resolveDataTheme(next: string): string {
+  if (next !== 'system') return next;
+  if (typeof window === 'undefined') return 'light';
+  return window.matchMedia('(prefers-color-scheme: dark)').matches
+    ? 'dark'
+    : 'light';
+}
+
 function ThemeSync({ children }: { children: React.ReactNode }) {
-  const { theme, setTheme } = useTheme();
+  const { setTheme } = useTheme();
+  const [resolved, setResolved] = React.useState('light');
+
+  const applyTheme = React.useCallback(
+    (next: string) => {
+      setTheme(next);
+      try {
+        localStorage.setItem('urbanmind-theme', next);
+      } catch {
+        /* storage unavailable — non-fatal */
+      }
+      const dataTheme = resolveDataTheme(next);
+      setResolved(dataTheme);
+      document.documentElement.setAttribute('data-theme', dataTheme);
+    },
+    [setTheme]
+  );
 
   React.useEffect(() => {
-    const saved = localStorage.getItem('urbanmind-theme') || 'dark';
-    applyTheme(saved);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  function applyTheme(next: string) {
-    setTheme(next);
-    localStorage.setItem('urbanmind-theme', next);
-
-    if (next === 'system') {
-      const prefersDark = window.matchMedia(
-        '(prefers-color-scheme: dark)'
-      ).matches;
-      document.documentElement.setAttribute(
-        'data-theme',
-        prefersDark ? 'dark' : 'light'
-      );
-    } else {
-      document.documentElement.setAttribute('data-theme', next);
+    let saved = 'light';
+    try {
+      saved = localStorage.getItem('urbanmind-theme') || 'light';
+    } catch {
+      /* storage unavailable — fall back to light */
     }
-  }
+    applyTheme(saved);
+
+    if (saved !== 'system') return;
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const onChange = () => applyTheme('system');
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, [applyTheme]);
 
   const value = React.useMemo(
-    () => ({ theme: theme ?? 'dark', applyTheme }),
-    [theme]
+    () => ({ theme: resolved, applyTheme }),
+    [resolved, applyTheme]
   );
 
   return (
@@ -57,8 +79,8 @@ function ThemeSync({ children }: { children: React.ReactNode }) {
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   return (
     <NextThemesProvider
-      attribute="class"
-      defaultTheme="dark"
+      attribute="data-theme"
+      defaultTheme="light"
       enableSystem
       disableTransitionOnChange={false}
       {...props}

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/lib/auth';
+import { useAuth, logout } from '@/lib/auth';
 import { toast } from '@/components/ui/toast';
 import { useThemeController } from '@/components/theme-provider';
 
@@ -47,13 +47,18 @@ function UserMenuItem({
   );
 }
 
-export default function Header() {
+export default function Header({
+  sidebarOpen,
+  onToggleSidebar,
+}: {
+  sidebarOpen?: boolean;
+  onToggleSidebar?: () => void;
+}) {
   const router = useRouter();
   const { user } = useAuth();
   const { theme, applyTheme } = useThemeController();
   const [menuOpen, setMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const notificationRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
@@ -83,6 +88,7 @@ export default function Header() {
   function handleSignOut() {
     setMenuOpen(false);
     setNotificationsOpen(false);
+    logout();
     toast.success('Signed out');
     router.replace('/login');
   }
@@ -90,12 +96,11 @@ export default function Header() {
   function handleThemeToggle() {
     const next = resolvedTheme === 'dark' ? 'light' : 'dark';
     applyTheme(next);
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('urbanmind-theme', next);
   }
 
   function toggleSidebar() {
-    setSidebarOpen((v) => !v);
+    if (onToggleSidebar) onToggleSidebar();
+    else setMenuOpen(false);
   }
 
   const userName = user?.name || 'Admin User';
@@ -137,18 +142,26 @@ export default function Header() {
       <button
         className="md:hidden"
         onClick={toggleSidebar}
+        type="button"
+        aria-label={sidebarOpen ? 'Close navigation' : 'Open navigation'}
+        aria-expanded={Boolean(sidebarOpen)}
+        aria-controls="urbanmind-mobile-nav"
         style={{
           background: 'transparent',
           border: 'none',
           cursor: 'pointer',
           color: 'var(--text-secondary)',
           padding: 8,
+          marginLeft: -8,
           display: 'flex',
           alignItems: 'center',
+          flexShrink: 0,
         }}
-        aria-label="Toggle sidebar"
       >
-        <i className="ti ti-menu-2" style={{ fontSize: 20 }} />
+        <i
+          className={sidebarOpen ? 'ti ti-x' : 'ti ti-menu-2'}
+          style={{ fontSize: 20 }}
+        />
       </button>
       <img
         src={

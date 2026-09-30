@@ -2,7 +2,7 @@
 
 ## PostgreSQL
 
-Database managed by SQLAlchemy + Alembic. UUIDs are used as primary keys for `grievances`; `wards` and `users` use `BIGSERIAL`.
+Database managed by SQLAlchemy + Alembic. The current models use integer primary keys. PostgreSQL stores Gemini embeddings for background duplicate clustering.
 
 ### `grievances`
 
@@ -24,6 +24,14 @@ Database managed by SQLAlchemy + Alembic. UUIDs are used as primary keys for `gr
 | `source` | VARCHAR(50) | NOT NULL, default `'csv-upload'` |
 | `created_at` | TIMESTAMPTZ | NOT NULL, default `now()` |
 | `updated_at` | TIMESTAMPTZ | NOT NULL, default `now()`, auto-updated on change |
+| `sector`, `detected_language` | VARCHAR | Nullable classifier outputs |
+| `language_confidence`, `classifier_confidence` | FLOAT | Nullable classifier confidence values |
+| `english_summary` | TEXT | Nullable, maximum 50-word model summary |
+| `urgency` | INTEGER | Nullable, classifier value from 1 to 5 |
+| `classification_model` | VARCHAR(64) | Actual model name, or `none` for precomputed demo data |
+| `pii_detected`, `pii_redacted` | BOOLEAN | PII detection and redaction status |
+| `cluster_id` | VARCHAR(40) | Nullable background deduplication cluster identifier |
+| `embedding` | `ARRAY(FLOAT)` | Nullable Gemini `text-embedding-004` vector |
 
 ### `wards`
 
@@ -96,14 +104,6 @@ Used for agent chat memory only. Key format: `session:{session_id}` — a Redis 
 
 Sliding TTL refresh on every interaction. A background job purges expired sessions.
 
-## Pinecone
+## Embeddings and clusters
 
-| Setting | Value |
-|---------|-------|
-| Index name | `urbanmind` |
-| Dimension | 1536 (`text-embedding-3-small`) |
-| Metric | `cosine` |
-| Namespace | `grievances` |
-| Metadata | `{grievance_id, ward_id, category, priority, created_at}` |
-
-Upsert is batched (100 vectors/call) in the embeddings pipeline step; the vector ID is the grievance UUID so re-embedding is idempotent.
+Gemini `text-embedding-004` vectors are stored directly in PostgreSQL as `ARRAY(FLOAT)`. A background task computes cosine similarity and groups requests at or above the configured `0.92` threshold. Unavailable embeddings are omitted; they are never fabricated.
