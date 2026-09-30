@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 
 from app.database.session import get_db
 from app.models import Grievance, Ward
-from app.services.classifier import classify_and_rank
+from app.services.classifier import classify_and_rank, describe
 from app.services.ingestion import clean_complaint_text, parse_csv
 from app.tasks.processing import process_pending
 
@@ -49,7 +49,8 @@ async def analyze_complaints(
     """
     Core demo endpoint.
     Accepts CSV file OR raw text.
-    Returns top 5 ranked issues from Claude.
+    Returns the top 5 issues ranked by the Gemini classifier (or, in demo mode,
+    by pre-computed demo classifications).
     """
     complaints = []
 
@@ -79,11 +80,14 @@ async def analyze_complaints(
 
     # Call classifier service
     ranked = await classify_and_rank(complaints)
+    meta = describe()
 
     return {
         "total_analyzed": len(complaints),
         "ranked_issues": ranked,
-        "model": "claude-sonnet-4-6",
+        "model": meta["model"],
+        "provider": meta["provider"],
+        "demo_mode": meta["demo_mode"],
         "timestamp": datetime.utcnow().isoformat(),
     }
 
@@ -106,8 +110,8 @@ async def upload_csv(file: UploadFile = File(...), db: Session = Depends(get_db)
             category="Others",
             ward_id=ward.id,
             ward_name=ward.name,
-            lat=row.get("latitude") or 0.0,
-            lng=row.get("longitude") or 0.0,
+            lat=row.get("latitude"),
+            lng=row.get("longitude"),
             status="pending",
             source=row.get("source") or "csv",
         )
