@@ -12,7 +12,7 @@ from sqlalchemy import (
     Text,
     func,
 )
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, synonym
 
 from app.database.base import Base
 
@@ -28,7 +28,8 @@ class Grievance(Base):
     description: Mapped[str] = mapped_column(Text, nullable=False)
     category: Mapped[str] = mapped_column(String(100), nullable=False, index=True)
     subcategory: Mapped[str | None] = mapped_column(String(100), nullable=True)
-    ward_id: Mapped[int | None] = mapped_column(ForeignKey("wards.id"), nullable=True, index=True)
+    admin_unit_id: Mapped[int | None] = mapped_column(ForeignKey("admin_units.id"), nullable=True, index=True)
+    ward_id = synonym("admin_unit_id")
     ward_name: Mapped[str] = mapped_column(String(100), nullable=False)
     lat: Mapped[float | None] = mapped_column(Float, nullable=True)
     lng: Mapped[float | None] = mapped_column(Float, nullable=True)

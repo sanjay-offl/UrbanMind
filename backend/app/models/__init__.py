@@ -1,5 +1,6 @@
+from app.models.admin_unit import AdminUnit
 from app.models.grievance import Grievance
 from app.models.user import User
 from app.models.ward import Ward
 
-__all__ = ["Grievance", "User", "Ward"]
+__all__ = ["AdminUnit", "Grievance", "User", "Ward"]

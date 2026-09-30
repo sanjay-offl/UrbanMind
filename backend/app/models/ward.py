@@ -1,15 +1,12 @@
-from sqlalchemy import Float, Integer, String
-from sqlalchemy.orm import Mapped, mapped_column
+"""Backward compatibility alias for the legacy Ward model.
 
-from app.database.base import Base
+The `wards` table is replaced by `admin_units` representing India's national
+administrative hierarchy (country, states, districts, blocks).
+"""
 
+from app.models.admin_unit import AdminUnit
 
-class Ward(Base):
-    __tablename__ = "wards"
+# Alias Ward to AdminUnit so legacy queries and imports continue to function
+Ward = AdminUnit
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    name: Mapped[str] = mapped_column(String(100), nullable=False, unique=True)
-    code: Mapped[str] = mapped_column(String(20), nullable=False)
-    lat: Mapped[float] = mapped_column(Float, nullable=False)
-    lng: Mapped[float] = mapped_column(Float, nullable=False)
-    population: Mapped[int | None] = mapped_column(Integer, nullable=True)
+__all__ = ["Ward"]
