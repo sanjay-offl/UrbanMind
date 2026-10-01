@@ -133,7 +133,6 @@ export default function LoginPage() {
             </p>
           </div>
 
-          {/* India Dot Matrix / Geometric Representation */}
           <div className="rounded-xl border border-[#E8EAED] bg-white p-5">
             <div className="flex items-center justify-between pb-3 border-b border-[#E8EAED]">
               <div className="flex items-center gap-2">
@@ -145,23 +144,16 @@ export default function LoginPage() {
               </span>
             </div>
 
-            {/* Illustrative Dots Graphic */}
-            <div className="my-4 flex items-center justify-center py-4">
-              <svg width="220" height="120" viewBox="0 0 220 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                {/* Simplified cluster of grid dots representing national data nodes */}
-                {[
-                  [30, 20, '#4285F4'], [55, 15, '#EA4335'], [80, 25, '#FBBC05'], [110, 15, '#34A853'], [140, 25, '#4285F4'], [170, 20, '#EA4335'],
-                  [20, 50, '#34A853'], [50, 45, '#4285F4'], [80, 55, '#EA4335'], [110, 45, '#FBBC05'], [140, 50, '#34A853'], [170, 55, '#4285F4'], [195, 45, '#FBBC05'],
-                  [40, 80, '#FBBC05'], [70, 85, '#34A853'], [100, 75, '#4285F4'], [130, 85, '#EA4335'], [160, 80, '#FBBC05'],
-                  [90, 105, '#4285F4'], [110, 105, '#34A853'], [120, 100, '#EA4335']
-                ].map(([cx, cy, fill], i) => (
-                  <circle key={i} cx={cx as number} cy={cy as number} r="4" fill={fill as string} opacity="0.85" />
-                ))}
-              </svg>
+            <div className="w-full flex items-center justify-center overflow-hidden rounded-xl h-[220px] md:h-[320px]">
+              <iframe
+                src="https://lottie.host/embed/7b11fe1b-3874-41f5-852e-4194f0c535f9/P7974HF9VG.lottie"
+                title="National civic coverage animation"
+                loading="lazy"
+                style={{ width: '100%', height: '100%', border: 0, background: 'transparent' }}
+                allowTransparency
+                className="pointer-events-none"
+              />
             </div>
-            <p className="text-center text-[11px] font-medium text-[#5F6368]">
-              Illustrative visual, not live data
-            </p>
           </div>
 
           {/* 4 Small Story Steps */}
