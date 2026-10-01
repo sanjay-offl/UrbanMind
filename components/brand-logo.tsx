@@ -29,7 +29,7 @@ export default function BrandLogo({
         className="relative shrink-0 flex items-center justify-center rounded-lg bg-[var(--surface)] border border-[var(--border)] p-1 shadow-sm"
       >
         <Image
-          src="/logo.png"
+          src="/image.png"
           alt="UrbanMind Logo"
           width={dimension}
           height={dimension}

@@ -21,7 +21,7 @@ export default function Home() {
       <div className="relative flex h-14 w-14 items-center justify-center rounded-xl bg-[var(--surface)] border border-[var(--border)] p-2 shadow-sm">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/logo.png"
+          src="/image.png"
           alt="UrbanMind Logo"
           className="h-full w-full object-contain"
         />
