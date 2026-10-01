@@ -110,6 +110,8 @@ export default function Header({
           type="button"
           onClick={onToggleSidebar}
           aria-label={sidebarOpen ? 'Close navigation' : 'Open navigation'}
+          aria-expanded={Boolean(sidebarOpen)}
+          aria-controls="urbanmind-mobile-nav"
           className="flex h-10 w-10 items-center justify-center rounded-lg border border-[var(--border)] bg-[var(--surface)] text-[var(--text-muted)] hover:bg-[var(--bg)] lg:hidden"
         >
           <i className={sidebarOpen ? 'ti ti-x text-lg' : 'ti ti-menu-2 text-lg'} />

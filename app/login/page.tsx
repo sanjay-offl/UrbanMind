@@ -201,7 +201,7 @@ export default function LoginPage() {
           </div>
 
           {error && (
-            <div className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 p-3 text-xs font-medium text-red-700">
+            <div role="alert" className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 p-3 text-xs font-medium text-red-700">
               <AlertCircle size={16} />
               <span>{error}</span>
             </div>
@@ -214,6 +214,7 @@ export default function LoginPage() {
               </label>
               <input
                 id="login-email"
+                name="email"
                 type="email"
                 value={email}
                 onChange={(e) => {
@@ -239,6 +240,7 @@ export default function LoginPage() {
               <div className="relative">
                 <input
                   id="login-password"
+                  name="password"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => {
@@ -263,8 +265,10 @@ export default function LoginPage() {
             </div>
 
             <div className="flex items-center justify-between pt-0.5 text-xs">
-              <label className="flex cursor-pointer select-none items-center gap-2 text-slate-600">
+              <label className="flex cursor-pointer select-none items-center gap-2 text-slate-600" htmlFor="login-remember">
                 <input
+                  id="login-remember"
+                  name="remember"
                   type="checkbox"
                   checked={remember}
                   onChange={(e) => setRemember(e.target.checked)}

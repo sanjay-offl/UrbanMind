@@ -197,7 +197,13 @@ export default function Sidebar({
   if (isMobileDrawer) {
     if (!isOpen) return null;
     return (
-      <div className="fixed inset-0 z-50 flex lg:hidden">
+      <div
+        id="urbanmind-mobile-nav"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Navigation"
+        className="fixed inset-0 z-50 flex lg:hidden"
+      >
         {/* Backdrop */}
         <div
           className="fixed inset-0 bg-black/40 transition-opacity"
