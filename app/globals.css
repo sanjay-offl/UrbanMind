@@ -193,3 +193,95 @@ select:focus {
   border-color: var(--primary);
   box-shadow: 0 0 0 2px var(--primary-soft);
 }
+
+.login-left-panel {
+  background-color: #f8fafc;
+}
+
+.login-right-panel {
+  background-color: #f8fafc;
+  background-image: radial-gradient(ellipse at 90% 8%, rgba(59, 130, 246, 0.09), transparent 42%);
+}
+
+.login-stage {
+  background-color: #eff6ff;
+  background-image:
+    radial-gradient(circle at 18% 24%, rgba(59, 130, 246, 0.14), transparent 32%),
+    radial-gradient(circle at 82% 72%, rgba(99, 102, 241, 0.14), transparent 38%),
+    linear-gradient(135deg, #eff6ff 0%, #ffffff 50%, #eef2ff 100%);
+}
+
+.login-stage::before {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: radial-gradient(rgba(37, 99, 235, 0.16) 0.8px, transparent 0.8px);
+  background-size: 18px 18px;
+  content: '';
+  opacity: 0.45;
+  pointer-events: none;
+  mask-image: linear-gradient(to right, #000 0%, transparent 88%);
+}
+
+.login-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+
+.login-input:-webkit-autofill,
+.login-input:-webkit-autofill:hover,
+.login-input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset;
+  -webkit-text-fill-color: #0f172a;
+  caret-color: #0f172a;
+  transition: background-color 99999s ease-out 0s;
+}
+
+@keyframes login-rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes login-form-in {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.login-rise {
+  animation: login-rise-in 520ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.login-delay-1 {
+  animation-delay: 80ms;
+}
+
+.login-delay-2 {
+  animation-delay: 160ms;
+}
+
+.login-delay-3 {
+  animation-delay: 240ms;
+}
+
+.login-form-enter {
+  animation: login-form-in 520ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-rise,
+  .login-form-enter {
+    animation: none;
+  }
+}

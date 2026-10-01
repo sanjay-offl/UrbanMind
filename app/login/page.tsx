@@ -43,6 +43,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [touched, setTouched] = useState(false);
+  const [selectedDemo, setSelectedDemo] = useState<string | null>(null);
 
   useEffect(() => {
     try {
@@ -69,6 +70,7 @@ export default function LoginPage() {
   function fillCredentials(fillEmail: string, fillPass: string) {
     setEmail(fillEmail);
     setPassword(fillPass);
+    setSelectedDemo(fillEmail);
     setError('');
     setTouched(false);
   }
@@ -115,95 +117,99 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen w-full flex-col lg:flex-row bg-white">
-      {/* ─────────────── LEFT BRANDING PANEL (50% on desktop) ─────────────── */}
-      <aside className="hidden lg:flex lg:w-1/2 flex-col justify-between border-r border-[#E8EAED] bg-[#F8FAFC] p-8 xl:p-12">
-        <div className="space-y-6">
-          <div className="inline-flex items-center gap-2 rounded-full bg-[var(--primary-soft)] px-3.5 py-1 text-xs font-semibold text-[var(--primary)] border border-[var(--primary-soft)]">
-            <span className="h-2 w-2 rounded-full bg-[var(--primary)] animate-pulse" />
-            <span>National Civic Intelligence Platform</span>
-          </div>
+    <div className="login-screen min-h-screen w-full overflow-x-hidden bg-slate-50 lg:flex lg:h-screen lg:min-h-0 lg:overflow-hidden">
+      <aside className="login-left-panel relative flex w-full flex-col justify-center border-b border-slate-200 px-6 py-7 sm:px-8 lg:h-screen lg:w-1/2 lg:overflow-hidden lg:border-b-0 lg:border-r lg:px-10 lg:py-4 xl:px-12 xl:py-5">
+        <div className="flex flex-1 items-center justify-center lg:min-h-0">
+          <div className="mx-auto flex w-full max-w-2xl flex-col gap-4 xl:gap-6">
+            <div className="inline-flex w-fit items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-3.5 py-1 text-xs font-semibold text-blue-700">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-blue-600" />
+              <span>National Civic Intelligence Platform</span>
+            </div>
 
-          <div className="pt-4">
-            <h2 className="text-2xl font-bold tracking-tight text-[#202124]">
-              From Citizen Voice to National Priorities
-            </h2>
-            <p className="mt-2 text-sm leading-relaxed text-[#5F6368]">
-              A unified civic intelligence workspace turning citizen complaints and public infrastructure metrics into auditable, objective action for officers.
-            </p>
-          </div>
+            <div className="login-rise login-delay-1 space-y-2">
+              <h2 className="text-4xl font-bold leading-[1.08] tracking-tight text-slate-950 xl:text-5xl">
+                From Citizen Voice to{' '}
+                <span className="bg-gradient-to-r from-blue-700 via-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                  National Priorities
+                </span>
+              </h2>
+              <p className="line-clamp-2 max-w-xl text-sm leading-relaxed text-slate-600 sm:text-base">
+                A unified civic intelligence workspace turning citizen complaints and public infrastructure metrics into auditable, objective action for officers.
+              </p>
+            </div>
 
-          <div className="rounded-xl border border-[#E8EAED] bg-white p-5">
-            <div className="flex items-center justify-between pb-3 border-b border-[#E8EAED]">
-              <div className="flex items-center gap-2">
-                <MapPin size={16} className="text-[#4285F4]" />
-                <span className="text-xs font-semibold text-[#202124]">National Geographic Scope</span>
+            <div className="login-rise login-delay-2 login-stage relative isolate hidden h-[220px] w-full overflow-hidden rounded-3xl border border-blue-100/80 shadow-sm sm:block lg:h-[clamp(260px,38vh,420px)]">
+              <div className="absolute left-3 top-3 z-20 inline-flex items-center gap-1.5 rounded-full border border-white/80 bg-white/70 px-3 py-1.5 text-[11px] font-semibold text-slate-700 shadow-sm backdrop-blur-md sm:left-4 sm:top-4">
+                <MapPin size={14} className="shrink-0 text-blue-600" />
+                <span>National Geographic Scope</span>
               </div>
-              <span className="rounded bg-[#E8F0FE] px-2 py-0.5 text-[10px] font-semibold text-[#1967D2]">
-                36 States & UTs
+              <span className="absolute right-3 top-3 z-20 rounded-full border border-white/80 bg-white/70 px-3 py-1.5 text-[11px] font-semibold text-blue-800 shadow-sm backdrop-blur-md sm:right-4 sm:top-4">
+                36 States &amp; UTs
               </span>
-            </div>
-
-            <div className="w-full flex items-center justify-center overflow-hidden rounded-xl h-[220px] md:h-[320px]">
-              <iframe
-                src="https://lottie.host/embed/7b11fe1b-3874-41f5-852e-4194f0c535f9/P7974HF9VG.lottie"
-                title="National civic coverage animation"
-                loading="lazy"
-                style={{ width: '100%', height: '100%', border: 0, background: 'transparent' }}
-                allowTransparency
-                className="pointer-events-none"
-              />
-            </div>
-          </div>
-
-          {/* 4 Small Story Steps */}
-          <div className="grid grid-cols-2 gap-3 pt-2">
-            {STORY_STEPS.map((step) => (
-              <div key={step.step} className="rounded-lg border border-[#E8EAED] bg-white p-3">
-                <span className="font-mono text-[10px] font-bold text-[#1A73E8]">{step.step}</span>
-                <h4 className="mt-1 text-xs font-semibold text-[#202124]">{step.title}</h4>
-                <p className="mt-1 text-[11px] text-[#5F6368] leading-tight">{step.desc}</p>
+              <div className="absolute inset-0 z-10 overflow-hidden rounded-3xl">
+                <iframe
+                  src="https://lottie.host/embed/7b11fe1b-3874-41f5-852e-4194f0c535f9/P7974HF9VG.lottie"
+                  title="Citizen login illustration"
+                  loading="lazy"
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    border: 0,
+                    background: 'transparent',
+                    mixBlendMode: 'multiply',
+                    transform: 'scale(1.5)',
+                    transformOrigin: 'center',
+                  }}
+                  className="pointer-events-none"
+                />
               </div>
-            ))}
+            </div>
+
+            <div className="login-rise login-delay-3 hidden auto-rows-fr grid-cols-2 gap-x-4 gap-y-3 lg:grid xl:grid-cols-4">
+              {STORY_STEPS.map((step) => (
+                <div key={step.step} className="flex min-h-[92px] flex-col border-t-2 border-blue-600/80 pt-2">
+                  <span className="font-mono text-[10px] font-bold text-blue-700">{step.step}</span>
+                  <h4 className="mt-1 text-sm font-bold leading-tight text-slate-900">{step.title}</h4>
+                  <p className="mt-1 line-clamp-2 text-xs leading-snug text-slate-500">{step.desc}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
-        <div className="pt-4 border-t border-[#E8EAED] text-xs text-[#5F6368]">
+        <div className="mt-5 border-t border-slate-200 pt-3 text-xs text-slate-500 lg:mt-0">
           UrbanMind Civic Intelligence Engine · Open Government Architecture
         </div>
       </aside>
 
-      {/* ─────────────── RIGHT AUTHENTICATION PANEL ─────────────── */}
-      <main className="flex flex-1 flex-col justify-center px-6 py-10 sm:px-12 lg:px-16 xl:px-24">
-        <div className="mx-auto w-full max-w-md space-y-6">
-          {/* Brand logo once per screen above the form */}
+      <main className="login-right-panel flex w-full flex-1 items-center justify-center px-4 py-8 sm:px-8 lg:h-screen lg:w-1/2 lg:overflow-y-auto lg:px-10 lg:py-5 xl:px-12">
+        <div className="login-form-enter mx-auto w-full max-w-md space-y-3 rounded-2xl border border-slate-100 bg-white p-6 shadow-xl shadow-blue-900/5 lg:p-10">
           <div className="pb-1">
             <BrandLogo size="md" showText showTagline />
           </div>
 
           <div>
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-[#1A73E8]">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-blue-700">
               Citizen Complaint Intelligence
             </span>
-            <h1 className="mt-1 text-2xl font-bold tracking-tight text-[#202124]">
+            <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-950">
               Welcome back
             </h1>
-            <p className="mt-1 text-xs text-[#5F6368]">
+            <p className="mt-1 text-xs text-slate-500">
               Sign in to continue to UrbanMind.
             </p>
           </div>
 
           {error && (
-            <div className="flex items-center gap-2 rounded-lg border border-[#FAD2CF] bg-[#FCE8E6] p-3 text-xs font-medium text-[#C5221F]">
+            <div className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 p-3 text-xs font-medium text-red-700">
               <AlertCircle size={16} />
               <span>{error}</span>
             </div>
           )}
 
-          <form onSubmit={handleLogin} className="space-y-4">
-            {/* Email Field with boxed styling */}
+          <form onSubmit={handleLogin} className="space-y-2.5">
             <div className="space-y-1">
-              <label className="text-xs font-semibold uppercase tracking-wider text-[#5F6368]" htmlFor="login-email">
+              <label className="text-xs font-semibold uppercase tracking-wider text-slate-600" htmlFor="login-email">
                 Email Address
               </label>
               <input
@@ -212,22 +218,22 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
+                  setSelectedDemo(null);
                   if (error) setError('');
                 }}
                 onBlur={() => setTouched(true)}
                 placeholder="officer@urbanmind.gov.in"
-                className={`w-full ${emailInvalid ? 'border-[#EA4335]' : ''}`}
+                className={`login-input h-12 w-full rounded-xl border-slate-200 bg-white px-4 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 ${emailInvalid ? '!border-red-500 focus:!border-red-500 focus:!ring-red-500/30' : ''}`}
                 autoComplete="email"
                 required
               />
               {emailInvalid && (
-                <p className="text-[11px] text-[#EA4335]">Enter a valid email address.</p>
+                <p className="text-[11px] text-red-600">Enter a valid email address.</p>
               )}
             </div>
 
-            {/* Password Field with boxed styling & show toggle */}
             <div className="space-y-1">
-              <label className="text-xs font-semibold uppercase tracking-wider text-[#5F6368]" htmlFor="login-password">
+              <label className="text-xs font-semibold uppercase tracking-wider text-slate-600" htmlFor="login-password">
                 Password
               </label>
               <div className="relative">
@@ -237,10 +243,11 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => {
                     setPassword(e.target.value);
+                    setSelectedDemo(null);
                     if (error) setError('');
                   }}
                   placeholder="••••••••••••"
-                  className="w-full pr-10"
+                  className="login-input h-12 w-full rounded-xl border-slate-200 bg-white px-4 pr-12 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30"
                   autoComplete="current-password"
                   required
                 />
@@ -248,59 +255,57 @@ export default function LoginPage() {
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#5F6368] hover:text-[#202124]"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-slate-500 transition-colors hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
             </div>
 
-            {/* Remember Me */}
-            <div className="flex items-center justify-between pt-1 text-xs">
-              <label className="flex items-center gap-2 cursor-pointer select-none text-[#5F6368]">
+            <div className="flex items-center justify-between pt-0.5 text-xs">
+              <label className="flex cursor-pointer select-none items-center gap-2 text-slate-600">
                 <input
                   type="checkbox"
                   checked={remember}
                   onChange={(e) => setRemember(e.target.checked)}
-                  className="h-4 w-4 rounded border-[#DADCE0] text-[#1A73E8]"
+                  className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500/30"
                 />
                 <span>Remember me</span>
               </label>
             </div>
 
-            {/* Sign in Button */}
             <button
               type="submit"
               disabled={loading}
-              className="btn-primary w-full py-2.5 text-sm"
+              className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 px-4 text-sm font-semibold text-white shadow-lg shadow-blue-600/25 transition hover:brightness-110 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
             >
+              {loading && <span aria-hidden="true" className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />}
               {loading ? 'Signing in…' : 'Sign in'}
             </button>
           </form>
 
-          {/* Demo Access: 3 Compact Cards in 1 Row */}
-          <section className="space-y-2.5 pt-2 border-t border-[#E8EAED]">
-            <div className="flex items-center gap-1.5 text-xs font-semibold text-[#202124]">
-              <KeyRound size={14} className="text-[#4285F4]" />
+          <section className="space-y-2 border-t border-slate-200 pt-3">
+            <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-800">
+              <KeyRound size={14} className="text-blue-600" />
               <span>Demo access (fills fields only)</span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 gap-2">
               {DEMO_USERS.map((u) => (
                 <button
                   key={u.email}
                   type="button"
                   onClick={() => fillCredentials(u.email, u.password)}
                   title={`${u.email} — Click to autofill credentials`}
-                  className="flex flex-col text-left rounded-lg border border-[#E8EAED] bg-[#F8FAFC] p-2.5 transition-colors hover:border-[#1A73E8] hover:bg-[#E8F0FE]/30"
+                  className={`flex min-h-[76px] flex-col justify-center rounded-xl border p-2.5 text-left transition-all duration-150 hover:-translate-y-0.5 hover:border-blue-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 ${selectedDemo === u.email ? 'border-blue-500 bg-blue-50/70 ring-2 ring-blue-500/20' : 'border-slate-200 bg-slate-50 hover:bg-white'}`}
                 >
-                  <span className="text-[11px] font-bold text-[#1A73E8] truncate">
+                  <span className="truncate text-[11px] font-bold text-blue-700">
                     {u.badgeLabel}
                   </span>
-                  <span className="text-xs font-medium text-[#202124] truncate">
+                  <span className="truncate text-xs font-bold text-slate-900">
                     {u.name}
                   </span>
-                  <span className="mt-1 text-[10px] text-[#5F6368] truncate" title={u.email}>
+                  <span className="mt-1 truncate text-[10px] text-slate-500" title={u.email}>
                     {u.role === 'admin' ? 'All India · Full' : u.role === 'ward_officer' ? 'Chennai Ward 1' : 'All India · Reports'}
                   </span>
                 </button>
@@ -308,14 +313,13 @@ export default function LoginPage() {
             </div>
           </section>
 
-          {/* Team Attribution Footer */}
-          <footer className="pt-4 border-t border-[#E8EAED] text-center text-xs text-[#5F6368]">
+          <footer className="border-t border-slate-200 pt-3 text-center text-xs text-slate-500">
             <span>Built by </span>
-            <span className="font-medium text-[#202124]">{TEAM[0]}</span>
+            <span className="font-medium text-slate-900">{TEAM[0]}</span>
             <span className="mx-1.5">·</span>
-            <span className="font-medium text-[#202124]">{TEAM[1]}</span>
+            <span className="font-medium text-slate-900">{TEAM[1]}</span>
             <span className="mx-1.5">·</span>
-            <span className="font-medium text-[#202124]">{TEAM[2]}</span>
+            <span className="font-medium text-slate-900">{TEAM[2]}</span>
           </footer>
         </div>
       </main>
