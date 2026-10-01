@@ -17,11 +17,11 @@ export const metadata: Metadata = {
     description: 'AI-powered civic grievance dashboard for India.',
     images: [
       {
-        url: '/META-TAG.png',
+        url: '/og-image.jpg',
         width: 1200,
         height: 630,
         alt: 'UrbanMind',
-        type: 'image/png',
+        type: 'image/jpeg',
       },
     ],
   },
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'UrbanMind – Citizen Complaint Intelligence',
     description: 'AI-powered civic grievance dashboard for India.',
-    images: ['/META-TAG.png'],
+    images: ['/og-image.jpg'],
   },
 };
 

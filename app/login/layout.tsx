@@ -13,11 +13,11 @@ export const metadata: Metadata = {
     description,
     images: [
       {
-        url: '/META-TAG.png',
+        url: '/og-image.jpg',
         width: 1200,
         height: 630,
         alt: 'UrbanMind',
-        type: 'image/png',
+        type: 'image/jpeg',
       },
     ],
   },
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title,
     description,
-    images: ['/META-TAG.png'],
+    images: ['/og-image.jpg'],
   },
 };
 
