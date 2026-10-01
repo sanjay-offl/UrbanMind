@@ -1,34 +1,9 @@
 import type { Metadata } from 'next';
-import { Plus_Jakarta_Sans, Inter, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { WardProvider } from '@/lib/ward-context';
 import { I18nProvider } from '@/lib/i18n-context';
 import AppShell from '@/components/auth/app-shell';
 import { Toaster } from '@/components/ui/toast';
-
-const plusJakarta = Plus_Jakarta_Sans({
-  subsets: ['latin'],
-  variable: '--font-heading',
-  weight: ['600', '700', '800'],
-  display: 'swap',
-  preload: false,
-});
-
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-sans',
-  weight: ['400', '500', '600'],
-  display: 'swap',
-  preload: false,
-});
-
-const mono = JetBrains_Mono({
-  subsets: ['latin'],
-  variable: '--font-mono',
-  weight: ['400', '500'],
-  display: 'swap',
-  preload: false,
-});
 
 export const metadata: Metadata = {
   title: 'UrbanMind — From Citizen Voice to National Priorities',
@@ -50,7 +25,6 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${plusJakarta.variable} ${inter.variable} ${mono.variable}`}
     >
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -67,7 +41,7 @@ export default function RootLayout({
           href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"
         />
       </head>
-      <body className={inter.className}>
+      <body>
         <WardProvider>
           <I18nProvider>
             <AppShell>{children}</AppShell>
