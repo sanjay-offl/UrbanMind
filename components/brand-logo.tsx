@@ -34,6 +34,7 @@ export default function BrandLogo({
           width={dimension}
           height={dimension}
           priority
+          unoptimized
           referrerPolicy="no-referrer"
           className="object-contain"
           style={{ width: '100%', height: '100%' }}
