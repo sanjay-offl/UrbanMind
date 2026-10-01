@@ -6,13 +6,30 @@ import AppShell from '@/components/auth/app-shell';
 import { Toaster } from '@/components/ui/toast';
 
 export const metadata: Metadata = {
-  title: 'UrbanMind — From Citizen Voice to National Priorities',
-  description:
-    'AI-powered civic intelligence platform turning citizen grievances and public infrastructure data into actionable development priorities for decision makers.',
+  metadataBase: new URL('https://urbanmind-eight.vercel.app'),
+  title: 'UrbanMind – Citizen Complaint Intelligence',
+  description: 'AI-powered civic grievance dashboard for India.',
   openGraph: {
-    title: 'UrbanMind — From Citizen Voice to National Priorities',
-    description:
-      'AI-powered civic intelligence platform turning citizen grievances and public infrastructure data into actionable development priorities.',
+    type: 'website',
+    url: '/',
+    siteName: 'UrbanMind',
+    title: 'UrbanMind – Citizen Complaint Intelligence',
+    description: 'AI-powered civic grievance dashboard for India.',
+    images: [
+      {
+        url: '/META-TAG.png',
+        width: 1200,
+        height: 630,
+        alt: 'UrbanMind',
+        type: 'image/png',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'UrbanMind – Citizen Complaint Intelligence',
+    description: 'AI-powered civic grievance dashboard for India.',
+    images: ['/META-TAG.png'],
   },
 };
 
