@@ -92,7 +92,7 @@ See [`.env.example`](.env.example) for the full list. Key variables:
 
   ## Live deployment
 
-  See the platform in action at the live demo: https://urban-mind-mauve.vercel.app
+  See the platform in action at the live demo: https://urbanmind-eight.vercel.app/
 
   ## License
 
