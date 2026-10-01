@@ -75,7 +75,7 @@ function fallbackNarrative(
 ): { summary: string; recommendations: RecommendationCard[] } {
   const top = projects[0];
   const summary = top
-    ? `${geoName} shows ${projects.length} priority sectors. The most exposed is ${top.category} in ${top.district}, where ${top.complaint_volume} requests (${top.critical_volume} critical) coincide with a ${top.infrastructure_gap.toLowerCase()} infrastructure gap and affect about ${top.affected_population.toLocaleString('en-IN')} people.`
+    ? `${geoName} shows ${projects.length} priority sectors. The most exposed is ${top.category} in ${top.district}, where ${top.complaint_volume} requests (${top.critical_volume} critical) sit against an infrastructure gap index of ${top.gap_index}/100 (${top.infrastructure_gap.toLowerCase()}) and affect about ${top.affected_population.toLocaleString('en-IN')} people.`
     : `No priority sectors were found in ${geoName} for the current filters.`;
 
   return {
@@ -83,7 +83,7 @@ function fallbackNarrative(
     recommendations: projects.slice(0, 5).map((p) => ({
       id: p.id,
       headline: `${p.project} — ${p.district}`,
-      rationale: `${p.complaint_volume} requests in ${p.district}, of which ${p.critical_volume} are critical, against an infrastructure gap of ${p.gap_index}/100 (${p.infrastructure_gap.toLowerCase()}). Estimated cost ${p.estimated_cost_crore} crore for about ${p.affected_population.toLocaleString('en-IN')} people.`,
+      rationale: `${p.complaint_volume} requests in ${p.district}, of which ${p.critical_volume} are critical, against an infrastructure gap index of ${p.gap_index}/100 (${p.infrastructure_gap.toLowerCase()}). Estimated cost ${p.estimated_cost_crore} crore for about ${p.affected_population.toLocaleString('en-IN')} people.`,
       sector: p.sector,
       location: `${p.district}, ${p.state}`,
       priority_score: p.priority_score,

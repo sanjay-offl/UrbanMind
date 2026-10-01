@@ -33,12 +33,19 @@ const MARGIN_TOP = 56;
 const MARGIN_BOTTOM = 56;
 const LINE_HEIGHT = 15;
 
-const FONT_REGULAR = 'Helvetica';
-const FONT_BOLD = 'Helvetica-Bold';
-const FONT_MONO = 'Courier';
+// Resource tags used inside the content stream …
+const FONT_REGULAR = 'F1';
+const FONT_BOLD = 'F2';
+const FONT_MONO = 'F3';
+// … and the base fonts they resolve to.
+const FONT_BASE_REGULAR = 'Helvetica';
+const FONT_BASE_BOLD = 'Helvetica-Bold';
+const FONT_BASE_MONO = 'Courier';
 
 const BODY_RGB = '0.09 0.09 0.15';
 const MUTED_RGB = '0.39 0.45 0.55';
+
+export { MUTED_RGB, BODY_RGB };
 const RULE_RGB = '0.85 0.86 0.88';
 
 function wrap(text: string, maxChars: number): string[] {
@@ -57,9 +64,29 @@ function wrap(text: string, maxChars: number): string[] {
   return lines;
 }
 
+/**
+ * Typographic characters that have a WinAnsi code point. Anything outside
+ * WinAnsi (Indic scripts, emoji) becomes '?' rather than an unencodable glyph,
+ * so callers should transliterate before rendering.
+ */
+const WIN_ANSI_FOLD: Record<string, string> = {
+  '\u2018': "'",
+  '\u2019': "'",
+  '\u201C': '"',
+  '\u201D': '"',
+  '\u2013': '-',
+  '\u2014': '-',
+  '\u2026': '...',
+  '\u00A0': ' ',
+  '\u2212': '-',
+  '\u2265': '>=',
+  '\u2264': '<=',
+  '\u00D7': 'x',
+};
+
 function escapeText(value: string): string {
   return value
-    .replace(/[^\x20-\x7E\xA0-\xFF]/g, '?')
+    .replace(/[^\x20-\x7E\xA0-\xFF]/g, (ch) => WIN_ANSI_FOLD[ch] ?? '?')
     .replace(/\\/g, '\\\\')
     .replace(/\(/g, '\\(')
     .replace(/\)/g, '\\)');
@@ -138,13 +165,13 @@ function assemble(pages: string[], options: PdfOptions): Buffer {
   };
 
   const fontRegular = push(
-    `<< /Type /Font /Subtype /Type1 /BaseFont /${FONT_REGULAR} /Encoding /WinAnsiEncoding >>`
+    `<< /Type /Font /Subtype /Type1 /BaseFont /${FONT_BASE_REGULAR} /Encoding /WinAnsiEncoding >>`
   );
   const fontBold = push(
-    `<< /Type /Font /Subtype /Type1 /BaseFont /${FONT_BOLD} /Encoding /WinAnsiEncoding >>`
+    `<< /Type /Font /Subtype /Type1 /BaseFont /${FONT_BASE_BOLD} /Encoding /WinAnsiEncoding >>`
   );
   const fontMono = push(
-    `<< /Type /Font /Subtype /Type1 /BaseFont /${FONT_MONO} /Encoding /WinAnsiEncoding >>`
+    `<< /Type /Font /Subtype /Type1 /BaseFont /${FONT_BASE_MONO} /Encoding /WinAnsiEncoding >>`
   );
 
   const pageObjNums: number[] = [];
@@ -156,7 +183,9 @@ function assemble(pages: string[], options: PdfOptions): Buffer {
   const pagesObjNum = objects.length + pages.length + 1;
 
   for (let i = 0; i < pages.length; i += 1) {
-    const footer = options.footer ? `\n${BODY_RGB} rg\n/F1 8 Tf\n1 0 0 1 ${MARGIN_X} ${MARGIN_BOTTOM - 22} Tm\n(${escapeText(`${options.footer}  ·  page ${i + 1} of ${pages.length}`)}) Tj` : '';
+    const footer = options.footer
+      ? `\n${BODY_RGB} rg\n/${FONT_REGULAR} 8 Tf\n1 0 0 1 ${MARGIN_X} ${MARGIN_BOTTOM - 22} Tm\n(${escapeText(`${options.footer}   |   page ${i + 1} of ${pages.length}`)}) Tj`
+      : '';
     const stream = pages[i] + footer;
     // Replace the reserved content object with a version that carries the footer.
     const objIndex = contentObjNums[i] - 1;

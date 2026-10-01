@@ -138,7 +138,7 @@ export default function LoginPage() {
               </p>
             </div>
 
-            <div className="login-rise login-delay-2 login-stage relative isolate hidden h-[220px] w-full overflow-hidden rounded-3xl border border-blue-100/80 shadow-sm sm:block lg:h-[clamp(260px,38vh,420px)]">
+            <div className="login-rise login-delay-2 login-stage relative isolate hidden h-[220px] w-full overflow-hidden rounded-3xl border border-blue-100/80 shadow-sm sm:block lg:h-[260px] xl:h-[clamp(260px,38vh,420px)]">
               <div className="absolute left-3 top-3 z-20 inline-flex items-center gap-1.5 rounded-full border border-white/80 bg-white/70 px-3 py-1.5 text-[11px] font-semibold text-slate-700 shadow-sm backdrop-blur-md sm:left-4 sm:top-4">
                 <MapPin size={14} className="shrink-0 text-blue-600" />
                 <span>National Geographic Scope</span>

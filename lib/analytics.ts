@@ -15,9 +15,11 @@ import {
   hotspotScore,
   matchesGeo,
   resolveGeo,
+  tierFor,
   type CivicRequest,
   type GeoContext,
   type GeoLevel,
+  type PriorityFactors,
   type PriorityTier,
   type Sector,
 } from './civic-data';
@@ -131,6 +133,7 @@ export interface PriorityProject {
   sector: Sector;
   category: string;
   priority_score: number;
+  priority_factors: PriorityFactors;
   priority: PriorityTier;
   affected_population: number;
   infrastructure_gap: string;
@@ -564,10 +567,10 @@ export function priorityProjects(rows: CivicRequest[], limit = 12): PriorityProj
       sector: sample.sector,
       category: sample.category,
       priority_score: score,
-      // Tier comes from the most severe request in the cluster, so a project is
-      // "critical" when a single request in it genuinely is — not because an
-      // aggregate crossed an arbitrary line.
-      priority: topSeverity.priority,
+      priority_factors: cluster.factors,
+      // Same score, same thresholds as an individual request — so the priority
+      // list and the request list can never disagree about what "critical" means.
+      priority: tierFor(score),
       affected_population: affected,
       infrastructure_gap: GAP_LABEL(gap),
       gap_index: gap,
