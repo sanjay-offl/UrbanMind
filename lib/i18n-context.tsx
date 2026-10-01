@@ -25,6 +25,9 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
       const saved = localStorage.getItem(STORAGE_KEY) as SupportedLocale;
       if (saved && (saved === 'en' || saved === 'ta' || saved === 'hi')) {
         setLocaleState(saved);
+        if (typeof document !== 'undefined') {
+          document.documentElement.lang = saved;
+        }
       }
     } catch {
       // ignore
@@ -35,6 +38,9 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     setLocaleState(next);
     try {
       localStorage.setItem(STORAGE_KEY, next);
+      if (typeof document !== 'undefined') {
+        document.documentElement.lang = next;
+      }
     } catch {
       // ignore
     }

@@ -6,40 +6,85 @@ import type { GrievanceRecord } from '@/types/grievance';
 import { formatDate, formatScore } from '@/lib/format';
 import PriorityBadge from '@/components/grievances/priority-badge';
 import { useI18n } from '@/lib/i18n-context';
+import { ChevronLeft, ChevronRight, X, ExternalLink } from 'lucide-react';
+
+interface GrievanceTableProps {
+  grievances: GrievanceRecord[];
+  loading?: boolean;
+  page?: number;
+  total?: number;
+  perPage?: number;
+  onPageChange?: (page: number) => void;
+  onPerPageChange?: (perPage: number) => void;
+}
 
 export default function GrievanceTable({
   grievances,
   loading,
-}: {
-  grievances: GrievanceRecord[];
-  loading?: boolean;
-}) {
+  page = 1,
+  total = grievances.length,
+  perPage = 25,
+  onPageChange,
+  onPerPageChange,
+}: GrievanceTableProps) {
   const { locale, t } = useI18n();
   const [selectedItem, setSelectedItem] = useState<GrievanceRecord | null>(null);
+
+  // Client-side fallback pagination if not externally paginated
+  const [localPage, setLocalPage] = useState(1);
+  const [localPerPage, setLocalPerPage] = useState(25);
+
+  const isExternallyPaginated = typeof onPageChange === 'function';
+  const currentPage = isExternallyPaginated ? page : localPage;
+  const currentPerPage = isExternallyPaginated ? perPage : localPerPage;
+  const totalCount = isExternallyPaginated ? total : grievances.length;
+  const totalPages = Math.max(1, Math.ceil(totalCount / currentPerPage));
+
+  const displayRows = isExternallyPaginated
+    ? grievances
+    : grievances.slice((localPage - 1) * localPerPage, localPage * localPerPage);
+
+  const handlePageChange = (next: number) => {
+    if (next < 1 || next > totalPages) return;
+    if (isExternallyPaginated) {
+      onPageChange(next);
+    } else {
+      setLocalPage(next);
+    }
+  };
+
+  const handlePerPageChange = (size: number) => {
+    if (isExternallyPaginated && onPerPageChange) {
+      onPerPageChange(size);
+    } else {
+      setLocalPerPage(size);
+      setLocalPage(1);
+    }
+  };
 
   return (
     <>
       <div className="civic-panel overflow-hidden p-0">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[1280px] border-collapse text-left text-[13px]">
+          <table className="w-full min-w-[1360px] border-collapse text-left text-[13px]">
             <thead className="sticky top-0 z-10 border-b border-[#E8EAED] bg-[#F8FAFC]">
               <tr className="text-[11px] font-semibold uppercase tracking-wider text-[#5F6368]">
-                <th className="px-4 py-3">Complaint ID</th>
-                <th className="px-4 py-3">Timestamp</th>
-                <th className="px-4 py-3">State</th>
-                <th className="px-4 py-3">District</th>
-                <th className="px-4 py-3">City</th>
-                <th className="px-4 py-3">Ward</th>
-                <th className="px-4 py-3">Language</th>
-                <th className="px-4 py-3">Category</th>
-                <th className="min-w-[240px] px-4 py-3">Description</th>
-                <th className="px-3 py-3 text-center">Severity</th>
-                <th className="px-3 py-3 text-center">Urgency</th>
-                <th className="px-4 py-3 text-right">Score</th>
-                <th className="px-4 py-3 text-center">Priority</th>
-                <th className="px-4 py-3 text-center">Status</th>
-                <th className="px-4 py-3 text-center">Source</th>
-                <th className="px-4 py-3 text-center">Action</th>
+                <th className="px-4 py-3">{t('idHeader') || 'Complaint ID'}</th>
+                <th className="px-4 py-3">{t('timestampHeader') || 'Timestamp'}</th>
+                <th className="px-4 py-3">{t('stateHeader') || 'State'}</th>
+                <th className="px-4 py-3">{t('districtHeader') || 'District'}</th>
+                <th className="px-4 py-3">{t('cityHeader') || 'City'}</th>
+                <th className="px-4 py-3">{t('wardHeader') || 'Ward'}</th>
+                <th className="px-4 py-3">{t('languageHeader') || 'Language'}</th>
+                <th className="px-4 py-3">{t('categoryHeader') || 'Category'}</th>
+                <th className="min-w-[260px] px-4 py-3">{t('descriptionHeader') || 'Description'}</th>
+                <th className="px-3 py-3 text-center">{t('severityHeader') || 'Severity'}</th>
+                <th className="px-3 py-3 text-center">{t('urgencyHeader') || 'Urgency'}</th>
+                <th className="px-4 py-3 text-right">{t('scoreHeader') || 'Score'}</th>
+                <th className="px-4 py-3 text-center">{t('priorityHeader') || 'Priority'}</th>
+                <th className="px-4 py-3 text-center">{t('statusHeader') || 'Status'}</th>
+                <th className="px-4 py-3 text-center">{t('sourceHeader') || 'Source'}</th>
+                <th className="px-4 py-3 text-center">{t('actionHeader') || 'Actions'}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#E8EAED]">
@@ -48,20 +93,20 @@ export default function GrievanceTable({
                   <td colSpan={16} className="py-12 text-center text-[#5F6368]">
                     <div className="flex items-center justify-center gap-2">
                       <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-[#1A73E8] border-t-transparent" />
-                      <span>{t('loading') || 'Loading civic intelligence...'}</span>
+                      <span>{t('loading')}</span>
                     </div>
                   </td>
                 </tr>
               )}
-              {!loading && grievances.length === 0 && (
+              {!loading && displayRows.length === 0 && (
                 <tr>
                   <td colSpan={16} className="py-12 text-center text-[#5F6368]">
-                    {t('empty') || 'No grievance data available for this scope.'}
+                    {t('empty')}
                   </td>
                 </tr>
               )}
               {!loading &&
-                grievances.map((g) => {
+                displayRows.map((g) => {
                   const displayId = g.displayId || `GRV-${g.id.toString().padStart(6, '0')}`;
                   const ward = g.ward && g.ward.trim() ? g.ward : 'Not available';
                   const city = g.city && g.city.trim() ? g.city : 'Not available';
@@ -121,7 +166,7 @@ export default function GrievanceTable({
                         {g.category}
                       </td>
 
-                      {/* Description */}
+                      {/* Description (line-clamp-2) */}
                       <td className="max-w-[320px] px-4 py-3">
                         <p className="line-clamp-2 leading-relaxed text-[#202124]">
                           {description}
@@ -143,7 +188,7 @@ export default function GrievanceTable({
                         {formatScore(g.priorityScore)}
                       </td>
 
-                      {/* Priority */}
+                      {/* Priority Level */}
                       <td className="whitespace-nowrap px-4 py-3 text-center">
                         <PriorityBadge priority={g.priorityLevel || 'Not scored'} />
                       </td>
@@ -168,7 +213,7 @@ export default function GrievanceTable({
                         </span>
                       </td>
 
-                      {/* Action */}
+                      {/* Actions */}
                       <td className="whitespace-nowrap px-4 py-3 text-center">
                         <button
                           type="button"
@@ -186,6 +231,55 @@ export default function GrievanceTable({
                 })}
             </tbody>
           </table>
+        </div>
+
+        {/* Server / Client Pagination Footer */}
+        <div className="flex flex-wrap items-center justify-between gap-4 border-t border-[#E8EAED] bg-[#F8FAFC] px-4 py-3 text-xs text-[#5F6368]">
+          <div className="flex items-center gap-2">
+            <span>
+              Showing {totalCount === 0 ? 0 : (currentPage - 1) * currentPerPage + 1} to{' '}
+              {Math.min(currentPage * currentPerPage, totalCount)} of{' '}
+              <strong className="text-[#202124]">{totalCount.toLocaleString('en-IN')}</strong> complaints
+            </span>
+
+            <div className="ml-4 flex items-center gap-1.5">
+              <span>Per page:</span>
+              <select
+                value={currentPerPage}
+                onChange={(e) => handlePerPageChange(Number(e.target.value))}
+                className="h-7 rounded border border-[#DADCE0] bg-white px-2 text-xs font-medium text-[#202124]"
+              >
+                <option value={10}>10</option>
+                <option value={25}>25</option>
+                <option value={50}>50</option>
+                <option value={100}>100</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              disabled={currentPage <= 1 || loading}
+              onClick={() => handlePageChange(currentPage - 1)}
+              className="flex h-7 w-7 items-center justify-center rounded border border-[#DADCE0] bg-white text-[#202124] hover:bg-[#F1F3F4] disabled:opacity-40"
+              aria-label="Previous page"
+            >
+              <ChevronLeft size={14} />
+            </button>
+            <span className="px-2 font-medium">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              type="button"
+              disabled={currentPage >= totalPages || loading}
+              onClick={() => handlePageChange(currentPage + 1)}
+              className="flex h-7 w-7 items-center justify-center rounded border border-[#DADCE0] bg-white text-[#202124] hover:bg-[#F1F3F4] disabled:opacity-40"
+              aria-label="Next page"
+            >
+              <ChevronRight size={14} />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -219,8 +313,9 @@ export default function GrievanceTable({
                 type="button"
                 onClick={() => setSelectedItem(null)}
                 className="rounded-lg p-1 text-[#5F6368] hover:bg-[#F1F3F4]"
+                aria-label="Close modal"
               >
-                ✕
+                <X size={18} />
               </button>
             </div>
 
@@ -228,8 +323,10 @@ export default function GrievanceTable({
             <div className="mt-4 space-y-4 text-sm">
               {/* Citizen Voice */}
               <div>
-                <span className="field-label block text-[#5F6368]">Citizen Voice (Original)</span>
-                <p className="mt-1 rounded-lg border border-[#E8EAED] bg-[#F8FAFC] p-3 text-[#202124]">
+                <span className="text-xs font-semibold uppercase tracking-wider text-[#5F6368] block">
+                  Citizen Voice (Original)
+                </span>
+                <p className="mt-1 rounded-lg border border-[#E8EAED] bg-[#F8FAFC] p-3 text-[#202124] leading-relaxed">
                   {selectedItem.originalText || selectedItem.description}
                 </p>
                 <div className="mt-1 flex items-center gap-2 text-xs text-[#5F6368]">
@@ -240,19 +337,23 @@ export default function GrievanceTable({
               {/* Translation */}
               {selectedItem.translatedText && selectedItem.translatedText !== selectedItem.originalText && (
                 <div>
-                  <span className="field-label block text-[#5F6368]">English Translation</span>
-                  <p className="mt-1 rounded-lg border border-[#E8EAED] bg-[#F8FAFC] p-3 text-[#202124]">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[#5F6368] block">
+                    English Translation
+                  </span>
+                  <p className="mt-1 rounded-lg border border-[#E8EAED] bg-[#F8FAFC] p-3 text-[#202124] leading-relaxed">
                     {selectedItem.translatedText}
                   </p>
                 </div>
               )}
 
-              {/* Priority & Factors */}
-              <div className="rounded-lg border border-[#E8EAED] p-3">
-                <span className="field-label block text-[#5F6368]">Deterministic Scoring Engine</span>
-                <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {/* Deterministic Scoring Engine */}
+              <div className="rounded-lg border border-[#E8EAED] p-3.5">
+                <span className="text-xs font-semibold uppercase tracking-wider text-[#5F6368] block">
+                  Deterministic Scoring Engine
+                </span>
+                <div className="mt-2.5 grid grid-cols-2 gap-3 sm:grid-cols-4">
                   <div>
-                    <span className="text-xs text-[#5F6368]">Score</span>
+                    <span className="text-xs text-[#5F6368]">Priority Score</span>
                     <p className="font-mono text-lg font-bold text-[#1A73E8]">
                       {formatScore(selectedItem.priorityScore)}/100
                     </p>
@@ -278,7 +379,7 @@ export default function GrievanceTable({
                 </div>
 
                 {selectedItem.aiReasoning && (
-                  <p className="mt-3 text-xs leading-relaxed text-[#5F6368]">
+                  <p className="mt-3 text-xs leading-relaxed text-[#5F6368] border-t border-[#F1F3F4] pt-2.5">
                     <strong className="text-[#202124]">Derived Impact:</strong> {selectedItem.aiReasoning}
                   </p>
                 )}
@@ -286,10 +387,10 @@ export default function GrievanceTable({
 
               {/* Location Hierarchy */}
               <div className="flex flex-wrap gap-2 text-xs text-[#5F6368]">
-                <span className="rounded bg-[#F8FAFC] px-2 py-1 border border-[#E8EAED]">State: {selectedItem.state}</span>
-                <span className="rounded bg-[#F8FAFC] px-2 py-1 border border-[#E8EAED]">District: {selectedItem.district}</span>
-                <span className="rounded bg-[#F8FAFC] px-2 py-1 border border-[#E8EAED]">City: {selectedItem.city}</span>
-                <span className="rounded bg-[#F8FAFC] px-2 py-1 border border-[#E8EAED]">Ward: {selectedItem.ward}</span>
+                <span className="rounded bg-[#F8FAFC] px-2.5 py-1 border border-[#E8EAED]">State: {selectedItem.state}</span>
+                <span className="rounded bg-[#F8FAFC] px-2.5 py-1 border border-[#E8EAED]">District: {selectedItem.district}</span>
+                <span className="rounded bg-[#F8FAFC] px-2.5 py-1 border border-[#E8EAED]">City: {selectedItem.city}</span>
+                <span className="rounded bg-[#F8FAFC] px-2.5 py-1 border border-[#E8EAED]">Ward: {selectedItem.ward}</span>
               </div>
             </div>
 
@@ -299,7 +400,7 @@ export default function GrievanceTable({
                 href={`/grievances/${selectedItem.id}`}
                 className="btn-primary"
               >
-                Open Full Grievance Record
+                <ExternalLink size={14} /> Open Full Grievance Record
               </Link>
             </div>
           </div>

@@ -5,6 +5,9 @@ import { usePathname, useRouter } from 'next/navigation';
 import { getSession } from '@/lib/auth';
 import Sidebar from '@/components/layout/sidebar';
 import Header from '@/components/layout/header';
+import GeographyToolbar from '@/components/layout/geography-toolbar';
+
+const DATA_PAGES = ['/dashboard', '/grievances', '/map', '/trends', '/reports'];
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -13,7 +16,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   const isLoginPage = pathname === '/login';
-  const isPublicPage = isLoginPage || pathname === '/submit';
+  const isPublicPage = isLoginPage || pathname === '/';
 
   useEffect(() => {
     const session = getSession();
@@ -23,12 +26,12 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     }
   }, [pathname, router, isPublicPage]);
 
-  // Never leave the mobile drawer open across route changes.
+  // Never leave the mobile drawer open across route changes
   useEffect(() => {
     setMobileNavOpen(false);
   }, [pathname]);
 
-  // Escape closes the drawer; body scroll is locked while it is open.
+  // Escape key closes the drawer; lock body scroll when open
   useEffect(() => {
     if (!mobileNavOpen) return;
     function onKeyDown(e: KeyboardEvent) {
@@ -47,54 +50,52 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
   if (authed === null) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[var(--bg)]">
+        <div className="relative flex h-14 w-14 items-center justify-center rounded-xl bg-[var(--surface)] border border-[var(--border)] p-2 shadow-sm">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo.png"
+            alt="UrbanMind Logo"
+            className="h-full w-full object-contain"
+          />
+        </div>
+        <div className="flex items-center gap-2 text-xs font-medium text-[var(--text-muted)]">
+          <div className="h-4 w-4 animate-spin rounded-full border-2 border-[var(--primary)] border-t-transparent" />
+          <span>Loading UrbanMind Intelligence...</span>
+        </div>
       </div>
     );
   }
 
   if (!authed) return null;
 
+  const showGeographyToolbar = DATA_PAGES.includes(pathname);
+
   return (
-    <div className="flex h-screen w-full overflow-hidden">
-      {/* Desktop sidebar — unchanged behaviour */}
-      <div className="hidden md:flex">
-        <Sidebar />
-      </div>
+    <div className="lg:grid lg:grid-cols-[264px_1fr] h-screen w-full overflow-hidden bg-[var(--bg)]">
+      {/* Exactly ONE desktop sidebar instance in the grid */}
+      <Sidebar />
 
-      {/* Mobile sidebar — off-canvas, controlled by the header hamburger */}
-      <div
-        className={`fixed inset-0 z-[60] md:hidden ${
-          mobileNavOpen ? 'pointer-events-auto' : 'pointer-events-none'
-        }`}
-        aria-hidden={!mobileNavOpen}
-      >
-        <div
-          onClick={() => setMobileNavOpen(false)}
-          className={`absolute inset-0 bg-slate-900/40 backdrop-blur-[2px] transition-opacity duration-200 ${
-            mobileNavOpen ? 'opacity-100' : 'opacity-0'
-          }`}
-        />
-        <div
-          id="urbanmind-mobile-nav"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Navigation"
-          className={`absolute left-0 top-0 h-full max-w-[280px] shadow-2xl transition-transform duration-200 ease-out ${
-            mobileNavOpen ? 'translate-x-0' : '-translate-x-full'
-          }`}
-        >
-          <Sidebar onNavigate={() => setMobileNavOpen(false)} />
-        </div>
-      </div>
+      {/* Exactly ONE mobile drawer instance (opened only via hamburger on <1024px) */}
+      <Sidebar
+        isMobileDrawer
+        isOpen={mobileNavOpen}
+        onClose={() => setMobileNavOpen(false)}
+        onNavigate={() => setMobileNavOpen(false)}
+      />
 
-      <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
+      {/* Main Content Column with Header */}
+      <div className="flex min-w-0 flex-1 flex-col h-screen overflow-hidden">
         <Header
           sidebarOpen={mobileNavOpen}
           onToggleSidebar={() => setMobileNavOpen((v) => !v)}
         />
-        <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 sm:p-6">
-          {children}
+        {/* Only the main content area scrolls, with scroll-padding-top: 80px */}
+        <main className="flex-1 overflow-y-auto scroll-pt-[80px] p-4 sm:p-6 lg:p-8">
+          <div className="mx-auto max-w-7xl space-y-6">
+            {showGeographyToolbar && <GeographyToolbar />}
+            {children}
+          </div>
         </main>
       </div>
     </div>

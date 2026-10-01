@@ -10,6 +10,7 @@ import {
   Tooltip,
   CartesianGrid,
   ResponsiveContainer,
+  LabelList,
 } from 'recharts';
 
 export interface CategoryDatum {
@@ -17,7 +18,53 @@ export interface CategoryDatum {
   count: number;
 }
 
-const BAR_COLORS = ['#4285F4', '#34A853', '#FBBC05', '#EA4335', '#1A73E8', '#137333'];
+export const CATEGORY_COLORS: Record<string, string> = {
+  Water: 'var(--blue, #4285F4)',
+  Roads: 'var(--yellow, #FBBC04)',
+  Sanitation: 'var(--green, #34A853)',
+  Electricity: 'var(--red, #EA4335)',
+  Health: 'var(--blue, #4285F4)',
+  Transport: 'var(--green, #34A853)',
+  'Public Infrastructure': 'var(--yellow, #FBBC04)',
+  Education: 'var(--blue, #4285F4)',
+  'Public Safety': 'var(--red, #EA4335)',
+  Other: '#00897B',
+};
+
+export function getCategoryColor(category: string): string {
+  const norm = category?.trim() || '';
+  for (const [key, color] of Object.entries(CATEGORY_COLORS)) {
+    if (norm.toLowerCase().includes(key.toLowerCase())) {
+      return color;
+    }
+  }
+  return '#00897B';
+}
+
+const CustomYAxisTick = (props: any) => {
+  const { x, y, payload } = props;
+  const label = String(payload?.value || '');
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <title>{label}</title>
+      <text
+        x={-8}
+        y={4}
+        textAnchor="end"
+        fill="var(--text-muted, #5F6368)"
+        fontSize={13}
+        fontFamily="var(--font-ui, Inter, sans-serif)"
+        style={{
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+        }}
+      >
+        {label.length > 22 ? `${label.slice(0, 20)}…` : label}
+      </text>
+    </g>
+  );
+};
 
 export default function CategoryChart({ data }: { data: CategoryDatum[] }) {
   const [mounted, setMounted] = useState(false);
@@ -26,49 +73,68 @@ export default function CategoryChart({ data }: { data: CategoryDatum[] }) {
   }, []);
 
   if (!mounted) {
-    return <div className="h-72 w-full animate-pulse rounded-lg bg-surface-muted/20" />;
+    return <div className="h-[360px] w-full animate-pulse rounded-lg bg-[var(--border)]/20" />;
   }
 
+  const chartHeight = Math.max(320, data.length * 40);
+
   return (
-    <div className="h-72 w-full">
+    <div style={{ height: `${chartHeight}px` }} className="w-full pt-2">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data} layout="vertical" margin={{ left: 8, right: 16 }}>
-          <CartesianGrid stroke="var(--chart-grid)" strokeDasharray="4 4" horizontal={false} />
+        <BarChart
+          data={data}
+          layout="vertical"
+          margin={{ top: 8, right: 36, bottom: 8, left: 16 }}
+          barSize={20}
+        >
+          <CartesianGrid
+            stroke="var(--border)"
+            strokeDasharray="4 4"
+            horizontal={false}
+          />
           <XAxis
             type="number"
             allowDecimals={false}
             tickLine={false}
-            axisLine={false}
-            tick={{ fontSize: 11, fill: 'var(--text-muted)', fontFamily: 'var(--font-sans)' }}
+            axisLine={{ stroke: 'var(--border)' }}
+            tick={{ fontSize: 12, fill: 'var(--text-muted)', fontFamily: 'var(--font-ui)' }}
           />
           <YAxis
             type="category"
             dataKey="category"
-            width={140}
+            width={180}
             tickLine={false}
             axisLine={false}
-            tick={{ fontSize: 11, fill: 'var(--text-muted)', fontFamily: 'var(--font-sans)' }}
+            interval={0}
+            tick={<CustomYAxisTick />}
           />
           <Tooltip
             contentStyle={{
-              background: 'var(--bg-elevated)',
-              border: '1px solid var(--glass-border)',
-              borderRadius: '12px',
-              color: 'var(--text-primary)',
-              backdropFilter: 'blur(16px)',
-              WebkitBackdropFilter: 'blur(16px)',
-              boxShadow: 'var(--shadow-md)',
+              background: 'var(--surface)',
+              border: '1px solid var(--border)',
+              borderRadius: '8px',
+              color: 'var(--text)',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
               fontSize: '13px',
-              fontFamily: 'var(--font-sans)',
+              fontFamily: 'var(--font-ui)',
+              padding: '8px 12px',
             }}
-            labelStyle={{ color: 'var(--text-secondary)', fontWeight: 500 }}
-            itemStyle={{ color: 'var(--text-primary)' }}
-            cursor={{ fill: 'var(--glass)', stroke: 'var(--glass-border)', strokeWidth: 1 }}
+            labelStyle={{ color: 'var(--text)', fontWeight: 600 }}
+            itemStyle={{ color: 'var(--text-muted)' }}
+            cursor={{ fill: 'var(--primary-soft)', opacity: 0.4 }}
           />
           <Bar dataKey="count" radius={[0, 4, 4, 0]}>
             {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={BAR_COLORS[index % BAR_COLORS.length]} />
+              <Cell key={`cell-${index}`} fill={getCategoryColor(entry.category)} />
             ))}
+            <LabelList
+              dataKey="count"
+              position="right"
+              fill="var(--text)"
+              fontSize={12}
+              fontFamily="var(--font-ui)"
+              formatter={(val: number) => val.toLocaleString('en-IN')}
+            />
           </Bar>
         </BarChart>
       </ResponsiveContainer>

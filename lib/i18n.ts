@@ -4,7 +4,7 @@
  * Map, Trends, Reports, Submit, Upload, Settings, and Data Sources.
  */
 
-export type SupportedLocale = 'en' | 'ta' | 'hi';
+export type SupportedLocale = 'en' | 'ta' | 'hi' | 'bn';
 
 export const UI_STRINGS = {
   en: {
@@ -306,6 +306,106 @@ export const UI_STRINGS = {
     transcribing: 'आवाज़ का विश्लेषण जारी है...',
     selectLanguage: 'भाषा',
     signOut: 'लॉग आउट',
+  },
+  bn: {
+    appName: 'আরবানমাইন্ড (UrbanMind)',
+    tagline: 'নাগরিকের কণ্ঠস্বর থেকে জাতীয় অগ্রাধিকার পর্যন্ত',
+    // 10 Canonical Page Names
+    dashboard: 'ড্যাশবোর্ড',
+    grievances: 'অভিযোগসমূহ',
+    submit: 'অভিযোগ দায়ের',
+    upload: 'CSV আপলোড',
+    map: 'ওয়ার্ড মানচিত্র',
+    trends: 'প্রবণতা',
+    assistant: 'এআই সহায়ক',
+    reports: 'প্রতিবেদন',
+    dataSources: 'উপাত্তের উৎস',
+    settings: 'সেটিংস',
+
+    // Geography & Hierarchy
+    allWards: 'সকল ওয়ার্ড',
+    allDistricts: 'সকল জেলা',
+    allStates: 'সকল রাজ্য',
+    nationalScope: 'জাতীয় ক্ষেত্র (ভারত)',
+
+    // KPIs & Metrics
+    totalComplaints: 'মোট অভিযোগ',
+    openGrievances: 'অমীমাংসিত অভিযোগ',
+    criticalIssues: 'জরুরি সমস্যা',
+    avgPriorityScore: 'গড় অগ্রাধিকার স্কোর',
+    highUrgency: 'উচ্চ অগ্রাধিকার / মুলতবি',
+    currentDataset: 'বর্তমান উপাত্ত',
+
+    // Section Titles & Subtitles
+    overviewTitle: 'নাগরিক বুদ্ধিমত্তা পর্যালোচনা',
+    overviewSubtitle:
+      'আপনার নির্বাচিত ভৌগোলিক অঞ্চলের নাগরিক চাহিদা, অবকাঠামোগত ঘাটতি এবং অগ্রাধিকারমূলক সমস্যাগুলি পর্যালোচনা করুন।',
+    categoryChartTitle: 'বিভাগ অনুযায়ী অভিযোগ',
+    priorityTrendTitle: 'অগ্রাধিকার বণ্টন প্রবণতা',
+    topCriticalTitle: 'শীর্ষ জরুরি অভিযোগ',
+    geographicSummaryTitle: 'ভৌগোলিক অবকাঠামো সারাংশ',
+    recentActivityTitle: 'সাম্প্রতিক কার্যক্রম',
+
+    // Table Headers
+    idHeader: 'অভিযোগ নম্বর',
+    timestampHeader: 'সময়',
+    stateHeader: 'রাজ্য',
+    districtHeader: 'জেলা',
+    cityHeader: 'শহর',
+    wardHeader: 'ওয়ার্ড',
+    languageHeader: 'ভাষা',
+    categoryHeader: 'বিভাগ',
+    descriptionHeader: 'বিবরণ',
+    severityHeader: 'তীব্রতা',
+    urgencyHeader: 'জরুরিতা',
+    scoreHeader: 'স্কোর',
+    priorityHeader: 'অগ্রাধিকার',
+    statusHeader: 'অবস্থা',
+    sourceHeader: 'উৎস',
+    actionHeader: 'পদক্ষেপ',
+
+    // States & Feedback
+    loading: 'নাগরিক বুদ্ধিমত্তা লোড হচ্ছে...',
+    error: 'নাগরিক উপাত্ত লোড করতে ব্যর্থ',
+    retry: 'পুনরায় চেষ্টা করুন',
+    empty: 'এই অঞ্চলের জন্য কোনো অভিযোগ পাওয়া যায়নি।',
+
+    // Data Source Tags
+    publicData: 'সরকারি উপাত্ত',
+    syntheticData: 'নমুনা উপাত্ত',
+    derivedAnalytics: 'আরবানমাইন্ড বিশ্লেষণ',
+    aiInterpretation: 'এআই বিশ্লেষণ',
+
+    // Filters & Search
+    searchPlaceholder: 'কীওয়ার্ড, ওয়ার্ড বা বিভাগ দিয়ে খুঁজুন...',
+    filterCategory: 'বিভাগ',
+    filterPriority: 'অগ্রাধিকার',
+    filterStatus: 'অবস্থা',
+    filterLanguage: 'ভাষা',
+    moreFilters: 'আরও ফিল্টার',
+
+    // Priority Levels
+    critical: 'জরুরি',
+    high: 'উচ্চ',
+    moderate: 'মাঝারি',
+    low: 'নিম্ন',
+    notScored: 'অমূল্যায়িত',
+
+    // Statuses
+    statusOpen: 'উন্মুক্ত',
+    statusInProgress: 'প্রক্রিয়াধীন',
+    statusResolved: 'সমাধানকৃত',
+    statusClosed: 'বন্ধ',
+
+    // Actions & Form
+    submitButton: 'অভিযোগ জমা দিন',
+    generateReport: 'প্রতিবেদন তৈরি করুন',
+    downloadPdf: 'PDF ডাউনলোড করুন',
+    recordVoice: 'ভয়েস রেকর্ড করুন',
+    stopRecording: 'রেকর্ডিং বন্ধ করুন',
+    transcribing: 'ভয়েস প্রক্রিয়াকরণ হচ্ছে...',
+    selectLanguage: 'ভাষা',
+    signOut: 'লগ আউট',
   },
 } as const;
 

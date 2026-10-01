@@ -2,59 +2,37 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { AlertCircle, Check, Eye, EyeOff, KeyRound } from 'lucide-react';
+import { AlertCircle, Eye, EyeOff, KeyRound, Check, MapPin } from 'lucide-react';
 import { getSession, login } from '@/lib/auth';
 import { DEMO_USERS } from '@/lib/constants';
 import { toast } from '@/components/ui/toast';
+import BrandLogo from '@/components/brand-logo';
 
 const TEAM = ['Sanjay S', 'Gowsik', 'Dhanu Shree'] as const;
 const REMEMBER_EMAIL_KEY = 'urbanmind-remembered-email';
 
-/** Demo card metadata — presentation only; credentials come from constants. */
-const DEMO_META: Record<
-  string,
-  { slot: 'admin' | 'ward' | 'analyst'; role: string; scope: string }
-> = {
-  'admin@urbanmind.gov.in': {
-    slot: 'admin',
-    role: 'National Admin',
-    scope: 'All India · full access',
+const STORY_STEPS = [
+  {
+    step: '01',
+    title: 'Multilingual Citizen Intake',
+    desc: 'Voice, Web Portal, WhatsApp & CSV in 17 Indic language variants.',
   },
-  'ward@urbanmind.gov.in': {
-    slot: 'ward',
-    role: 'Ward Officer',
-    scope: 'Chennai Ward 1 · action rights',
+  {
+    step: '02',
+    title: 'Automated PII Redaction',
+    desc: 'Aadhaar, Phone, and Email stripped before analysis.',
   },
-  'analyst@urbanmind.gov.in': {
-    slot: 'analyst',
-    role: 'Policy Analyst',
-    scope: 'All India · read + reports',
+  {
+    step: '03',
+    title: 'Public Infrastructure Context',
+    desc: 'Cross-referenced against JJM, PMGSY, Swachh Bharat & Census data.',
   },
-};
-
-function Character({
-  variant,
-  label,
-}: {
-  variant: 'blue' | 'green' | 'yellow' | 'red';
-  label: string;
-}) {
-  return (
-    <div
-      className={`char char-${variant}`}
-      role="img"
-      aria-label={label}
-    >
-      <div className="char-face" aria-hidden="true">
-        <div className="char-eyes">
-          <span className="char-eye" />
-          <span className="char-eye" />
-        </div>
-        <div className="char-mouth" />
-      </div>
-    </div>
-  );
-}
+  {
+    step: '04',
+    title: 'Deterministic Urgency Scoring',
+    desc: 'Auditable 0–100 mathematical priority engine with zero LLM hallucinations.',
+  },
+];
 
 export default function LoginPage() {
   const router = useRouter();
@@ -67,9 +45,6 @@ export default function LoginPage() {
   const [touched, setTouched] = useState(false);
 
   useEffect(() => {
-    // The login screen is always light: scope the light tokens to <body> so
-    // the page chrome and toasts match, whatever the stored app theme is.
-    document.body.classList.add('auth-light');
     try {
       const savedEmail = localStorage.getItem(REMEMBER_EMAIL_KEY);
       if (savedEmail) {
@@ -77,16 +52,15 @@ export default function LoginPage() {
         setRemember(true);
       }
     } catch {
-      /* storage unavailable — non-fatal */
+      // storage unavailable
     }
-    return () => {
-      document.body.classList.remove('auth-light');
-    };
   }, []);
 
-  // An already-signed-in officer never sees the sign-in form again.
+  // Redirect if already signed in
   useEffect(() => {
-    if (getSession()) router.replace('/dashboard');
+    if (getSession()) {
+      router.replace('/dashboard');
+    }
   }, [router]);
 
   const emailInvalid =
@@ -108,7 +82,7 @@ export default function LoginPage() {
       return;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-      setError('Enter a valid email address, for example you@example.com.');
+      setError('Enter a valid email address.');
       return;
     }
 
@@ -118,7 +92,6 @@ export default function LoginPage() {
     try {
       const user = await login(email, password);
 
-      // "Remember me" persists the email for the next visit.
       try {
         if (remember) {
           localStorage.setItem(REMEMBER_EMAIL_KEY, email.trim());
@@ -126,7 +99,7 @@ export default function LoginPage() {
           localStorage.removeItem(REMEMBER_EMAIL_KEY);
         }
       } catch {
-        /* storage unavailable — non-fatal */
+        // ignore
       }
 
       toast.success(`Welcome back, ${user.name}`);
@@ -136,250 +109,221 @@ export default function LoginPage() {
       setError(
         err instanceof Error && err.message
           ? err.message
-          : 'Those credentials did not match. Use a demo account below.'
+          : 'Invalid credentials. Select a demo card below to autofill.'
       );
     }
   }
 
   return (
-    <div className="auth-shell auth-light">
-      {/* ─────────────── BRANDING / ART ─────────────── */}
-      <aside className="branding-panel" aria-label="UrbanMind branding">
-        <div className="branding-content">
-          <div className="branding-eyebrow">
-            <span className="branding-dots" aria-hidden="true">
-              <span />
-              <span />
-              <span />
-              <span />
-            </span>
-            Live civic intelligence
+    <div className="flex min-h-screen w-full flex-col lg:flex-row bg-white">
+      {/* ─────────────── LEFT BRANDING PANEL (50% on desktop) ─────────────── */}
+      <aside className="hidden lg:flex lg:w-1/2 flex-col justify-between border-r border-[#E8EAED] bg-[#F8FAFC] p-8 xl:p-12">
+        <div className="space-y-6">
+          <div className="inline-flex items-center gap-2 rounded-full bg-[var(--primary-soft)] px-3.5 py-1 text-xs font-semibold text-[var(--primary)] border border-[var(--primary-soft)]">
+            <span className="h-2 w-2 rounded-full bg-[var(--primary)] animate-pulse" />
+            <span>National Civic Intelligence Platform</span>
           </div>
 
-          <div className="char-stage" aria-hidden="false">
-            <Character variant="blue" label="Blue geometric character" />
-            <Character variant="green" label="Green geometric character" />
-            <Character variant="yellow" label="Yellow geometric character" />
-            <Character variant="red" label="Red geometric character" />
-          </div>
-
-          <div>
-            <h2 className="branding-title">
-              Every complaint,
-              <br />
-              understood.
+          <div className="pt-4">
+            <h2 className="text-2xl font-bold tracking-tight text-[#202124]">
+              From Citizen Voice to National Priorities
             </h2>
-            <p className="branding-sub">
-              One calm workspace for citizens, ward officers and analysts to
-              track, classify and resolve city grievances.
+            <p className="mt-2 text-sm leading-relaxed text-[#5F6368]">
+              A unified civic intelligence workspace turning citizen complaints and public infrastructure metrics into auditable, objective action for officers.
             </p>
           </div>
+
+          {/* India Dot Matrix / Geometric Representation */}
+          <div className="rounded-xl border border-[#E8EAED] bg-white p-5">
+            <div className="flex items-center justify-between pb-3 border-b border-[#E8EAED]">
+              <div className="flex items-center gap-2">
+                <MapPin size={16} className="text-[#4285F4]" />
+                <span className="text-xs font-semibold text-[#202124]">National Geographic Scope</span>
+              </div>
+              <span className="rounded bg-[#E8F0FE] px-2 py-0.5 text-[10px] font-semibold text-[#1967D2]">
+                36 States & UTs
+              </span>
+            </div>
+
+            {/* Illustrative Dots Graphic */}
+            <div className="my-4 flex items-center justify-center py-4">
+              <svg width="220" height="120" viewBox="0 0 220 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                {/* Simplified cluster of grid dots representing national data nodes */}
+                {[
+                  [30, 20, '#4285F4'], [55, 15, '#EA4335'], [80, 25, '#FBBC05'], [110, 15, '#34A853'], [140, 25, '#4285F4'], [170, 20, '#EA4335'],
+                  [20, 50, '#34A853'], [50, 45, '#4285F4'], [80, 55, '#EA4335'], [110, 45, '#FBBC05'], [140, 50, '#34A853'], [170, 55, '#4285F4'], [195, 45, '#FBBC05'],
+                  [40, 80, '#FBBC05'], [70, 85, '#34A853'], [100, 75, '#4285F4'], [130, 85, '#EA4335'], [160, 80, '#FBBC05'],
+                  [90, 105, '#4285F4'], [110, 105, '#34A853'], [120, 100, '#EA4335']
+                ].map(([cx, cy, fill], i) => (
+                  <circle key={i} cx={cx as number} cy={cy as number} r="4" fill={fill as string} opacity="0.85" />
+                ))}
+              </svg>
+            </div>
+            <p className="text-center text-[11px] font-medium text-[#5F6368]">
+              Illustrative visual, not live data
+            </p>
+          </div>
+
+          {/* 4 Small Story Steps */}
+          <div className="grid grid-cols-2 gap-3 pt-2">
+            {STORY_STEPS.map((step) => (
+              <div key={step.step} className="rounded-lg border border-[#E8EAED] bg-white p-3">
+                <span className="font-mono text-[10px] font-bold text-[#1A73E8]">{step.step}</span>
+                <h4 className="mt-1 text-xs font-semibold text-[#202124]">{step.title}</h4>
+                <p className="mt-1 text-[11px] text-[#5F6368] leading-tight">{step.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="pt-4 border-t border-[#E8EAED] text-xs text-[#5F6368]">
+          UrbanMind Civic Intelligence Engine · Open Government Architecture
         </div>
       </aside>
 
-      {/* ─────────────── AUTHENTICATION ─────────────── */}
-      <main className="auth-panel">
-        <div className="auth-form">
-          {/* Brand identity */}
-          <header className="auth-anim">
-            <div className="wordmark">
-              <span className="wordmark-bars" aria-hidden="true">
-                <span />
-                <span />
-                <span />
-                <span />
-              </span>
-              <span className="wordmark-text">UrbanMind</span>
+      {/* ─────────────── RIGHT AUTHENTICATION PANEL ─────────────── */}
+      <main className="flex flex-1 flex-col justify-center px-6 py-10 sm:px-12 lg:px-16 xl:px-24">
+        <div className="mx-auto w-full max-w-md space-y-6">
+          {/* Brand logo once per screen above the form */}
+          <div className="pb-1">
+            <BrandLogo size="md" showText showTagline />
+          </div>
+
+          <div>
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-[#1A73E8]">
+              Citizen Complaint Intelligence
+            </span>
+            <h1 className="mt-1 text-2xl font-bold tracking-tight text-[#202124]">
+              Welcome back
+            </h1>
+            <p className="mt-1 text-xs text-[#5F6368]">
+              Sign in to continue to UrbanMind.
+            </p>
+          </div>
+
+          {error && (
+            <div className="flex items-center gap-2 rounded-lg border border-[#FAD2CF] bg-[#FCE8E6] p-3 text-xs font-medium text-[#C5221F]">
+              <AlertCircle size={16} />
+              <span>{error}</span>
             </div>
-            <p className="wordmark-sub">Citizen Complaint Intelligence</p>
-          </header>
+          )}
 
-          <h1 className="auth-heading auth-anim">Welcome back</h1>
-          <p className="auth-subheading auth-anim">
-            Sign in to continue to UrbanMind.
-          </p>
-
-          <form onSubmit={handleLogin} noValidate>
-            {error && (
-              <div className="auth-alert" role="alert">
-                <AlertCircle size={18} aria-hidden="true" />
-                <span>{error}</span>
-              </div>
-            )}
-
-            {/* Email */}
-            <div
-              className={`auth-field auth-anim${emailInvalid ? ' has-error' : ''}`}
-            >
-              <label className="auth-label" htmlFor="email">
-                Email
+          <form onSubmit={handleLogin} className="space-y-4">
+            {/* Email Field with boxed styling */}
+            <div className="space-y-1">
+              <label className="text-xs font-semibold uppercase tracking-wider text-[#5F6368]" htmlFor="login-email">
+                Email Address
               </label>
-              <div className="auth-underline">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  inputMode="email"
-                  className="auth-input"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                    if (error) setError('');
-                  }}
-                  onBlur={() => setTouched(true)}
-                  aria-invalid={emailInvalid || undefined}
-                  aria-describedby={emailInvalid ? 'email-error' : undefined}
-                />
-              </div>
+              <input
+                id="login-email"
+                type="email"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (error) setError('');
+                }}
+                onBlur={() => setTouched(true)}
+                placeholder="officer@urbanmind.gov.in"
+                className={`w-full ${emailInvalid ? 'border-[#EA4335]' : ''}`}
+                autoComplete="email"
+                required
+              />
               {emailInvalid && (
-                <p className="auth-error-text" id="email-error">
-                  Enter a valid email address.
-                </p>
+                <p className="text-[11px] text-[#EA4335]">Enter a valid email address.</p>
               )}
             </div>
 
-            {/* Password */}
-            <div className="auth-field auth-anim">
-              <label className="auth-label" htmlFor="password">
+            {/* Password Field with boxed styling & show toggle */}
+            <div className="space-y-1">
+              <label className="text-xs font-semibold uppercase tracking-wider text-[#5F6368]" htmlFor="login-password">
                 Password
               </label>
-              <div className="auth-underline">
+              <div className="relative">
                 <input
-                  id="password"
-                  name="password"
+                  id="login-password"
                   type={showPassword ? 'text' : 'password'}
-                  autoComplete="current-password"
-                  className="auth-input"
-                  placeholder="••••••••••••"
                   value={password}
                   onChange={(e) => {
                     setPassword(e.target.value);
                     if (error) setError('');
                   }}
+                  placeholder="••••••••••••"
+                  className="w-full pr-10"
+                  autoComplete="current-password"
+                  required
                 />
                 <button
                   type="button"
-                  className="auth-eye"
-                  onClick={() => setShowPassword((v) => !v)}
-                  aria-label={
-                    showPassword ? 'Hide password' : 'Show password'
-                  }
-                  aria-pressed={showPassword}
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#5F6368] hover:text-[#202124]"
                 >
-                  {showPassword ? (
-                    <EyeOff size={18} aria-hidden="true" />
-                  ) : (
-                    <Eye size={18} aria-hidden="true" />
-                  )}
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
             </div>
 
-            {/* Remember me + Forgot password */}
-            <div className="auth-row auth-anim">
-              <label className="auth-check" htmlFor="remember">
+            {/* Remember Me */}
+            <div className="flex items-center justify-between pt-1 text-xs">
+              <label className="flex items-center gap-2 cursor-pointer select-none text-[#5F6368]">
                 <input
-                  id="remember"
-                  name="remember"
                   type="checkbox"
                   checked={remember}
                   onChange={(e) => setRemember(e.target.checked)}
+                  className="h-4 w-4 rounded border-[#DADCE0] text-[#1A73E8]"
                 />
-                <span className="auth-check-box" aria-hidden="true">
-                  <Check size={13} strokeWidth={3.5} />
-                </span>
-                <span className="auth-check-label">Remember me</span>
+                <span>Remember me</span>
               </label>
-              <button
-                type="button"
-                className="auth-link"
-                onClick={() =>
-                  toast.success('Password reset is not enabled in this demo.')
-                }
-              >
-                Forgot password?
-              </button>
             </div>
 
+            {/* Sign in Button */}
             <button
               type="submit"
-              className="auth-submit auth-anim"
               disabled={loading}
+              className="btn-primary w-full py-2.5 text-sm"
             >
-              {loading ? (
-                <>
-                  <span className="spinner" aria-hidden="true" />
-                  Signing in…
-                </>
-              ) : (
-                'Sign in'
-              )}
+              {loading ? 'Signing in…' : 'Sign in'}
             </button>
           </form>
 
-          {/* Demo access */}
-          <section className="auth-demo auth-anim" aria-labelledby="demo-heading">
-            <div className="auth-demo-head" id="demo-heading">
-              <KeyRound size={14} aria-hidden="true" />
-              Demo access
+          {/* Demo Access: 3 Compact Cards in 1 Row */}
+          <section className="space-y-2.5 pt-2 border-t border-[#E8EAED]">
+            <div className="flex items-center gap-1.5 text-xs font-semibold text-[#202124]">
+              <KeyRound size={14} className="text-[#4285F4]" />
+              <span>Demo access (fills fields only)</span>
             </div>
-            <p className="auth-demo-note">
-              Selecting a card fills the form only — you still press
-              &ldquo;Sign&nbsp;in&rdquo;.
-            </p>
-            <div className="demo-grid">
-              {DEMO_USERS.map((u) => {
-                const meta = DEMO_META[u.email];
-                return (
-                  <button
-                    key={u.email}
-                    type="button"
-                    data-role={meta?.slot}
-                    className="demo-card"
-                    onClick={() => fillCredentials(u.email, u.password)}
-                    aria-label={`Fill the ${meta?.role ?? u.badgeLabel} demo credentials`}
-                  >
-                    <span className="demo-role">
-                      <span className="dot" />
-                      {meta?.role ?? u.badgeLabel}
-                    </span>
-                    <span className="demo-email">{u.email}</span>
-                    <span className="demo-scope">{meta?.scope}</span>
-                    <span className="demo-hint">Fill form →</span>
-                  </button>
-                );
-              })}
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              {DEMO_USERS.map((u) => (
+                <button
+                  key={u.email}
+                  type="button"
+                  onClick={() => fillCredentials(u.email, u.password)}
+                  title={`${u.email} — Click to autofill credentials`}
+                  className="flex flex-col text-left rounded-lg border border-[#E8EAED] bg-[#F8FAFC] p-2.5 transition-colors hover:border-[#1A73E8] hover:bg-[#E8F0FE]/30"
+                >
+                  <span className="text-[11px] font-bold text-[#1A73E8] truncate">
+                    {u.badgeLabel}
+                  </span>
+                  <span className="text-xs font-medium text-[#202124] truncate">
+                    {u.name}
+                  </span>
+                  <span className="mt-1 text-[10px] text-[#5F6368] truncate" title={u.email}>
+                    {u.role === 'admin' ? 'All India · Full' : u.role === 'ward_officer' ? 'Chennai Ward 1' : 'All India · Reports'}
+                  </span>
+                </button>
+              ))}
             </div>
           </section>
 
-          {/* Secondary action */}
-          <div className="auth-signup auth-anim">
-            <span>Don&rsquo;t have an account?</span>
-            <button
-              type="button"
-              className="auth-signup-link"
-              onClick={() =>
-                toast.success('Sign up is not enabled in this demo.')
-              }
-            >
-              Sign up
-            </button>
-          </div>
-
-          {/* Team attribution */}
-          <footer className="auth-footer auth-anim">
-            <span>Built by</span>
-            <span className="names">{TEAM[0]}</span>
-            <span className="sep" aria-hidden="true">
-              ·
-            </span>
-            <span className="names">{TEAM[1]}</span>
-            <span className="sep" aria-hidden="true">
-              ·
-            </span>
-            <span className="names">{TEAM[2]}</span>
+          {/* Team Attribution Footer */}
+          <footer className="pt-4 border-t border-[#E8EAED] text-center text-xs text-[#5F6368]">
+            <span>Built by </span>
+            <span className="font-medium text-[#202124]">{TEAM[0]}</span>
+            <span className="mx-1.5">·</span>
+            <span className="font-medium text-[#202124]">{TEAM[1]}</span>
+            <span className="mx-1.5">·</span>
+            <span className="font-medium text-[#202124]">{TEAM[2]}</span>
           </footer>
         </div>
       </main>

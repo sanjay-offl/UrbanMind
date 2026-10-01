@@ -10,7 +10,11 @@ export type CanonicalCategory =
 
 export type PriorityLevel = 'Critical' | 'High' | 'Moderate' | 'Low' | 'Not scored';
 
+export type Priority = 'critical' | 'high' | 'medium' | 'low';
+
 export type CanonicalStatus = 'Open' | 'In Progress' | 'Resolved' | 'Closed';
+
+export type Status = 'pending' | 'classified' | 'in_progress' | 'resolved' | 'closed';
 
 export type ProcessingStatus = 'Pending' | 'Classified' | 'Failed';
 

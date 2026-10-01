@@ -77,10 +77,12 @@ const navItems: NavItemConfig[] = [
 ];
 
 export default function Sidebar({
-  isOpen,
+  isMobileDrawer = false,
+  isOpen = false,
   onClose,
   onNavigate,
 }: {
+  isMobileDrawer?: boolean;
   isOpen?: boolean;
   onClose?: () => void;
   onNavigate?: () => void;
@@ -91,33 +93,35 @@ export default function Sidebar({
 
   // Escape key handler for mobile drawer
   useEffect(() => {
+    if (!isMobileDrawer || !isOpen) return;
     function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === 'Escape' && isOpen && onClose) {
+      if (e.key === 'Escape' && onClose) {
         onClose();
       }
     }
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
+  }, [isMobileDrawer, isOpen, onClose]);
 
   const visibleItems = navItems.filter((item) => !item.permission || can(item.permission));
 
-  const content = (
-    <aside className="flex h-full w-[256px] flex-col border-r border-[#E8EAED] bg-white">
-      {/* 1. Official Brand Block (Appears once: desktop sidebar top, mobile header) */}
-      <div className="flex h-14 items-center border-b border-[#E8EAED] px-4">
+  const sidebarBody = (
+    <div className="flex h-full w-[264px] flex-col bg-[var(--surface)] border-r border-[var(--border)]">
+      {/* 1. Header (64px) */}
+      <div className="flex h-16 shrink-0 items-center border-b border-[var(--border)] px-4">
         <BrandLogo size="md" showText showTagline={false} />
       </div>
 
-      {/* 2. Language Row (EN, தமிழ், हिन्दी) */}
-      <div className="flex items-center justify-between border-b border-[#E8EAED] bg-[#F8FAFC] px-4 py-2 text-xs">
-        <span className="font-medium text-[#5F6368]">{t('selectLanguage')}:</span>
+      {/* 2. Language Row */}
+      <div className="flex shrink-0 items-center justify-between border-b border-[var(--border)] bg-[var(--bg)] px-4 py-2 text-xs">
+        <span className="font-medium text-[var(--text-muted)]">{t('selectLanguage')}:</span>
         <div className="flex items-center gap-1">
           {(
             [
               { code: 'en', label: 'EN' },
               { code: 'ta', label: 'தமிழ்' },
               { code: 'hi', label: 'हिन्दी' },
+              { code: 'bn', label: 'বাংলা' },
             ] as const
           ).map((item) => {
             const active = locale === item.code;
@@ -128,8 +132,8 @@ export default function Sidebar({
                 onClick={() => setLocale(item.code as SupportedLocale)}
                 className={`rounded px-2 py-0.5 text-xs font-semibold transition-colors ${
                   active
-                    ? 'border border-[#4285F4] bg-white text-[#1967D2]'
-                    : 'border border-transparent text-[#5F6368] hover:bg-white hover:text-[#202124]'
+                    ? 'border border-[var(--blue)] bg-[var(--surface)] text-[var(--primary)]'
+                    : 'border border-transparent text-[var(--text-muted)] hover:bg-[var(--surface)] hover:text-[var(--text)]'
                 }`}
               >
                 {item.label}
@@ -139,8 +143,8 @@ export default function Sidebar({
         </div>
       </div>
 
-      {/* 3. Navigation List (40px tall, single line, no internal scroll at 768px height) */}
-      <nav className="flex-1 space-y-0.5 overflow-y-auto px-3 py-3">
+      {/* 3. Navigation (middle, flex-1, overflow-y: auto) */}
+      <nav className="flex-1 space-y-0.5 overflow-y-auto p-3">
         {visibleItems.map((item) => {
           const active =
             pathname === item.href ||
@@ -159,18 +163,18 @@ export default function Sidebar({
               style={{ height: '40px' }}
               className={`flex items-center gap-3 rounded-lg px-3 text-[13.5px] transition-colors duration-150 ${
                 active
-                  ? 'bg-[#E8F0FE] font-semibold text-[#1967D2]'
-                  : 'font-normal text-[#5F6368] hover:bg-[#F1F3F4] hover:text-[#202124]'
+                  ? 'bg-[var(--primary-soft)] font-semibold text-[var(--primary)]'
+                  : 'font-normal text-[var(--text-muted)] hover:bg-[var(--bg)] hover:text-[var(--text)]'
               }`}
             >
               <i
                 className={`ti ${item.icon} text-lg shrink-0 ${
-                  active ? 'text-[#4285F4]' : 'text-[#5F6368]'
+                  active ? 'text-[var(--primary)]' : 'text-[var(--text-muted)]'
                 }`}
               />
               <span className="truncate leading-none">{label}</span>
               {item.badge && (
-                <span className="ml-auto rounded-full bg-[#E8F0FE] px-1.5 py-0.5 text-[10px] font-semibold text-[#1967D2]">
+                <span className="ml-auto rounded-full bg-[var(--primary-soft)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--primary)]">
                   {item.badge}
                 </span>
               )}
@@ -179,37 +183,39 @@ export default function Sidebar({
         })}
       </nav>
 
-      {/* Minimal Footer Info */}
-      <div className="border-t border-[#E8EAED] px-4 py-2.5 text-[11px] text-[#5F6368]">
+      {/* 4. Footer pinned to bottom (margin-top: auto) */}
+      <div className="mt-auto shrink-0 border-t border-[var(--border)] px-4 py-3 text-[11px] text-[var(--text-muted)]">
         <div className="flex items-center justify-between">
           <span>India Architecture</span>
-          <span className="font-mono text-[10px] text-[#9AA0A6]">v0.1.0</span>
+          <span className="font-mono text-[13px] text-[var(--text-muted)]">v0.1.0</span>
         </div>
       </div>
-    </aside>
+    </div>
   );
 
-  return (
-    <>
-      {/* Desktop Persistent Sidebar */}
-      <div className="hidden lg:block lg:shrink-0">{content}</div>
-
-      {/* Mobile Drawer (with Backdrop overlay, focus trap, Escape to close) */}
-      {isOpen && (
-        <div className="fixed inset-0 z-50 flex lg:hidden">
-          {/* Overlay */}
-          <div
-            className="fixed inset-0 bg-black/40 transition-opacity"
-            onClick={onClose}
-            aria-hidden="true"
-          />
-
-          {/* Drawer content */}
-          <div className="relative z-10 flex h-full w-[256px] flex-col bg-white shadow-xl animate-in slide-in-from-left duration-200">
-            {content}
-          </div>
+  // If this instance is rendered as mobile drawer
+  if (isMobileDrawer) {
+    if (!isOpen) return null;
+    return (
+      <div className="fixed inset-0 z-50 flex lg:hidden">
+        {/* Backdrop */}
+        <div
+          className="fixed inset-0 bg-black/40 transition-opacity"
+          onClick={onClose}
+          aria-hidden="true"
+        />
+        {/* Drawer panel */}
+        <div className="relative z-10 flex h-full w-[264px] flex-col shadow-xl animate-in slide-in-from-left duration-200">
+          {sidebarBody}
         </div>
-      )}
-    </>
+      </div>
+    );
+  }
+
+  // Desktop Persistent Sidebar (width 264px, position sticky, top 0, height 100vh)
+  return (
+    <aside className="sticky top-0 h-screen w-[264px] shrink-0 hidden lg:flex flex-col">
+      {sidebarBody}
+    </aside>
   );
 }

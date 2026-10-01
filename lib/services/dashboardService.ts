@@ -38,10 +38,31 @@ export function getDashboardData(filter: GeoFilter): DashboardPayload {
   const summary = summarize(filter);
   const rows = filterRequests(filter);
 
-  const topCriticalGrievances = rows
+  // Select top critical grievances across diverse civic sectors so scores and categories vary naturally
+  const criticalSorted = rows
     .filter((r) => r.priority === 'critical')
-    .sort((a, b) => b.priority_score - a.priority_score)
-    .slice(0, 5);
+    .sort((a, b) => b.priority_score - a.priority_score);
+
+  const seenSectors = new Set<string>();
+  const topCriticalGrievances: CivicRequest[] = [];
+
+  for (const r of criticalSorted) {
+    if (!seenSectors.has(r.sector)) {
+      seenSectors.add(r.sector);
+      topCriticalGrievances.push(r);
+      if (topCriticalGrievances.length >= 5) break;
+    }
+  }
+
+  // Fallback to fill remaining up to 5 if fewer than 5 sectors available in current scope
+  if (topCriticalGrievances.length < 5) {
+    for (const r of criticalSorted) {
+      if (!topCriticalGrievances.some((item) => item.id === r.id)) {
+        topCriticalGrievances.push(r);
+        if (topCriticalGrievances.length >= 5) break;
+      }
+    }
+  }
 
   const recentActivity = [...rows]
     .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())

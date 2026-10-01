@@ -1,7 +1,6 @@
 import type { Config } from 'tailwindcss';
 
 const config: Config = {
-  darkMode: 'class',
   content: [
     './app/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
@@ -17,61 +16,59 @@ const config: Config = {
     },
     extend: {
       fontFamily: {
-        sans: ['var(--font-sans)', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        heading: [
+          'var(--font-heading)',
+          'Plus Jakarta Sans',
+          'Inter',
+          'Noto Sans Devanagari',
+          'Noto Sans Bengali',
+          'Noto Sans Tamil',
+          'system-ui',
+          'sans-serif',
+        ],
+        sans: [
+          'var(--font-sans)',
+          'Inter',
+          'Noto Sans Devanagari',
+          'Noto Sans Bengali',
+          'Noto Sans Tamil',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'Segoe UI',
+          'Roboto',
+          'sans-serif',
+        ],
         mono: ['var(--font-mono)', 'JetBrains Mono', 'monospace'],
       },
       colors: {
-        base: 'var(--bg-base)',
-        surface: 'var(--bg-surface)',
-        elevated: 'var(--bg-elevated)',
-        accent: 'var(--accent)',
-        border: 'hsl(var(--border))',
-        input: 'hsl(var(--input))',
-        ring: 'hsl(var(--ring))',
-        background: 'hsl(var(--background))',
-        foreground: 'hsl(var(--foreground))',
+        bg: 'var(--bg)',
+        surface: 'var(--surface)',
+        border: 'var(--border)',
+        text: 'var(--text)',
+        'text-muted': 'var(--text-muted)',
         primary: {
-          DEFAULT: 'hsl(var(--primary))',
-          foreground: 'hsl(var(--primary-foreground))',
+          DEFAULT: 'var(--primary)',
+          soft: 'var(--primary-soft)',
         },
-        secondary: {
-          DEFAULT: 'hsl(var(--secondary))',
-          foreground: 'hsl(var(--secondary-foreground))',
+        blue: 'var(--blue)',
+        red: 'var(--red)',
+        yellow: 'var(--yellow)',
+        green: 'var(--green)',
+        critical: {
+          DEFAULT: 'var(--critical)',
+          soft: 'var(--critical-soft)',
         },
-        destructive: {
-          DEFAULT: 'hsl(var(--destructive))',
-          foreground: 'hsl(var(--destructive-foreground))',
-        },
-        muted: {
-          DEFAULT: 'hsl(var(--muted))',
-          foreground: 'hsl(var(--muted-foreground))',
-        },
-        popover: {
-          DEFAULT: 'hsl(var(--popover))',
-          foreground: 'hsl(var(--popover-foreground))',
-        },
-        card: {
-          DEFAULT: 'hsl(var(--card))',
-          foreground: 'hsl(var(--card-foreground))',
-        },
-      },
-      backdropBlur: {
-        glass: 'var(--glass-blur)',
-      },
-      boxShadow: {
-        glass: 'var(--shadow-glass)',
-        glow: 'var(--accent-glow)',
-      },
-      borderColor: {
-        DEFAULT: 'var(--border)',
-      },
-      transitionProperty: {
-        theme: 'background-color, color, border-color, box-shadow',
+        high: 'var(--high)',
+        medium: 'var(--medium)',
+        low: 'var(--low)',
       },
       borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
+        card: '16px',
+        panel: '16px',
+        control: '8px',
+      },
+      boxShadow: {
+        card: '0 1px 2px rgba(60, 64, 67, 0.15)',
       },
     },
   },

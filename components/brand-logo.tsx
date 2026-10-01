@@ -18,31 +18,35 @@ export default function BrandLogo({
   href = '/dashboard',
   className = '',
 }: BrandLogoProps) {
-  const iconDimensions = {
-    sm: { width: 28, height: 28 },
-    md: { width: 34, height: 34 },
-    lg: { width: 44, height: 44 },
-  }[size];
+  // Height 40px for standard layout
+  const dimension = size === 'sm' ? 32 : size === 'lg' ? 56 : 40;
 
   const content = (
-    <div className={`flex items-center gap-2.5 ${className}`}>
-      <div className="relative flex shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white">
+    <div className={`flex items-center gap-3 ${className}`}>
+      {/* Official UrbanMind Logo - object-fit: contain, dark mode on rounded var(--surface) chip */}
+      <div
+        style={{ width: `${dimension}px`, height: `${dimension}px` }}
+        className="relative shrink-0 flex items-center justify-center rounded-lg bg-[var(--surface)] border border-[var(--border)] p-1 shadow-sm"
+      >
         <Image
-          src="/urbanmind_light_logo.png"
+          src="/logo.png"
           alt="UrbanMind Logo"
-          width={iconDimensions.width}
-          height={iconDimensions.height}
+          width={dimension}
+          height={dimension}
           priority
+          referrerPolicy="no-referrer"
           className="object-contain"
+          style={{ width: '100%', height: '100%' }}
         />
       </div>
+
       {showText && (
         <div className="flex flex-col">
-          <span className="text-[17px] font-bold leading-tight tracking-tight text-[#202124]">
+          <span className="font-heading text-[18px] font-bold leading-tight tracking-tight text-[var(--text)]">
             UrbanMind
           </span>
           {showTagline && (
-            <span className="text-[11px] font-medium tracking-wide text-[#5F6368]">
+            <span className="text-[11px] font-medium tracking-wide text-[var(--text-muted)]">
               From Citizen Voice to National Priorities
             </span>
           )}

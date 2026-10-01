@@ -2,6 +2,7 @@
 
 import { useGeography } from '@/lib/ward-context';
 import { useI18n } from '@/lib/i18n-context';
+import { MapPin, RotateCcw } from 'lucide-react';
 
 const STATES = [
   'All States',
@@ -36,12 +37,26 @@ const DISTRICTS_MAP: Record<string, string[]> = {
   Delhi: ['All Districts', 'Central Delhi', 'New Delhi', 'South Delhi', 'North Delhi'],
 };
 
+const CITIES_MAP: Record<string, string[]> = {
+  Chennai: ['All Cities', 'Chennai'],
+  Coimbatore: ['All Cities', 'Coimbatore'],
+  Mumbai: ['All Cities', 'Mumbai'],
+  Pune: ['All Cities', 'Pune'],
+  'Bengaluru Urban': ['All Cities', 'Bengaluru'],
+  Lucknow: ['All Cities', 'Lucknow'],
+  Ahmedabad: ['All Cities', 'Ahmedabad'],
+  Kolkata: ['All Cities', 'Kolkata'],
+  Jaipur: ['All Cities', 'Jaipur'],
+};
+
 export default function GeographyToolbar() {
   const {
     selectedState,
     setSelectedState,
     selectedDistrict,
     setSelectedDistrict,
+    selectedCity,
+    setSelectedCity,
     selectedWard,
     setSelectedWard,
     resetGeography,
@@ -53,13 +68,19 @@ export default function GeographyToolbar() {
       ? DISTRICTS_MAP[selectedState]
       : ['All Districts', 'Chennai', 'Mumbai', 'Bengaluru Urban', 'Lucknow', 'Ahmedabad', 'Kolkata', 'Jaipur', 'Pune'];
 
-  const isFiltered = selectedState !== 'all' || selectedDistrict !== 'all' || selectedWard !== 'all';
+  const cityList =
+    selectedDistrict !== 'all' && CITIES_MAP[selectedDistrict]
+      ? CITIES_MAP[selectedDistrict]
+      : ['All Cities', 'Chennai', 'Mumbai', 'Bengaluru', 'Lucknow', 'Ahmedabad', 'Kolkata', 'Jaipur', 'Pune'];
+
+  const isFiltered =
+    selectedState !== 'all' || selectedDistrict !== 'all' || selectedCity !== 'all' || selectedWard !== 'all';
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#E8EAED] pb-3 pt-1">
+    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#E8EAED] pb-3 mb-6">
       <div className="flex flex-wrap items-center gap-2 text-xs">
-        <span className="font-semibold uppercase tracking-wider text-[#5F6368]">
-          Geography Scope:
+        <span className="flex items-center gap-1 font-semibold uppercase tracking-wider text-[#5F6368]">
+          <MapPin size={13} className="text-[#4285F4]" /> Geography Scope:
         </span>
 
         {/* State select */}
@@ -94,6 +115,22 @@ export default function GeographyToolbar() {
           ))}
         </select>
 
+        {/* City select */}
+        <select
+          value={selectedCity === 'all' ? 'All Cities' : selectedCity}
+          onChange={(e) => {
+            const val = e.target.value;
+            setSelectedCity(val === 'All Cities' ? 'all' : val);
+          }}
+          className="h-8 rounded-md border border-[#DADCE0] bg-white px-2.5 py-1 text-xs font-medium text-[#202124] hover:bg-[#F8FAFC]"
+        >
+          {cityList.map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
+        </select>
+
         {/* Ward select */}
         <select
           value={selectedWard}
@@ -112,16 +149,16 @@ export default function GeographyToolbar() {
           <button
             type="button"
             onClick={resetGeography}
-            className="h-8 rounded-md border border-[#E8EAED] bg-[#F1F3F4] px-2.5 text-xs font-medium text-[#5F6368] hover:bg-[#E8EAED] hover:text-[#202124]"
+            className="flex items-center gap-1 h-8 rounded-md border border-[#E8EAED] bg-[#F1F3F4] px-2.5 text-xs font-medium text-[#5F6368] hover:bg-[#E8EAED] hover:text-[#202124]"
           >
-            Reset to India
+            <RotateCcw size={12} /> Reset to India
           </button>
         )}
       </div>
 
       <div className="flex items-center gap-1.5 text-[11px] text-[#5F6368]">
         <span className="inline-block h-2 w-2 rounded-full bg-[#34A853]" />
-        <span>India-ready multi-tier hierarchy</span>
+        <span>Unified India Geography State</span>
       </div>
     </div>
   );
