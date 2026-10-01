@@ -1,0 +1,7 @@
+{
+  "name": "UrbanMind",
+  "description": "AI-powered citizen grievance intelligence platform with multilingual intake, priority scoring, spatial mapping, and analytics.",
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
